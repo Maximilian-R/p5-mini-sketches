@@ -1,13 +1,14 @@
+var useFont;
 var symbolSize = 26;
 var streams = [];
-var useFont;
 
 function preload() {
   useFont = loadFont('RobotoMono-Regular.ttf');
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
+  createCanvas(window.innerWidth, window.innerHeight);
+
   background(0);
 
   var x = 0;
@@ -66,8 +67,8 @@ function Symbol(x, y, first) {
 
 function Stream() {
   this.symbols = [];
-  this.totalSymbols = round(random(3, 10));
-  this.speedInterval = round(random(10, 20));
+  this.totalSymbols = round(random(5,30));
+  this.speedInterval = round(random(2, 20));
 
   this.generateSymbols = function(x, y) {
     var first = round(random(0, 4)) == 1;
