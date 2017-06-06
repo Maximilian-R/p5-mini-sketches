@@ -8,12 +8,11 @@ function windowResized() {
 }
 
 function preload() {
-  font = loadFont("../fonts/Raleway/Raleway-Regular.ttf");
+  font = loadFont("Raleway-Regular.ttf");
 }
 
 function setup() {
-  var canvas = createCanvas(windowWidth, 300);
-  canvas.parent('sketch-holder');
+  canvas = createCanvas(windowWidth, windowHeight);
   textFont(font);
 
   colorMode(HSB, 100);

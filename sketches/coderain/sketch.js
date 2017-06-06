@@ -3,7 +3,7 @@ var streams = [];
 var useFont;
 
 function preload() {
-  useFont = loadFont('Roboto_Mono/RobotoMono-Regular.ttf');
+  useFont = loadFont('RobotoMono-Regular.ttf');
 }
 
 function setup() {

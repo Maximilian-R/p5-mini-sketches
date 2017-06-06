@@ -2,9 +2,7 @@ var fishes = [];
 var animations = [];
 
 function setup(){
-  var canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent('sketch');
-
+  canvas = createCanvas(windowWidth, windowHeight);
   start();
 }
 

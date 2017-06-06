@@ -3,13 +3,12 @@ var tennisballIMG;
 var stareAt;
 
 function preload() {
-  glassesIMG = loadImage("img/eyeglasses.png");
-  tennisballIMG = loadImage("img/tennisball.png");
+  glassesIMG = loadImage("eyeglasses.png");
+  tennisballIMG = loadImage("tennisball.png");
 }
 
 function setup(){
   canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent('sketch-holder');
   imageMode(CENTER);
 
   noCursor();
