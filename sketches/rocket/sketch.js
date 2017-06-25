@@ -1,7 +1,9 @@
 var font;
 var vehicles = [];
 var enemy;
+var useFontSize = 200;
 var fontBox;
+
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -19,15 +21,8 @@ function setup() {
 
   enemy = new Enemy(-width * .5, height * .5);
 
-  l = round(random(labels.length));
-  points = font.textToPoints(labels[l], width * .5, height * .5, 200);
-  b = font.textBounds(labels[l], width * .5, height * .5, 200);
-  fontBox = b;
-
-  points.forEach(function(p) {
-      v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
-      vehicles.push(v);
-  }.bind(this));
+  word = labels[round(random(labels.length))];
+  changeWord(word);
 }
 
 var labels = [
@@ -79,8 +74,8 @@ var labels = [
 ];
 
 function changeWord(s) {
-  points = font.textToPoints(s, width * .5, height * .5, 200);
-  b = font.textBounds(s, width * .5, height * .5, 200);
+  points = font.textToPoints(s, width * .5, height * .5, useFontSize);
+  b = font.textBounds(s, width * .5, height * .5, useFontSize);
   fontBox = b;
 
   removeV = 0;
