@@ -41,13 +41,15 @@
    translate(width * 0.5, height * 0.5);
    rotate(-90);
 
-   let strokeSize = 10;
-   let scSize = height* 0.6;
-   let mnSize = scSize - strokeSize * 4;
-   let hrSize = mnSize - strokeSize * 4;
+   let mainSize = min(new Array(width, height));
+
+   let strokeSize = mainSize * 0.015;
+   let scSize = mainSize * 0.6;
+   let mnSize = scSize - strokeSize * 3;
+   let hrSize = mnSize - strokeSize * 3;
    let pointerSize = hrSize * 0.3;
 
-   strokeWeight(10);
+   strokeWeight(strokeSize);
    stroke(scColor);
    noFill();
    let secondAngle = map(sc, 0, 60, 0, 360);
@@ -81,7 +83,7 @@
    line(0, 0, pointerSize * 0.50, 0);
    pop();
 
-   strokeWeight(20);
+   strokeWeight(strokeSize * 2);
    stroke(255);
    point(0, 0);
 
