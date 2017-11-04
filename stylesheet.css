@@ -23,12 +23,16 @@ body {
   font-size: 1.5em;
   text-decoration: none !important;
   color: #07225a !important;
+  margin-left: 20px;
+  margin-right: 20px;
+
   /* This should be equal to .Menu h3 padding-top to overlap */
   padding-top: 10px;
 }
 
 .Menu a:hover {
   border-top: 10px solid #9affe7;
+  color: #9affe7 !important;
 }
 
 .Main h1 {
