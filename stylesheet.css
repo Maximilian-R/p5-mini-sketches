@@ -1,0 +1,15 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  color: black;
+  font-family: 'Raleway', sans-serif;
+}
+
+.Menu {
+  text-align: center;
+}
+
+.Main h1 {
+  text-align: center;
+  font-size: 40px;
+}

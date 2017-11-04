@@ -1,12 +1,12 @@
 var font;
 var vehicles = [];
-var enemy;
 var useFontSize = 200;
 var fontBox;
+var time;
 
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth, 300);
 }
 
 function preload() {
@@ -14,68 +14,18 @@ function preload() {
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
+  var canvas = createCanvas(windowWidth, 300);
+  canvas.parent('sketch-holder');
   textFont(font);
 
   colorMode(HSB, 100);
-
-  enemy = new Enemy(-width * .5, height * .5);
-
-  word = labels[round(random(labels.length))];
-  changeWord(word);
+  time = nf(hour(), 2, 0) +  ":"  + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
+  changeWord(time);
 }
 
-var labels = [
-  "Algorithm",
-  "Array",
-  "Boolean",
-  "Block",
-  "Bracket",
-  "Binary",
-  "Class",
-  "10110",
-  "Complie",
-  "Concat",
-  "Catch",
-  "Datatype",
-  "Debug",
-  "Declare",
-  "Double",
-  "Element",
-  "Error",
-  "Escape",
-  "Event",
-  "Foreach",
-  "Float",
-  "Function",
-  "HTML",
-  "Integer",
-  "Java",
-  "Label",
-  "Method",
-  "Null",
-  "Parse",
-  "Private",
-  "Public",
-  "Program",
-  "Random",
-  "Return",
-  "Server",
-  "Shift",
-  "Source",
-  "Stack",
-  "Switch",
-  "Swift",
-  "String",
-  "Super",
-  "System",
-  "Thread",
-  "Value",
-];
-
-function changeWord(s) {
+function changeWord(s, instant) {
   points = font.textToPoints(s, width * .5, height * .5, useFontSize);
-  b = font.textBounds(s, width * .5, height * .5, useFontSize);
+  b = font.textBounds("00:00:00", width * .5, height * .5, useFontSize);
   fontBox = b;
 
   removeV = 0;
@@ -83,77 +33,48 @@ function changeWord(s) {
     removeV = vehicles.length - points.length;
   }
 
-  //Spread out from where vehicles are removed
-  for (var i = 0; i <= removeV; i++) {
-    rand = round(random(vehicles.length));
-    vehicles.splice(rand, 1);
-  }
+  vehicles.splice(vehicles.length - removeV, removeV);
+
 
   points.forEach(function(p, index) {
     if(index >= vehicles.length) {
-      v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
-      v.pos.x = random(width);
-      v.pos.y = -50;
-      vehicles.push(v);
+      if (vehicles.length == 0) {
+          v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
+          vehicles.push(v);
+      } else {
+        last = vehicles[vehicles.length - 1];
+        v = new Vehicle(last.pos.x, last.pos.y);
+        vehicles.push(v);
+      }
+
     }
-      vehicles[index].target.x = p.x - b.w * .5;
-      vehicles[index].target.y = p.y + b.h * .5;
+    var vec = vehicles[index];
+    vec.target.x = p.x - b.w * .5;
+    vec.target.y = p.y + b.h * .5;
+
   }.bind(this));
 }
 
 function draw() {
+  now = nf(hour(), 2, 0) +  ":"  + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
+  if (time != now) {
+    time = now;
+    changeWord(time, false);
+  }
 
-  background(0, 100 * 0.5);
+  //background(0, 100 * 0.5);
+  background(0);
 
-  enemy.update();
-  enemy.render();
+  // fill(255, 10);
+  // vehicles.forEach(function(v) {
+  //     ellipse(v.pos.x, v.pos.y, v.r * 7);
+  // });
 
   vehicles.forEach(function(v) {
       v.behavior();
       v.update();
       v.render();
   });
-}
-
-function Enemy(x, y) {
-  this.x = x;
-  this.y = y;
-  this.speed = 10;
-  this.r = 16;
-  this.passed = false;
-  this.index = 0;
-  this.timePassed = 0;
-}
-
-Enemy.prototype.render = function() {
-  noFill();
-  for (var i = this.r; i > 0; i -= 4) {
-    s = map(i, 0, this.r, 0, 100);
-    fill(50, s, 100);
-    ellipse(this.x, this.y, i);
-  }
-}
-
-Enemy.prototype.update = function() {
-  this.timePassed++;
-  this.x += this.speed;
-
-  if (this.x >= width && this.timePassed >= 60 * 4)  {
-    this.x = 0;
-    this.timePassed = 0;
-    this.passed = false;
-  }
-
-  if(this.x > width * 0.6 && !this.passed) {
-    this.passed = true;
-    newIndex = 0;
-    do {
-      newIndex = floor(random(labels.length));
-    } while(newIndex == this.index);
-
-    this.index = newIndex;
-    changeWord(labels[this.index]);
-  }
 
 }
 
@@ -164,22 +85,22 @@ function Vehicle(x, y) {
   this.acc = createVector();
   this.target = createVector(x, y);
 
-  this.r = 7;
-  this.maxSpeed = 8;
+  this.r = 8;
+  this.maxSpeed = 2;
   this.maxForce = 1;
 }
 
 Vehicle.prototype.behavior = function() {
-  target = createVector(enemy.x, enemy.y);
+  target = createVector(0, 0);
 
   arrive = this.arrive(this.target);
-  flee = this.flee(target);
+  //flee = this.flee(target);
 
   arrive.mult(1);
-  flee.mult(2);
+  //flee.mult(2);
 
   this.applyForce(arrive);
-  this.applyForce(flee);
+  //this.applyForce(flee);
 }
 
 Vehicle.prototype.applyForce = function(f) {
@@ -190,7 +111,7 @@ Vehicle.prototype.arrive = function(target) {
   desired = p5.Vector.sub(target, this.pos);
   d = desired.mag();
   speed = this.maxSpeed;
-  if(d <= 100) {
+  if(d <= 600) {
     speed = map(d, 0, 100, 0, this.maxSpeed * 5);
   }
   desired.setMag(speed);
@@ -260,5 +181,7 @@ Vehicle.prototype.render = function() {
     fill(92 - c, s - d - m, 100);
     ellipse(this.pos.x, this.pos.y, i);
   }
+
+
 
 }
