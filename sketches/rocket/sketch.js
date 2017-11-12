@@ -10,7 +10,7 @@ function windowResized() {
 }
 
 function preload() {
-  font = loadFont("sketches/rocket/fonts/Raleway/Raleway-Regular.ttf");
+  font = loadFont("fonts/Raleway/Raleway-Regular.ttf");
 }
 
 function setup() {
