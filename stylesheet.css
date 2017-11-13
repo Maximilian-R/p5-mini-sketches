@@ -1,3 +1,24 @@
+.construction {
+  text-align: center;
+  color: white;
+  display: inline-block;
+  width: 100%;
+  background: repeating-linear-gradient(
+  45deg,
+  #000,
+  #000 10px,
+  #fee336 10px,
+  #fee336 20px
+  );
+}
+
+.construction h2 {
+  background-color: black;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+
 body {
   width :100%;
   height: 100%;
