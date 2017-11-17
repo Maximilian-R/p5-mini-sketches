@@ -14,6 +14,12 @@ var engine,
 var wheel,
   arrow;
 
+  function keyPressed() {
+    if (keyCode == 32) {
+      wheel.spin();
+    }
+  }
+
 function setup() {
   createCanvas(800, 800);
 
