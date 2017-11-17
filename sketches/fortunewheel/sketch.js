@@ -28,6 +28,8 @@ const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI * 0.5;
 
 function Wheel(x, y) {
+  this.x = x;
+  this.y = y;
   this.radius = 200;
   this.diameter = function() {
     return this.radius * 2;
@@ -59,7 +61,8 @@ function Wheel(x, y) {
   this.lock = Constraint.create({
     pointA: { x: this.body.position.x, y: this.body.position.y },
     bodyB: this.body,
-    stiffness: 2
+    stiffness: 0.7,
+    length: 0
   });
 
   World.add(world, this.body);
@@ -81,7 +84,7 @@ function Wheel(x, y) {
     var angle = this.body.angle;
 
     push();
-    translate(position.x, position.y);
+    translate(this.x, this.y);
     rotate(angle);
     var size = this.diameter() + 60;
     ellipse(0, 0, size, size);
@@ -110,7 +113,7 @@ function Wheel(x, y) {
     pop();
 
     push();
-    translate(position.x, position.y);
+    translate(this.x, this.y);
 
 
     fill("#249199");
@@ -147,37 +150,41 @@ function Arrow(x, y) {
   this.vector = [{x: 0, y: 0}, {x: -14, y: -50},{x: 0, y: -70},
     {x: 14, y: -50}]; // , {x: 0, y: 0}
 
-  this.body = Matter.Bodies.fromVertices(x, y - 40, this.vector);
+  this.body = Matter.Bodies.fromVertices(x, y - 44, this.vector);
   World.add(world, this.body);
 
   this.lock = Constraint.create({
     pointA: { x: this.body.position.x, y: this.body.position.y },
     bodyB: this.body,
-    stiffness: 2
+    stiffness: 0.9,
+    length: 0
   });
   World.add(world, this.lock);
 
   this.left = Constraint.create({
-    pointA: { x: this.body.position.x - 40, y: this.body.position.y + 10},
+    pointA: { x: this.body.position.x, y: this.body.position.y + 100},
     bodyB: this.body,
     pointB: {x: 0, y: 35},
-    stiffness: 2
+    stiffness: 0
   });
   World.add(world, this.left);
 
-  this.right = Constraint.create({
-    pointA: { x: this.body.position.x + 40, y: this.body.position.y + 10},
-    bodyB: this.body,
-    pointB: {x: 0, y: 35},
-    stiffness: 2
-  });
-  World.add(world, this.right);
+  // this.right = Constraint.create({
+  //   pointA: { x: this.body.position.x + 40, y: this.body.position.y + 10},
+  //   bodyB: this.body,
+  //   pointB: {x: 0, y: 35},
+  //   stiffness: 0
+  // });
+  // World.add(world, this.right);
 
   this.draw = function() {
     push();
     fill("#249199");
     stroke(0);
-    translate(this.x, this.y);
+    translate(this.x, this.y - 40);
+    rotate(this.body.angle);
+    translate(0, 40);
+
     beginShape();
     for (var i = 0; i < this.vector.length; i++) {
       var v = this.vector[i];
