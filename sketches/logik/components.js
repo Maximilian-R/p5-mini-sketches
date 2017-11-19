@@ -1,5 +1,3 @@
-
-
 class Light extends PlaceAble {
   constructor(x, y) {
     super(x, y);
@@ -16,7 +14,6 @@ class Light extends PlaceAble {
     } else {
       this.on = false;
     }
-
     this.input.update();
   }
 

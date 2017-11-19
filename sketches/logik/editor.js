@@ -2,6 +2,10 @@ function mouseClicked() {
   editor.mouseClicked();
 }
 
+function keyPressed() {
+  editor.keyPressed();
+}
+
 class Editor {
   constructor() {
     this.mouse;
@@ -9,16 +13,35 @@ class Editor {
     this.hoverSocket;
   }
 
+  keyPressed() {
+    if (keyCode == 8) {
+      // cancel palcement of connection
+      this.outputSocket = null;
+    }
+  }
+
   mouseClicked() {
 
     //Check if socket was clicked
     for (var i = 0; i < sockets.length; i++) {
       var socket = sockets[i];
+
       if (socket.pos.dist(this.mouse) < socket.width) {
         // Select from socket or create connection
+
+        // select output
         if (this.outputSocket == null && socket instanceof OutputSocket) {
           this.outputSocket = socket;
-        } else if (this.outputSocket != null && socket instanceof InputSocket &&
+        }
+
+        //delete connection, create new
+        else if (this.outputSocket == null && socket instanceof InputSocket) {
+          this.outputSocket = socket.connections[0].input;
+          socket.connections[0].delete();
+        }
+
+        // connect to input
+        else if (this.outputSocket != null && socket instanceof InputSocket &&
         socket.canEstablishConnection()) {
           var c1 = new Connection(this.outputSocket, socket);
           this.outputSocket = null;

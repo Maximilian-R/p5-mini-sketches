@@ -35,16 +35,14 @@ class InputSocket extends Socket {
   canEstablishConnection() { return this.connections.length == 0; }
 
   update() {
-    // Input Always have 1 or 0
-    for (var i = 0; i < this.connections.length; i++) {
-      this.on = this.connections[i].isOn();
+    if (this.connections[0] != null) {
+      this.on = this.connections[0].isOn();
+    } else {
+      this.on = false;
     }
   }
 
   connect(connection) {
-    if(this.connections[0] != null) {
-      //remove from other socket and delete old connection
-    }
     this.connections[0] = connection;
   }
 
@@ -81,8 +79,8 @@ class OutputSocket extends Socket {
 
 class Connection {
   constructor(input, output) {
-    this.input = input;
-    this.output = output;
+    this.input = input; // multisocket
+    this.output = output; // singlesocket
     this.input.connect(this);
     this.output.connect(this);
     this.on = false;
@@ -91,6 +89,12 @@ class Connection {
 
   isOn() { return this.on }
   update() { this.on = this.input.isOn(); }
+
+  delete() {
+    var index = this.input.connections.indexOf(this);
+    this.input.connections.splice(index, 1);
+    this.output.connections.pop();
+  }
 
   draw() {
     if (this.on) {
@@ -102,6 +106,9 @@ class Connection {
     strokeWeight(this.thickness);
     noFill();
 
+    if (this.input == null || this.output == null) {
+      return;
+    }
     if (this.input.pos.x < this.output.pos.x) {
       var middleX = (this.output.pos.x - this.input.pos.x) / 2;
       line(this.input.pos.x, this.input.pos.y, this.input.pos.x + middleX, this.input.pos.y);
