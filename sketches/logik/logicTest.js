@@ -18,15 +18,6 @@ class Frame extends PlaceAble {
   }
 }
 
-/*
-Logic Update
-  update all InputSocket
-    -> Read power from connection
-  apply logic
-    -> Set power to wanted OutputSocket
-      -> Set power to connection
-*/
-
 class Logic extends Frame {
   constructor(name, x, y, inputCount, outputCount) {
     super(x, y);
@@ -68,11 +59,6 @@ class Logic extends Frame {
   }
 
   update() {
-    for (var i = 0; i < this.inputs.length; i++) {
-      var input = this.inputs[i];
-      input.update();
-    }
-
     this.applyLogic();
   }
 
@@ -96,42 +82,42 @@ class Logic extends Frame {
       output.draw();
     }
   }
+
 }
 
 class LogicBattery extends Logic {
   constructor(x, y) {
     super("BATTERY", x, y, 0, 1);
-    this.power = 100;
+    this.power;
+    this.setPower(100);
+  }
+
+  setPower(power) {
+    this.power = power;
+    this.output[0].setPower(power);
   }
 
   applyLogic() {
-    this.output[0].setPower(this.power);
+    //this.output[0].setOn(true);
   }
 }
+
 
 class LogicToggleSocket extends Logic {
   constructor(name, x, y, inputs, outputs) {
     super(name, x, y, inputs, outputs);
     this.lastToggle = false;
     this.toggleSocket = new InputSocket(this.pos.x, this.pos.y + this.height / 2);
-    this.positionSockets();
-  }
-
-  positionSockets() {
-    super.positionSockets();
-    if (this.toggleSocket != null) {
-      this.toggleSocket.pos = createVector(this.pos.x, this.pos.y + this.height / 2);
-    }
   }
 
   update() {
-    this.toggleSocket.update();
     super.update();
+    this.toggleSocket.update();
 
-    if (this.toggleSocket.isOn() && !this.lastToggle) {
+    if (this.toggleSocket.on == true && !this.lastToggle) {
       this.lastToggle = true;
       this.toggle();
-    } else if (!this.toggleSocket.isOn()) {
+    } else if (this.toggleSocket.on == false) {
       this.lastToggle = false;
     }
   }
@@ -152,6 +138,10 @@ class LogicTimer extends LogicToggleSocket {
     this.max = 100;
   }
 
+  update() {
+    super.update();
+  }
+
   applyLogic() {
     if (this.inputs[0].isOn()) {
       this.current += 1;
@@ -161,9 +151,9 @@ class LogicTimer extends LogicToggleSocket {
     }
 
     if (this.current == this.max) {
-      this.output[0].setPower(this.inputs[0].getPower());
+      this.output[0].setOn(true);
     } else {
-      this.output[0].setPower(0);
+      this.output[0].setOn(false);
     }
   }
 
@@ -184,20 +174,30 @@ class LogicSelector extends LogicToggleSocket {
   constructor(x, y) {
     super("SELECTOR", x, y, 3, 3);
     this.selected = 0;
+    this.lastCycle = false;
+    this.cycleSocket = new InputSocket(this.pos.x, this.pos.y + this.height / 2);
+  }
+
+  update() {
+    super.update();
+  }
+
+  draw() {
+    super.draw();
   }
 
   applyLogic() {
     for (var i = 0; i < this.inputs.length; i++) {
-      if (this.inputs[i].isOn()) {
-        this.output[this.selected].setPower(0);
+      if (this.inputs[i].on == true) {
+        this.output[this.selected].setOn(false);
         this.selected = i;
       }
     }
-    this.output[this.selected].setPower(100);
+    this.output[this.selected].setOn(true);
   }
 
   toggle() {
-    this.output[this.selected].setPower(0);
+    this.output[this.selected].setOn(false);
     if (this.selected == this.output.length - 1) {
       this.selected = 0;
     } else {
@@ -213,9 +213,9 @@ class LogicOr extends Logic {
 
   applyLogic() {
     if(this.inputs[0].isOn() || this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+      this.output[0].setOn(true);
     } else {
-      this.output[0].setPower(0);
+      this.output[0].setOn(false);
     }
   }
 }
@@ -226,10 +226,10 @@ class LogicAnd extends Logic {
   }
 
   applyLogic() {
-    if(this.inputs[0].isOn() && this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+    if(this.inputs[0].on == true && this.inputs[1].on == true) {
+      this.output[0].setOn(true);
     } else {
-      this.output[0].setPower(0);
+      this.output[0].setOn(false);
     }
   }
 }
@@ -240,10 +240,10 @@ class LogicXor extends Logic {
   }
 
   applyLogic() {
-    if(this.inputs[0].isOn() != this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+    if(this.inputs[0].on != this.inputs[1].on) {
+      this.output[0].setOn(true);
     } else {
-      this.output[0].setPower(0);
+      this.output[0].setOn(false);
     }
   }
 }
@@ -254,10 +254,10 @@ class LogicNot extends Logic {
   }
 
   applyLogic() {
-    if(this.inputs[0].isOn()) {
-      this.output[0].setPower(this.inputs[0].getPower());
+    if(this.inputs[0].on) {
+      this.output[0].setOn(false);
     } else {
-      this.output[0].setPower(0);
+      this.output[0].setOn(true);
     }
   }
 }

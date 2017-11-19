@@ -1,5 +1,6 @@
 var logics = [];
 var sockets = [];
+var connections = [];
 var lights = [];
 var editor;
 
@@ -15,6 +16,7 @@ function setup(){
   logics.push(new LogicBattery(500, 500));
   logics.push(new LogicNot(700, 500));
   logics.push(new LogicSelector(500, 100));
+  logics.push(new LogicTimer(300, 100));
 
   lights.push(new Light(800, 300));
   lights.push(new Light(700, 50));
@@ -42,10 +44,12 @@ function setup(){
 function draw(){
   background(100);
 
+  for (var i = 0; i < connections.length; i++) {
+    connections[i].draw();
+  }
   for (var i = 0; i < logics.length; i++) {
-    logic = logics[i];
-    logic.update();
-    logic.draw();
+    logics[i].update();
+    logics[i].draw();
   }
   for (var i = 0; i < lights.length; i++) {
     lights[i].update();

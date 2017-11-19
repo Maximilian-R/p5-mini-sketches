@@ -1,7 +1,7 @@
 class Light extends PlaceAble {
   constructor(x, y) {
     super(x, y);
-    this.color = color(255, 243, 79);
+    this.color = color(random(255), random(255), random(255));
     this.on = false;
     this.width = 40;
     this.height = 40;

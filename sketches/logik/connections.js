@@ -4,25 +4,27 @@ class Socket extends PlaceAble {
     this.color = color(50);
     this.width = 10;
     this.height = 10;
-    this.on = false;
+    this.power = 0;
     this.connections = [];
     sockets.push(this);
   }
 
-  isOn() { return this.on;}
-  canEstablishConnection() { return null; }
+  /* Check if any power is applied */
+  isOn() { return this.power != 0; }
+  /* Check if a connection can be added */
+  canEstablishConnection() { return true; }
+  /* Add a connection */
   connect(connection) {}
 
   update() {}
 
   draw() {
     noStroke();
-    if(!this.on) {
+    if(!this.isOn()) {
       fill(this.color);
     } else {
       fill(45, 250, 142);
     }
-
     rect(this.pos.x, this.pos.y, this.width, this.height);
   }
 }
@@ -34,22 +36,17 @@ class InputSocket extends Socket {
 
   canEstablishConnection() { return this.connections.length == 0; }
 
-  update() {
-    if (this.connections[0] != null) {
-      this.on = this.connections[0].isOn();
-    } else {
-      this.on = false;
-    }
-  }
+  getPower() { return this.power; }
 
   connect(connection) {
     this.connections[0] = connection;
   }
 
-  draw() {
-    super.draw();
+  update() {
+    super.update();
+    // Read value from connection
     if (this.connections[0] != null) {
-      this.connections[0].draw();
+      this.power = this.connections[0].getPower();
     }
   }
 }
@@ -59,36 +56,30 @@ class OutputSocket extends Socket {
     super(x, y);
   }
 
-  setOn(bool) { this.on = bool; }
-  canEstablishConnection() { return true; }
+  setPower(power) {
+    this.power = power;
+    for (var i = 0; i < this.connections.length; i++) {
+      this.connections[i].setPower(power);
+    }
+  }
+
   connect(connection) { this.connections.push(connection); }
-
-  update() {
-    for (var i = 0; i < this.connections.length; i++) {
-      this.connections[i].update();
-    }
-  }
-
-  draw() {
-    super.draw();
-    for (var i = 0; i < this.connections.length; i++) {
-      this.connections[i].draw();
-    }
-  }
 }
 
 class Connection {
   constructor(input, output) {
-    this.input = input; // multisocket
-    this.output = output; // singlesocket
+    this.input = input; // MultiSocket
+    this.output = output; // SingleSocket
     this.input.connect(this);
     this.output.connect(this);
-    this.on = false;
+    this.power = 0;
     this.thickness = 8;
+    connections.push(this);
   }
 
-  isOn() { return this.on }
-  update() { this.on = this.input.isOn(); }
+  getPower() { return this.power; }
+  setPower(power) { this.power = power; }
+  isOn() { return this.power != 0; }
 
   delete() {
     var index = this.input.connections.indexOf(this);
@@ -97,7 +88,7 @@ class Connection {
   }
 
   draw() {
-    if (this.on) {
+    if (this.isOn()) {
       stroke(45, 250, 142);
     } else {
       stroke(0, 100, 0);
@@ -105,10 +96,6 @@ class Connection {
     strokeCap(PROJECT);
     strokeWeight(this.thickness);
     noFill();
-
-    if (this.input == null || this.output == null) {
-      return;
-    }
 
     // line(this.input.pos.x, this.input.pos.y, this.output.pos.x, this.output.pos.y);
     // return;
