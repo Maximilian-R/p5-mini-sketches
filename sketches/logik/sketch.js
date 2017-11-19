@@ -1,3 +1,28 @@
+/*
+
+TODO: Logic Counter...
+this need a togglesocket for input and reset.
+Also it should be able to recive a negative signal to countdown.
+
+Logic Toggle...
+same here, but only togglesocket as input.
+
+
+A normal socket is read by the logic to see what the power is.
+
+
+If a togglescoket is read and has power, toggle something.
+When a togglesocket is read, it sets a attribte to true.
+This attribute is set to false when the socket is turned off.
+
+insetad of reading the power, read if you should toggle.
+
+A toggle socket should give power to the logic and toggle somthing,
+then its should not be able to toggle until it has been reseted ( turned off)
+
+*/
+
+
 var logics = [];
 var sockets = [];
 var connections = [];

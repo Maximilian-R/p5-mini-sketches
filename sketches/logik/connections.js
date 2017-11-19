@@ -47,6 +47,34 @@ class InputSocket extends Socket {
     // Read value from connection
     if (this.connections[0] != null) {
       this.power = this.connections[0].getPower();
+    } else {
+      this.power = 0;
+    }
+  }
+}
+
+class ToggleSocket extends InputSocket {
+  constructor(x, y) {
+    super(x, y);
+    this.toggle = false;
+    this.needReset = false;
+  }
+
+  test() {
+    if(this.toggle && !this.needReset) {
+      this.toggle = false;
+      this.needReset = true;
+      return true;
+    }
+    return false;
+  }
+
+  update() {
+    super.update();
+    if (this.power == 0) {
+      this.needReset = false;
+    } else {
+      this.toggle = true;
     }
   }
 }
@@ -85,6 +113,7 @@ class Connection {
     var index = this.input.connections.indexOf(this);
     this.input.connections.splice(index, 1);
     this.output.connections.pop();
+    connections.splice(connections.indexOf(this), 1);
   }
 
   draw() {

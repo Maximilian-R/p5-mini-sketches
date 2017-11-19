@@ -109,12 +109,10 @@ class LogicBattery extends Logic {
   }
 }
 
-class LogicToggleSocket extends Logic {
-  constructor(name, x, y, inputs, outputs) {
-    super(name, x, y, inputs, outputs);
-    this.lastToggle = false;
-    this.toggleSocket = new InputSocket(this.pos.x, this.pos.y + this.height / 2);
-    this.positionSockets();
+class LogicWithBottomToggler extends Logic {
+  constructor(name, x, y, inputCount, outputCount) {
+    super(name, x, y, inputCount, outputCount);
+    this.toggleSocket = new ToggleSocket(this.pos.x, this.pos.y + this.height / 2);
   }
 
   positionSockets() {
@@ -125,27 +123,17 @@ class LogicToggleSocket extends Logic {
   }
 
   update() {
-    this.toggleSocket.update();
-    super.update();
-
-    if (this.toggleSocket.isOn() && !this.lastToggle) {
-      this.lastToggle = true;
-      this.toggle();
-    } else if (!this.toggleSocket.isOn()) {
-      this.lastToggle = false;
-    }
+      super.update();
+      this.toggleSocket.update();
   }
 
   draw() {
     super.draw();
     this.toggleSocket.draw();
   }
-
-  toggle() {
-  }
 }
 
-class LogicTimer extends LogicToggleSocket {
+class LogicTimer extends LogicWithBottomToggler {
   constructor(x, y) {
     super("TIMER", x, y, 1, 1);
     this.current = 0;
@@ -153,6 +141,10 @@ class LogicTimer extends LogicToggleSocket {
   }
 
   applyLogic() {
+    if(this.toggleSocket.test()) {
+      this.current = 0;
+    }
+
     if (this.inputs[0].isOn()) {
       this.current += 1;
       if (this.current >= this.max) {
@@ -167,10 +159,6 @@ class LogicTimer extends LogicToggleSocket {
     }
   }
 
-  toggle() {
-    this.current = 0;
-  }
-
   draw() {
     super.draw();
     textAlign(CENTER);
@@ -180,13 +168,22 @@ class LogicTimer extends LogicToggleSocket {
   }
 }
 
-class LogicSelector extends LogicToggleSocket {
+class LogicSelector extends LogicWithBottomToggler {
   constructor(x, y) {
     super("SELECTOR", x, y, 3, 3);
     this.selected = 0;
   }
 
   applyLogic() {
+    if(this.toggleSocket.test()) {
+      this.output[this.selected].setPower(0);
+      if (this.selected == this.output.length - 1) {
+        this.selected = 0;
+      } else {
+        this.selected += 1;
+      }
+    }
+
     for (var i = 0; i < this.inputs.length; i++) {
       if (this.inputs[i].isOn()) {
         this.output[this.selected].setPower(0);
@@ -194,15 +191,6 @@ class LogicSelector extends LogicToggleSocket {
       }
     }
     this.output[this.selected].setPower(100);
-  }
-
-  toggle() {
-    this.output[this.selected].setPower(0);
-    if (this.selected == this.output.length - 1) {
-      this.selected = 0;
-    } else {
-      this.selected += 1;
-    }
   }
 }
 
