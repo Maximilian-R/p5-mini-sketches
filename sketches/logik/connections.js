@@ -53,6 +53,11 @@ class InputSocket extends Socket {
   }
 }
 
+/*
+Togglesocket can be used as a normal socket.
+Ask for it to toggle when calling apply logic and execute something
+*/
+
 class ToggleSocket extends InputSocket {
   constructor(x, y) {
     super(x, y);
