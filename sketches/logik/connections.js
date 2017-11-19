@@ -109,6 +109,10 @@ class Connection {
     if (this.input == null || this.output == null) {
       return;
     }
+
+    // line(this.input.pos.x, this.input.pos.y, this.output.pos.x, this.output.pos.y);
+    // return;
+
     if (this.input.pos.x < this.output.pos.x) {
       var middleX = (this.output.pos.x - this.input.pos.x) / 2;
       line(this.input.pos.x, this.input.pos.y, this.input.pos.x + middleX, this.input.pos.y);
@@ -122,9 +126,5 @@ class Connection {
       line(this.output.pos.x - 10, this.input.pos.y + middleY, this.output.pos.x - 10, this.output.pos.y);
       line(this.output.pos.x - 10, this.output.pos.y, this.output.pos.x, this.output.pos.y);
     }
-
-
-// straight line
-//    line(this.input.pos.x, this.input.pos.y, this.output.pos.x, this.output.pos.y);
   }
 }

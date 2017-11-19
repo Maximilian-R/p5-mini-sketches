@@ -2,6 +2,14 @@ function mouseClicked() {
   editor.mouseClicked();
 }
 
+function mousePressed() {
+  editor.mousePressed();
+}
+
+function mouseReleased() {
+  editor.mouseReleased();
+}
+
 function keyPressed() {
   editor.keyPressed();
 }
@@ -11,6 +19,7 @@ class Editor {
     this.mouse;
     this.outputSocket;
     this.hoverSocket;
+    this.dragLogic;
   }
 
   keyPressed() {
@@ -20,13 +29,27 @@ class Editor {
     }
   }
 
-  mouseClicked() {
+  mousePressed() {
+    //Check if logic was clicked
+    for (var i = 0; i < logics.length; i++) {
+      var logic = logics[i];
+      //this shoudl really use rect detection
+      if (logic.pos.dist(this.mouse) < 10) {
+        this.dragLogic = logic;
+      }
+    }
+  }
 
+  mouseReleased() {
+    this.dragLogic = null;
+  }
+
+  mouseClicked() {
     //Check if socket was clicked
     for (var i = 0; i < sockets.length; i++) {
       var socket = sockets[i];
 
-      if (socket.pos.dist(this.mouse) < socket.width) {
+      if (socket.pos.dist(this.mouse) < socket.width / 2) {
         // Select from socket or create connection
 
         // select output
@@ -62,6 +85,12 @@ class Editor {
         break;
       }
     }
+
+    if (this.dragLogic != null) {
+      this.dragLogic.pos = this.mouse;
+      this.dragLogic.positionSockets();
+    }
+
   }
 
   draw() {

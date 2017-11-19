@@ -31,21 +31,30 @@ class Logic extends Frame {
     var pxPerSocket = sockets == 1 ? 60 : 30;
     this.height = max(60, sockets * pxPerSocket); //min 60 px
 
-    var pxPerInput = this.height / inputCount;
-    var pxPerOutput = this.height / outputCount;
-
-    // om 1= 60px, 2 = 30px var. Placer i mitten av dessa
-    // om 3, 90px, 30 30 30. Placera 15, 45, 75
     for (var i = 0; i < inputCount; i++) {
-      var x = this.pos.x - this.width / 2;
-      var y = (this.pos.y - this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
-      this.inputs.push(new InputSocket(x, y));
+      this.inputs.push(new InputSocket(0, 0));
+    }
+    for (var i = 0; i < outputCount; i++) {
+      this.output.push(new OutputSocket(0, 0));
     }
 
-    for (var i = 0; i < outputCount; i++) {
+    this.positionSockets();
+  }
+
+  positionSockets() {
+    var pxPerInput = this.height / this.inputs.length;
+    var pxPerOutput = this.height / this.output.length;
+
+    for (var i = 0; i < this.inputs.length; i++) {
+      var x = this.pos.x - this.width / 2;
+      var y = (this.pos.y - this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
+      this.inputs[i].pos = createVector(x, y);
+    }
+
+    for (var i = 0; i < this.output.length; i++) {
       var x = this.pos.x + this.width / 2;
       var y = (this.pos.y - this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
-      this.output.push(new OutputSocket(x, y));
+      this.output[i].pos = createVector(x, y);
     }
   }
 
