@@ -42,6 +42,7 @@ function setup(){
   logics.push(new LogicNot(700, 500));
   logics.push(new LogicSelector(500, 100));
   logics.push(new LogicTimer(300, 100));
+  logics.push(new LogicCounter(100, 100));
 
   lights.push(new Light(800, 300));
   lights.push(new Light(700, 50));

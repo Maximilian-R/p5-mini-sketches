@@ -1,3 +1,10 @@
+/* Connect anything by
+just extending a baseclass which has a socket. Then
+override update method and define how your class should
+behave to power.
+*/
+
+
 class Light extends PlaceAble {
   constructor(x, y) {
     super(x, y);

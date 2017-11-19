@@ -79,7 +79,9 @@ class ToggleSocket extends InputSocket {
     if (this.power == 0) {
       this.needReset = false;
     } else {
-      this.toggle = true;
+      if(!this.needReset) {
+        this.toggle = true;
+      }
     }
   }
 }

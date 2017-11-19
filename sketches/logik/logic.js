@@ -28,7 +28,7 @@ Logic Update
 */
 
 class Logic extends Frame {
-  constructor(name, x, y, inputCount, outputCount) {
+  constructor(name, x, y, inputCount, outputCount, inputClass = InputSocket) {
     super(x, y);
     this.name = name;
     this.icon;
@@ -41,7 +41,7 @@ class Logic extends Frame {
     this.height = max(60, sockets * pxPerSocket); //min 60 px
 
     for (var i = 0; i < inputCount; i++) {
-      this.inputs.push(new InputSocket(0, 0));
+      this.inputs.push(new inputClass(0, 0));
     }
     for (var i = 0; i < outputCount; i++) {
       this.output.push(new OutputSocket(0, 0));
@@ -109,9 +109,14 @@ class LogicBattery extends Logic {
   }
 }
 
+
+/*
+  Main logic should have a bottomSocket, where a toggleSocket can be applied.
+  ToggleSockets sohuld be able to use as input aswell.
+*/
 class LogicWithBottomToggler extends Logic {
-  constructor(name, x, y, inputCount, outputCount) {
-    super(name, x, y, inputCount, outputCount);
+  constructor(name, x, y, inputCount, outputCount, inputClass) {
+    super(name, x, y, inputCount, outputCount, inputClass);
     this.toggleSocket = new ToggleSocket(this.pos.x, this.pos.y + this.height / 2);
   }
 
@@ -168,6 +173,41 @@ class LogicTimer extends LogicWithBottomToggler {
   }
 }
 
+class LogicCounter extends LogicWithBottomToggler {
+  constructor(x, y) {
+    super("TIMER", x, y, 1, 1, ToggleSocket);
+    this.current = 0;
+    this.max = 10;
+  }
+
+  applyLogic() {
+    if(this.toggleSocket.test()) {
+      this.current = 0;
+    }
+
+    if(this.inputs[0].test()) {
+      this.current += 1;
+      if (this.current >= this.max) {
+        this.current = this.max
+      }
+    }
+
+    if (this.current == this.max) {
+      this.output[0].setPower(this.inputs[0].getPower());
+    } else {
+      this.output[0].setPower(0);
+    }
+  }
+
+  draw() {
+    super.draw();
+    textAlign(CENTER);
+    fill(255);
+    noStroke();
+    text(this.current, this.pos.x, this.pos.y);
+  }
+}
+
 class LogicSelector extends LogicWithBottomToggler {
   constructor(x, y) {
     super("SELECTOR", x, y, 3, 3);
@@ -175,6 +215,7 @@ class LogicSelector extends LogicWithBottomToggler {
   }
 
   applyLogic() {
+
     if(this.toggleSocket.test()) {
       this.output[this.selected].setPower(0);
       if (this.selected == this.output.length - 1) {
