@@ -283,8 +283,8 @@ class LogicNot extends Logic {
   }
 
   applyLogic() {
-    if(this.inputs[0].isOn()) {
-      this.output[0].setPower(this.inputs[0].getPower());
+    if(this.inputs[0].isOn() == false) {
+      this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
     }
