@@ -111,7 +111,7 @@ class LogicBattery extends Logic {
 
 
 /*
-  Main logic should have a bottomSocket, where a toggleSocket can be applied.
+  TODO: Main logic should have a bottomSocket, where a toggleSocket can be applied.
   ToggleSockets sohuld be able to use as input aswell.
 */
 class LogicWithBottomToggler extends Logic {
