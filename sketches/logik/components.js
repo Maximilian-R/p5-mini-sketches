@@ -5,7 +5,7 @@ behave to power.
 */
 
 
-class Light extends PlaceAble {
+class Light extends DragAndDropAble {
   constructor(x, y) {
     super(x, y);
     this.color = color(random(255), random(255), random(255));
@@ -34,5 +34,10 @@ class Light extends PlaceAble {
     rect(this.pos.x, this.pos.y, this.width, this.height);
 
     this.input.draw();
+  }
+
+  drag() {
+    this.input.pos.x = this.pos.x - this.width / 2
+    this.input.pos.y = this.pos.y;
   }
 }

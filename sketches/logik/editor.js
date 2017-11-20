@@ -18,7 +18,8 @@ class Editor {
   constructor() {
     this.mouse;
     this.outputSocket;
-    this.dragLogic;
+    this.dragNode;
+    this.hoverNode;
   }
 
   keyPressed() {
@@ -29,18 +30,17 @@ class Editor {
   }
 
   mousePressed() {
-    //Check if logic was clicked
-    for (var i = 0; i < logics.length; i++) {
-      var logic = logics[i];
-      //this shoudl really use rect detection
-      if (logic.pos.dist(this.mouse) < 20) {
-        this.dragLogic = logic;
-      }
+    if(this.hoverNode != null) {
+      this.dragNode = this.hoverNode;
+      this.dragNode.startDrag();
     }
   }
 
   mouseReleased() {
-    this.dragLogic = null;
+    if (this.dragNode != null) {
+      this.dragNode.drop();
+      this.dragNode = null;
+    }
   }
 
   mouseClicked() {
@@ -78,9 +78,28 @@ class Editor {
   update() {
     this.mouse = createVector(mouseX, mouseY);
 
-    if (this.dragLogic != null) {
-      this.dragLogic.pos = this.mouse;
-      this.dragLogic.positionSockets();
+    // Check what mouse is hovering on, start or end hover
+    var newHover = null;
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      //TODO: Rect detection
+      if (node.pos.dist(this.mouse) < 20) {
+        newHover = node;
+        newHover.startHover();
+        break;
+      }
+    }
+    if(this.hoverNode == null) {
+      this.hoverNode = newHover;
+    } else if(newHover != this.hoverNode) {
+      this.hoverNode.endHover();
+      this.hoverNode = newHover;
+    }
+
+
+    if (this.dragNode != null) {
+      this.dragNode.pos = this.mouse;
+      this.dragNode.drag();
     }
 
   }
@@ -101,18 +120,6 @@ class Editor {
           stroke(0, 200, 0);
         }
         rect(socket.pos.x, socket.pos.y, socket.width, socket.height);
-        break;
-      }
-    }
-
-    // Check if hovering logic and draw
-    for (var i = 0; i < logics.length; i++) {
-      var logic = logics[i];
-      if (logic.pos.dist(this.mouse) < 20) {
-        stroke(color(112, 2, 124));
-        strokeWeight(logic.frameWidth);
-        noFill();
-        rect(logic.pos.x, logic.pos.y, logic.width, logic.height);
         break;
       }
     }

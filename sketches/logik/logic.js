@@ -1,9 +1,12 @@
-class Frame extends PlaceAble {
-  constructor(x, y) {
+class Frame extends DragAndDropAble {
+  constructor(name, x, y) {
     super(x, y);
+    this.name = name;
     this.icon;
     this.mainColor = color(50);
-    this.frameColor = color(250)
+    this.frameColor = color(250);
+    this.highLightColor = color(112, 2, 124);
+    this.frameUseColor = this.frameColor;
     this.width = 60;
     this.height = 60;
     this.frameWidth = 6;
@@ -11,11 +14,22 @@ class Frame extends PlaceAble {
 
   draw() {
     rectMode(CENTER);
-    stroke(this.frameColor);
+    stroke(this.frameUseColor);
     strokeWeight(this.frameWidth);
     fill(this.mainColor);
     rect(this.pos.x, this.pos.y, this.width, this.height);
+
+    // text
+    noStroke();
+    fill(this.frameColor);
+    textAlign(CENTER);
+    text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
   }
+
+  startDrag() { this.frameUseColor = this.highLightColor; }
+  startHover() { this.frameUseColor = this.highLightColor; }
+  endHover() { this.frameUseColor = this.frameColor; }
+  drop() { this.frameUseColor = this.frameColor; }
 }
 
 /*
@@ -29,8 +43,7 @@ Logic Update
 
 class Logic extends Frame {
   constructor(name, x, y, inputCount, outputCount, inputClass = InputSocket) {
-    super(x, y);
-    this.name = name;
+    super(name, x, y);
     this.icon;
 
     this.inputs = [];
@@ -47,10 +60,10 @@ class Logic extends Frame {
       this.output.push(new OutputSocket(0, 0));
     }
 
-    this.positionSockets();
+    this.drag();
   }
 
-  positionSockets() {
+  drag() {
     var pxPerInput = this.height / this.inputs.length;
     var pxPerOutput = this.height / this.output.length;
 
@@ -80,12 +93,6 @@ class Logic extends Frame {
 
   draw() {
     super.draw();
-
-    // text
-    noStroke();
-    fill(this.frameColor);
-    textAlign(CENTER);
-    text(this.name, this.pos.x, this.pos.y + this.height * 0.80);
 
     for (var i = 0; i < this.inputs.length; i++) {
       var input = this.inputs[i];
@@ -120,8 +127,8 @@ class LogicWithBottomToggler extends Logic {
     this.toggleSocket = new ToggleSocket(this.pos.x, this.pos.y + this.height / 2);
   }
 
-  positionSockets() {
-    super.positionSockets();
+  drag() {
+    super.drag();
     if (this.toggleSocket != null) {
       this.toggleSocket.pos = createVector(this.pos.x, this.pos.y + this.height / 2);
     }
