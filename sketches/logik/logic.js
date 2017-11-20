@@ -158,7 +158,7 @@ class LogicTimer extends LogicWithBottomToggler {
     }
 
     if (this.current == this.max) {
-      this.output[0].setPower(this.inputs[0].getPower());
+      this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
     }
@@ -193,7 +193,7 @@ class LogicCounter extends LogicWithBottomToggler {
     }
 
     if (this.current == this.max) {
-      this.output[0].setPower(this.inputs[0].getPower());
+      this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
     }
