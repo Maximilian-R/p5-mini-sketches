@@ -175,7 +175,7 @@ class LogicTimer extends LogicWithBottomToggler {
 
 class LogicCounter extends LogicWithBottomToggler {
   constructor(x, y) {
-    super("TIMER", x, y, 1, 1, ToggleSocket);
+    super("COUNTER", x, y, 1, 1, ToggleSocket);
     this.current = 0;
     this.max = 10;
   }
