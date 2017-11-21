@@ -69,11 +69,11 @@ class WorldNode {
   remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
 
 
-/* Temporary */ 
+/* Temporary */
   startDrag() {}
   drag() {}
   drop() {}
-  startHover() {}
+  startHover(editorHoldingNode) {}
   endHover() {}
 }
 

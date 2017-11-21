@@ -2,6 +2,7 @@ class Socket extends WorldNode {
   constructor(x, y) {
     super(x, y);
     this.color = color(50);
+    this.strokeColor;
     this.width = 10;
     this.height = 10;
     this.power = 0;
@@ -32,7 +33,13 @@ class Socket extends WorldNode {
   update() {}
 
   draw() {
-    noStroke();
+    if (this.strokeColor) {
+      strokeWeight(2);
+      stroke(this.strokeColor)
+    } else {
+      noStroke();
+    }
+
     if(!this.isOn()) {
       fill(this.color);
     } else {
@@ -55,6 +62,17 @@ class InputSocket extends Socket {
   connect(connection) {
     this.connections[0] = connection;
   }
+
+  startHover(editorHoldingNode) {
+    if((this.hasConnection() && editorHoldingNode instanceof Connection)
+    || (!editorHoldingNode && !this.hasConnection()) ) {
+      this.strokeColor = color(230, 50, 0);
+    } else {
+      this.strokeColor = color(0, 230, 50);
+    }
+  }
+
+  endHover() { this.strokeColor = null; }
 
   update() {
     super.update();
@@ -113,6 +131,16 @@ class OutputSocket extends Socket {
   }
 
   connect(connection) { this.connections.push(connection); }
+
+  startHover(editorHoldingNode) {
+    if(editorHoldingNode instanceof Connection) {
+      this.strokeColor = color(230, 50, 0);
+    } else {
+      this.strokeColor = color(0, 230, 50);
+    }
+  }
+
+  endHover() { this.strokeColor = null; }
 }
 
 class Connection extends WorldNode {
