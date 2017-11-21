@@ -48,6 +48,7 @@ class InputSocket extends Socket {
   }
 
   canEstablishConnection() { return this.connections.length == 0; }
+  hasConnection() { return this.connections.length > 0; }
 
   getPower() { return this.power; }
 
@@ -115,14 +116,25 @@ class OutputSocket extends Socket {
 }
 
 class Connection extends WorldNode {
-  constructor(input, output) {
+  constructor(input, output = null) {
     super(0, 0);
-    this.input = input; // MultiSocket
-    this.output = output; // SingleSocket
-    this.input.connect(this);
-    this.output.connect(this);
+    this.input; // MultiSocket
+    this.output; // SingleSocket
+    this.setInput(input);
+    if (this.output) this.setOutput(output);
     this.power = 0;
     this.thickness = 8;
+    this.pos = this.input.pos.copy(); // Used for end of connection when no output exists
+  }
+
+  setInput(outputSocket) {
+    this.input = outputSocket;
+    this.input.connect(this);
+  }
+
+  setOutput(inputSocket) {
+    this.output = inputSocket;
+    this.output.connect(this);
   }
 
   canSelect() { return false; }
@@ -130,7 +142,7 @@ class Connection extends WorldNode {
   remove() {
     var index = this.input.connections.indexOf(this);
     this.input.connections.splice(index, 1);
-    this.output.connections.pop();
+    if(this.output) this.output.connections.pop();
     connections.splice(connections.indexOf(this), 1);
     super.remove();
   }
@@ -149,21 +161,23 @@ class Connection extends WorldNode {
     strokeWeight(this.thickness);
     noFill();
 
-    // line(this.input.pos.x, this.input.pos.y, this.output.pos.x, this.output.pos.y);
+    // line(this.input.pos.x, this.input.pos.y, endPoint.x, endPoint.y);
     // return;
 
-    if (this.input.pos.x < this.output.pos.x) {
-      var middleX = (this.output.pos.x - this.input.pos.x) / 2;
+    var endPoint = this.output ? this.output.pos : this.pos;
+
+    if (this.input.pos.x < endPoint.x) {
+      var middleX = (endPoint.x - this.input.pos.x) / 2;
       line(this.input.pos.x, this.input.pos.y, this.input.pos.x + middleX, this.input.pos.y);
-      line(this.input.pos.x + middleX, this.input.pos.y, this.output.pos.x - middleX, this.output.pos.y);
-      line(this.output.pos.x, this.output.pos.y, this.output.pos.x - middleX, this.output.pos.y);
+      line(this.input.pos.x + middleX, this.input.pos.y, endPoint.x - middleX, endPoint.y);
+      line(endPoint.x, endPoint.y, endPoint.x - middleX, endPoint.y);
     } else {
       line(this.input.pos.x, this.input.pos.y, this.input.pos.x + 10, this.input.pos.y);
-      var middleY = (this.output.pos.y - this.input.pos.y) / 2;
+      var middleY = (endPoint.y - this.input.pos.y) / 2;
       line(this.input.pos.x + 10, this.input.pos.y, this.input.pos.x + 10, this.input.pos.y + middleY);
-      line(this.input.pos.x + 10, this.input.pos.y + middleY, this.output.pos.x - 10, this.input.pos.y + middleY);
-      line(this.output.pos.x - 10, this.input.pos.y + middleY, this.output.pos.x - 10, this.output.pos.y);
-      line(this.output.pos.x - 10, this.output.pos.y, this.output.pos.x, this.output.pos.y);
+      line(this.input.pos.x + 10, this.input.pos.y + middleY, endPoint.x - 10, this.input.pos.y + middleY);
+      line(endPoint.x - 10, this.input.pos.y + middleY, endPoint.x - 10, endPoint.y);
+      line(endPoint.x - 10, endPoint.y, endPoint.x, endPoint.y);
     }
   }
 }

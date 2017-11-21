@@ -67,6 +67,14 @@ class WorldNode {
   draw() {}
   update() {}
   remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
+
+
+/* Temporary */ 
+  startDrag() {}
+  drag() {}
+  drop() {}
+  startHover() {}
+  endHover() {}
 }
 
 var nodes = [];
@@ -80,9 +88,5 @@ class DragAndDropAble extends WorldNode {
     nodes.push(this);
   }
 
-  startDrag() {}
-  drag() {}
-  drop() {}
-  startHover() {}
-  endHover() {}
+
 }
