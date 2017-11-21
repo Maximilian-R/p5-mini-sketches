@@ -7,7 +7,6 @@ class Socket extends WorldNode {
     this.height = 10;
     this.power = 0;
     this.connections = [];
-    sockets.push(this);
   }
 
   isColliding(point) {
@@ -16,7 +15,6 @@ class Socket extends WorldNode {
   }
 
   remove() {
-    sockets.splice(sockets.indexOf(this), 1);
     for (var i = 0; i < this.connections.length; i++) {
       this.connections[i].remove();
     }

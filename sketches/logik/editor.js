@@ -29,7 +29,7 @@ class Editor {
       this.outputSocket = null;
       if(this.clickedNode != null) {
         this.clickedNode.remove();
-        this.clickeNode = null;
+        this.clickedNode = null;
       }
     }
   }

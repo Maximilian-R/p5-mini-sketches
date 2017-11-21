@@ -1,5 +1,4 @@
 var logics = [];
-var sockets = [];
 var connections = [];
 var lights = [];
 var editor;
@@ -87,6 +86,4 @@ class DragAndDropAble extends WorldNode {
     super(x, y);
     nodes.push(this);
   }
-
-
 }

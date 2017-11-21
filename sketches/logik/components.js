@@ -48,6 +48,7 @@ class Light extends DragAndDropAble {
 
   remove() {
     this.input.remove();
+    this.input = null;
     super.remove();
   }
 }
