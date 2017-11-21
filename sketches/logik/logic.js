@@ -42,12 +42,13 @@ Logic Update
 */
 
 class Logic extends Frame {
-  constructor(name, x, y, inputCount, outputCount, inputClass = InputSocket) {
+  constructor(name, x, y, inputCount, outputCount, bottomSocket = false, inputClass = InputSocket) {
     super(name, x, y);
     this.icon;
 
     this.inputs = [];
     this.output = [];
+    this.bottomSocket = bottomSocket ? new ToggleSocket(this.pos.x, this.pos.y + this.height / 2) : null;
 
     var sockets = max(inputCount, outputCount);
     var pxPerSocket = sockets == 1 ? 60 : 30;
@@ -78,12 +79,20 @@ class Logic extends Frame {
       var y = (this.pos.y - this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
       this.output[i].pos = createVector(x, y);
     }
+
+    if (this.bottomSocket != null) {
+      this.bottomSocket.pos = createVector(this.pos.x, this.pos.y + this.height / 2);
+    }
   }
 
   update() {
     for (var i = 0; i < this.inputs.length; i++) {
       var input = this.inputs[i];
       input.update();
+    }
+
+    if (this.bottomSocket != null) {
+      this.bottomSocket.update();
     }
 
     this.applyLogic();
@@ -102,6 +111,10 @@ class Logic extends Frame {
       var output = this.output[i];
       output.draw();
     }
+
+    if (this.bottomSocket != null) {
+      this.bottomSocket.draw();
+    }
   }
 }
 
@@ -116,44 +129,15 @@ class LogicBattery extends Logic {
   }
 }
 
-
-/*
-  TODO: Main logic should have a bottomSocket, where a toggleSocket can be applied.
-  ToggleSockets sohuld be able to use as input aswell.
-*/
-class LogicWithBottomToggler extends Logic {
-  constructor(name, x, y, inputCount, outputCount, inputClass) {
-    super(name, x, y, inputCount, outputCount, inputClass);
-    this.toggleSocket = new ToggleSocket(this.pos.x, this.pos.y + this.height / 2);
-  }
-
-  drag() {
-    super.drag();
-    if (this.toggleSocket != null) {
-      this.toggleSocket.pos = createVector(this.pos.x, this.pos.y + this.height / 2);
-    }
-  }
-
-  update() {
-      super.update();
-      this.toggleSocket.update();
-  }
-
-  draw() {
-    super.draw();
-    this.toggleSocket.draw();
-  }
-}
-
-class LogicTimer extends LogicWithBottomToggler {
+class LogicTimer extends Logic {
   constructor(x, y) {
-    super("TIMER", x, y, 1, 1);
+    super("TIMER", x, y, 1, 1, true);
     this.current = 0;
     this.max = 100;
   }
 
   applyLogic() {
-    if(this.toggleSocket.test()) {
+    if(this.bottomSocket.test()) {
       this.current = 0;
     }
 
@@ -180,15 +164,15 @@ class LogicTimer extends LogicWithBottomToggler {
   }
 }
 
-class LogicCounter extends LogicWithBottomToggler {
+class LogicCounter extends Logic {
   constructor(x, y) {
-    super("COUNTER", x, y, 1, 1, ToggleSocket);
+    super("COUNTER", x, y, 1, 1, true, ToggleSocket);
     this.current = 0;
     this.max = 10;
   }
 
   applyLogic() {
-    if(this.toggleSocket.test()) {
+    if(this.bottomSocket.test()) {
       this.current = 0;
     }
 
@@ -215,15 +199,15 @@ class LogicCounter extends LogicWithBottomToggler {
   }
 }
 
-class LogicSelector extends LogicWithBottomToggler {
+class LogicSelector extends Logic {
   constructor(x, y) {
-    super("SELECTOR", x, y, 3, 3);
+    super("SELECTOR", x, y, 3, 3, true);
     this.selected = 0;
   }
 
   applyLogic() {
 
-    if(this.toggleSocket.test()) {
+    if(this.bottomSocket.test()) {
       this.output[this.selected].setPower(0);
       if (this.selected == this.output.length - 1) {
         this.selected = 0;
