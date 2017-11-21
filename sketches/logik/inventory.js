@@ -19,7 +19,8 @@ class Inventory {
       new InventoryItem(createVector(x, y), LogicTimer, "TIMER"),
       new InventoryItem(createVector(x, y), LogicCounter, "COUNTER"),
       new InventoryItem(createVector(x, y), LogicSelector, "SELECTOR"),
-      new InventoryItem(createVector(x, y), LogicBattery, "BATTERY")
+      new InventoryItem(createVector(x, y), LogicBattery, "BATTERY"),
+      new InventoryItem(createVector(x, y), LogicToggle, "TOGGLE")
     ];
 
     this.drag();

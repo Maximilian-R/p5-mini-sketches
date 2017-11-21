@@ -281,3 +281,17 @@ class LogicNot extends Logic {
     }
   }
 }
+
+class LogicToggle extends Logic {
+  constructor(x, y) {
+    super("Toggle", x, y, 1, 1, false, ToggleSocket);
+    this.toggled = false;
+  }
+
+  applyLogic() {
+    if(this.inputs[0].test()) {
+      this.toggled = !this.toggled;
+      this.toggled ? this.output[0].setPower(100) : this.output[0].setPower(0);
+    }
+  }
+}
