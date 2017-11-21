@@ -81,12 +81,13 @@ class InventoryItem extends DragAndDropAble {
     text(this.text, this.pos.x, this.pos.y);
   }
 
-  startDrag() { this.frameColor = color(112, 2, 124); }
-  startHover() { this.frameColor = color(112, 2, 124); }
-  endHover() { this.frameColor = color(255); }
+  startHover() { this.highlight() }
+  endHover() { this.noHighlight() }
+  highlight() { this.frameColor = color(112, 2, 124); }
+  noHighlight() { this.frameColor = color(255); }
 
   drop() {
-    logics.push(new this.logicClass(mouseX, mouseY));
+    new this.logicClass(mouseX, mouseY);
     this.pos = this.initPos;
     this.frameColor = color(255);
   }

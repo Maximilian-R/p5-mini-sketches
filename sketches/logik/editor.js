@@ -20,12 +20,17 @@ class Editor {
     this.outputSocket;
     this.dragNode;
     this.hoverNode;
+    this.clickedNode;
   }
 
   keyPressed() {
     if (keyCode == 8) {
       // cancel palcement of connection
       this.outputSocket = null;
+      if(this.clickedNode != null) {
+        this.clickedNode.remove();
+        this.clickeNode = null;
+      }
     }
   }
 
@@ -44,35 +49,49 @@ class Editor {
   }
 
   mouseClicked() {
-    //Check if socket was clicked
-    for (var i = 0; i < sockets.length; i++) {
-      var socket = sockets[i];
 
-      if (socket.pos.dist(this.mouse) < socket.width) {
-        // Select from socket or create connection
-
-        // select output
-        if (this.outputSocket == null && socket instanceof OutputSocket) {
-          this.outputSocket = socket;
-        }
-
-        //delete connection, create new
-        else if (this.outputSocket == null && socket instanceof InputSocket
-        && socket.connections[0] != null) {
-          this.outputSocket = socket.connections[0].input;
-          socket.connections[0].delete();
-        }
-
-        // connect to input
-        else if (this.outputSocket != null && socket instanceof InputSocket &&
-        socket.canEstablishConnection()) {
-          var c1 = new Connection(this.outputSocket, socket);
-          this.outputSocket = null;
-        }
-
+    var clickedNode = null;
+    for (var i = 0; i < worldNodes.length; i++) {
+      var node = worldNodes[i];
+      if (node.canSelect() && node.isColliding(this.mouse)) {
+        clickedNode = node;
+        this.clickedNode = node;
         break;
       }
     }
+    if (clickedNode == null) {
+      this.clickedNode = null;
+    }
+
+    // //Check if socket was clicked
+    // for (var i = 0; i < sockets.length; i++) {
+    //   var socket = sockets[i];
+    //
+    //   if (socket.pos.dist(this.mouse) < socket.width) {
+    //     // Select from socket or create connection
+    //
+    //     // select output
+    //     if (this.outputSocket == null && socket instanceof OutputSocket) {
+    //       this.outputSocket = socket;
+    //     }
+    //
+    //     //delete connection, create new
+    //     else if (this.outputSocket == null && socket instanceof InputSocket
+    //     && socket.connections[0] != null) {
+    //       this.outputSocket = socket.connections[0].input;
+    //       socket.connections[0].remove();
+    //     }
+    //
+    //     // connect to input
+    //     else if (this.outputSocket != null && socket instanceof InputSocket &&
+    //     socket.canEstablishConnection()) {
+    //       var c1 = new Connection(this.outputSocket, socket);
+    //       this.outputSocket = null;
+    //     }
+    //
+    //     break;
+    //   }
+    // }
   }
 
   update() {

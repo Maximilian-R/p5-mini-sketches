@@ -12,6 +12,11 @@ class Frame extends DragAndDropAble {
     this.frameWidth = 6;
   }
 
+  isColliding(point) {
+    if (this.pos.dist(point) < this.width * 0.7) return true;
+    return false;
+  }
+
   draw() {
     rectMode(CENTER);
     stroke(this.frameUseColor);
@@ -26,10 +31,14 @@ class Frame extends DragAndDropAble {
     text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
   }
 
-  startDrag() { this.frameUseColor = this.highLightColor; }
-  startHover() { this.frameUseColor = this.highLightColor; }
-  endHover() { this.frameUseColor = this.frameColor; }
-  drop() { this.frameUseColor = this.frameColor; }
+  startDrag() { this.highlight() }
+  startHover() { this.highlight() }
+  didSelect() { this.highlight() }
+  endHover() { this.noHighlight() }
+  drop() { this.noHighlight() }
+  didUnSelect() { this.noHighlight() }
+  highlight() { this.frameUseColor = this.highLightColor; }
+  noHighlight() { this.frameUseColor = this.frameColor; }
 }
 
 /*
@@ -115,6 +124,19 @@ class Logic extends Frame {
     if (this.bottomSocket != null) {
       this.bottomSocket.draw();
     }
+  }
+
+  remove() {
+    for (var i = 0; i < this.inputs.length; i++) {
+      this.inputs[i].remove();
+    }
+    for (var i = 0; i < this.output.length; i++) {
+      this.output[i].remove();
+    }
+    if(this.bottomSocket != null) {
+      this.bottomSocket.remove();
+    }
+    super.remove();
   }
 }
 

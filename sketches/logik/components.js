@@ -15,8 +15,13 @@ class Light extends DragAndDropAble {
     this.input = new InputSocket(this.pos.x - this.width / 2, this.pos.y);
   }
 
+  isColliding(point) {
+    if (this.pos.dist(point) < this.width / 2) return true;
+    return false;
+  }
+
   update() {
-    if(this.input.isOn() == true ) {
+    if(this.input.isOn()) {
       this.on = true;
     } else {
       this.on = false;
@@ -39,5 +44,10 @@ class Light extends DragAndDropAble {
   drag() {
     this.input.pos.x = this.pos.x - this.width / 2
     this.input.pos.y = this.pos.y;
+  }
+
+  remove() {
+    this.input.remove();
+    super.remove();
   }
 }

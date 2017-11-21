@@ -5,6 +5,8 @@ var lights = [];
 var editor;
 var inventory;
 
+var worldNodes = [];
+
 function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
 
@@ -17,16 +19,10 @@ function setup(){
 function draw(){
   background(100);
 
-  for (var i = 0; i < connections.length; i++) {
-    connections[i].draw();
-  }
-  for (var i = 0; i < logics.length; i++) {
-    logics[i].update();
-    logics[i].draw();
-  }
-  for (var i = 0; i < lights.length; i++) {
-    lights[i].update();
-    lights[i].draw();
+
+  for (var i = 0; i < worldNodes.length; i++) {
+    worldNodes[i].update();
+    worldNodes[i].draw();
   }
 
   editor.update();
@@ -37,45 +33,48 @@ function draw(){
 }
 
 function setupTestData() {
-  logics.push(new LogicOr(300, 300));
-  logics.push(new LogicAnd(500, 300));
-  logics.push(new LogicXor(700, 300));
-  logics.push(new LogicBattery(100, 300));
-  logics.push(new LogicBattery(500, 500));
-  logics.push(new LogicNot(700, 500));
-  logics.push(new LogicSelector(500, 100));
-  logics.push(new LogicTimer(300, 100));
-  logics.push(new LogicCounter(100, 100));
+  new LogicOr(300, 300);
+  new LogicAnd(500, 300);
+  new LogicXor(700, 300);
+  new LogicBattery(100, 300);
+  new LogicBattery(500, 500);
+  new LogicNot(700, 500);
+  new LogicSelector(500, 100);
+  new LogicTimer(300, 100);
+  new LogicCounter(100, 100);
 
-  lights.push(new Light(800, 300));
-  lights.push(new Light(700, 50));
-  lights.push(new Light(700, 100));
-  lights.push(new Light(700, 150));
+  new Light(800, 300);
+  new Light(700, 50);
+  new Light(700, 100);
+  new Light(700, 150);
 
-
-  var c1 = new Connection(logics[0].output[0], logics[1].inputs[0]);
-  //var c2 = new Connection(logics[0].output[0], logics[1].inputs[1]);
-  var c3 = new Connection(logics[1].output[0], logics[2].inputs[0]);
-  var c4 = new Connection(logics[2].output[0], lights[0].input);
-  var c3 = new Connection(logics[5].output[0], logics[2].inputs[1]);
-  var b0 = new Connection(logics[3].output[0], logics[0].inputs[0]);
-  var b1 = new Connection(logics[4].output[0], logics[1].inputs[1]);
-  var l1 = new Connection(logics[6].output[0], lights[1].input);
-  var l2 = new Connection(logics[6].output[1], lights[2].input);
-  var l3 = new Connection(logics[6].output[2], lights[3].input);
 }
 
 
-class PlaceAble {
+class WorldNode {
   constructor(x, y) {
     this.pos = createVector(x, y);
+    worldNodes.push(this);
   }
+
+  canSelect() { return true; }
+  isColliding(point) {
+    if (this.pos.dist(point) < 1) return true;
+    return false;
+  }
+  didSelect() {}
+  didUnSelect() {}
+  draw() {}
+  update() {}
+  remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
 }
 
 var nodes = [];
 // TODO: this should be called interactable - and then make DragAndDropAble extends
 // that. This way thing like socket can also be hovered
-class DragAndDropAble extends PlaceAble {
+// should nodes still exists, or should they only be part of worldNodes
+// and then check if it is or not?
+class DragAndDropAble extends WorldNode {
   constructor(x, y) {
     super(x, y);
     nodes.push(this);

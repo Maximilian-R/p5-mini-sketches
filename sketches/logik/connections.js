@@ -1,4 +1,4 @@
-class Socket extends PlaceAble {
+class Socket extends WorldNode {
   constructor(x, y) {
     super(x, y);
     this.color = color(50);
@@ -7,6 +7,19 @@ class Socket extends PlaceAble {
     this.power = 0;
     this.connections = [];
     sockets.push(this);
+  }
+
+  isColliding(point) {
+    if (this.pos.dist(point) < this.width) return true;
+    return false;
+  }
+
+  remove() {
+    sockets.splice(sockets.indexOf(this), 1);
+    for (var i = 0; i < this.connections.length; i++) {
+      this.connections[i].remove();
+    }
+    super.remove();
   }
 
   /* Check if any power is applied */
@@ -101,27 +114,30 @@ class OutputSocket extends Socket {
   connect(connection) { this.connections.push(connection); }
 }
 
-class Connection {
+class Connection extends WorldNode {
   constructor(input, output) {
+    super(0, 0);
     this.input = input; // MultiSocket
     this.output = output; // SingleSocket
     this.input.connect(this);
     this.output.connect(this);
     this.power = 0;
     this.thickness = 8;
-    connections.push(this);
+  }
+
+  canSelect() { return false; }
+
+  remove() {
+    var index = this.input.connections.indexOf(this);
+    this.input.connections.splice(index, 1);
+    this.output.connections.pop();
+    connections.splice(connections.indexOf(this), 1);
+    super.remove();
   }
 
   getPower() { return this.power; }
   setPower(power) { this.power = power; }
   isOn() { return this.power != 0; }
-
-  delete() {
-    var index = this.input.connections.indexOf(this);
-    this.input.connections.splice(index, 1);
-    this.output.connections.pop();
-    connections.splice(connections.indexOf(this), 1);
-  }
 
   draw() {
     if (this.isOn()) {
