@@ -21,6 +21,11 @@ class Light extends InteractAble {
   }
 
   update() {
+
+    if(this.mouseIsPressed) {
+      this.positionSockets();
+    }
+
     if(this.input.isOn()) {
       this.on = true;
     } else {
@@ -41,7 +46,7 @@ class Light extends InteractAble {
     this.input.draw();
   }
 
-  drag() {
+  positionSockets() {
     this.input.pos.x = this.pos.x - this.width / 2
     this.input.pos.y = this.pos.y;
   }

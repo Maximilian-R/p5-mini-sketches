@@ -25,10 +25,10 @@ class Inventory {
       new InventoryItem(createVector(x, y), LogicCombiner, "COMBINER"),
     ];
 
-    this.drag();
+    this.positionItems();
   }
 
-  drag() {
+  positionItems() {
     var x = this.items[0].width / 2;
     var y = this.items[0].height / 2;
     for (var i = 0; i < this.items.length; i++) {
@@ -64,10 +64,8 @@ class InventoryItem extends InteractAble {
     this.pos = this.initPos;
     this.logicClass = logicClass;
     this.text = text;
-    this.color = color(255);
     this.width = 80;
     this.height = 40;
-    this.frameColor = color(255);
   }
 
   draw() {
@@ -75,7 +73,11 @@ class InventoryItem extends InteractAble {
     textAlign(CENTER);
 
     fill(170);
-    stroke(this.frameColor);
+    if(this.mouseIsOver) {
+      stroke(112, 2, 124);
+    } else {
+      stroke(255);
+    }
     rect(this.pos.x, this.pos.y, this.width, this.height);
 
     noStroke();
@@ -88,23 +90,7 @@ class InventoryItem extends InteractAble {
     return false;
   }
 
-  hover() {
-    super.hover();
-    this.highlight();
-  }
-  endHover() {
-    super.endHover();
-    this.noHighlight();
-  }
-  highlight() {
-    this.frameColor = color(112, 2, 124);
-  }
-  noHighlight() {
-    this.frameColor = color(255);
-  }
-
   drop() {
-    super.drop();
     new this.logicClass(mouseX, mouseY);
     this.pos = this.initPos;
     this.frameColor = color(255);

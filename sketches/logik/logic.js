@@ -19,32 +19,22 @@ class Frame extends InteractAble {
 
   draw() {
     rectMode(CENTER);
+    if(this.mouseIsOver || this.mouseIsPressed || this.mouseWasClicked) {
+      this.frameUseColor = this.highLightColor;
+    } else {
+      this.frameUseColor = this.frameColor;
+    }
     stroke(this.frameUseColor);
     strokeWeight(this.frameWidth);
     fill(this.mainColor);
     rect(this.pos.x, this.pos.y, this.width, this.height);
 
-    // text
+    // Text
     noStroke();
     fill(this.frameColor);
     textAlign(CENTER);
     text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
   }
-
-  pickup() { super.pickup(); this.highlight(); }
-  hover() { super.hover(); this.highlight(); }
-  didSelect() { super.didSelect(); this.highlight();}
-  endHover() {
-    super.endHover();
-    print(this.isSelected);
-    if(!this.isSelected) {
-      this.noHighlight();
-    }
-  }
-  drop() { super.drop(); this.noHighlight(); }
-  didUnSelect() { super.didUnSelect(); this.noHighlight(); }
-  highlight() { this.frameUseColor = this.highLightColor; }
-  noHighlight() { this.frameUseColor = this.frameColor; }
 }
 
 /*
@@ -76,10 +66,10 @@ class Logic extends Frame {
       this.output.push(new OutputSocket(0, 0));
     }
 
-    this.drag();
+    this.positionSockets();
   }
 
-  drag() {
+  positionSockets() {
     var pxPerInput = this.height / this.inputs.length;
     var pxPerOutput = this.height / this.output.length;
 

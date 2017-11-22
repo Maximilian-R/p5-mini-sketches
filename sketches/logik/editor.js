@@ -67,7 +67,7 @@ class Editor {
 
     }
 
-    this.dragNode.pickup();
+    this.dragNode.mouseIsPressed = true;
   }
 
   mouseReleased() {
@@ -75,7 +75,8 @@ class Editor {
       return
     }
 
-    this.dragNode.drop();
+    //this.dragNode.drop();
+    this.dragNode.mouseIsPressed = false;
 
     // create or delete temp connection
     if (this.dragNode instanceof Connection) {
@@ -92,16 +93,16 @@ class Editor {
   mouseClicked() {
 
     var clickedNode = null;
-    if (this.hoverNode != null && this.hoverNode.canSelect()) {
+    if (this.hoverNode != null) { //&& this.hoverNode.canSelect()
       if(this.clickedNode != null) {
-        this.clickedNode.didUnSelect();
+        this.clickedNode.mouseWasClicked = false;
       }
       clickedNode = this.hoverNode;
       this.clickedNode = clickedNode;
-      this.clickedNode.didSelect();
+      this.clickedNode.mouseWasClicked = true;
     }
     if (clickedNode == null && this.clickedNode != null) {
-      this.clickedNode.didUnSelect();
+      this.clickedNode.mouseWasClicked = false;
       this.clickedNode = null;
     }
 }
@@ -116,20 +117,19 @@ class Editor {
       //TODO: Rect detection
       if (node.isColliding(this.mouse)) {
         newHover = node;
-        newHover.hover(this.dragNode);
+        newHover.mouseIsOver = true;
         break;
       }
     }
     if(this.hoverNode == null) {
       this.hoverNode = newHover;
     } else if(newHover != this.hoverNode) {
-      this.hoverNode.endHover();
+      this.hoverNode.mouseIsOver = false;
       this.hoverNode = newHover;
     }
 
     if (this.dragNode != null) {
       this.dragNode.pos = this.mouse;
-      this.dragNode.drag();
     }
   }
 

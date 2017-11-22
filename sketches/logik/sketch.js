@@ -61,17 +61,9 @@ class WorldNode {
 class InteractAble extends WorldNode {
   constructor(x, y) {
     super(x, y);
-    this.isSelected = false;
-    this.isHovered = false;
-    this.isDragged = false;
-  }
 
-  pickup() { this.isDragged = true; }
-  drag() {}
-  drop() { this.isDragged = false; }
-  hover(editorHoldingNode) {  this.isHovered = true; }
-  endHover() { this.isHovered = false; }
-  didSelect() { this.isSelected = true; }
-  didUnSelect() { this.isSelected = false; }
-  canSelect() { return true; }
+    this.mouseIsOver = false;
+    this.mouseIsPressed = false;
+    this.mouseWasClicked = false;
+  }
 }

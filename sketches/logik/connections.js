@@ -63,18 +63,6 @@ class InputSocket extends Socket {
     this.connections[0] = connection;
   }
 
-  hover(editorHoldingNode) {
-    super.hover();
-    if((this.hasConnection() && editorHoldingNode instanceof Connection)
-    || (!editorHoldingNode && !this.hasConnection()) ) {
-      this.strokeColor = color(230, 50, 0);
-    } else {
-      this.strokeColor = color(0, 230, 50);
-    }
-  }
-
-  endHover() { super.endHover(); this.strokeColor = null; }
-
   update() {
     super.update();
     // Read value from connection
@@ -82,6 +70,17 @@ class InputSocket extends Socket {
       this.power = this.connections[0].getPower();
     } else {
       this.power = 0;
+    }
+
+    if (this.mouseIsOver) {
+      if((this.hasConnection() && editor.dragNode instanceof Connection)
+      || (!editor.dragNode && !this.hasConnection()) ) {
+        this.strokeColor = color(230, 50, 0);
+      } else {
+        this.strokeColor = color(0, 230, 50);
+      }
+    } else {
+      this.strokeColor = null;
     }
   }
 }
@@ -133,16 +132,18 @@ class OutputSocket extends Socket {
 
   connect(connection) { this.connections.push(connection); }
 
-  hover(editorHoldingNode) {
-    super.hover();
-    if(editorHoldingNode instanceof Connection) {
-      this.strokeColor = color(230, 50, 0);
+  update() {
+    if(this.mouseIsOver) {
+      if(editorHoldingNode instanceof Connection) {
+        this.strokeColor = color(230, 50, 0);
+      } else {
+        this.strokeColor = color(0, 230, 50);
+      }
     } else {
-      this.strokeColor = color(0, 230, 50);
+      this.strokeColor = null;
     }
   }
 
-  endHover() { super.endHover(); this.strokeColor = null; }
 }
 
 class Connection extends InteractAble {
