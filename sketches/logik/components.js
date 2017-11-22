@@ -4,7 +4,6 @@ override update method and define how your class should
 behave to power.
 */
 
-
 class Light extends InteractAble {
   constructor(x, y) {
     super(x, y);
@@ -12,7 +11,7 @@ class Light extends InteractAble {
     this.on = false;
     this.width = 40;
     this.height = 40;
-    this.input = new InputSocket(this.pos.x - this.width / 2, this.pos.y);
+    this.input = this.addChild(new InputSocket(-this.width / 2, 0));
   }
 
   isColliding(point) {
@@ -21,37 +20,31 @@ class Light extends InteractAble {
   }
 
   update() {
-
-    if(this.mouseIsPressed) {
-      this.positionSockets();
-    }
+    super.update();
 
     if(this.input.isOn()) {
       this.on = true;
     } else {
       this.on = false;
     }
-    this.input.update();
   }
 
   draw() {
+    super.draw();
+    push();
+    translate(this.pos.x, this.pos.y);
     noStroke();
     if (this.on)  {
       fill(this.color);
     } else {
       fill(150);
     }
-    rect(this.pos.x, this.pos.y, this.width, this.height);
-
-    this.input.draw();
-  }
-
-  positionSockets() {
-    this.input.pos.x = this.pos.x - this.width / 2
-    this.input.pos.y = this.pos.y;
+    rect(0, 0, this.width, this.height);
+    pop();
   }
 
   remove() {
+    //remove children
     this.input.remove();
     this.input = null;
     super.remove();

@@ -19,6 +19,8 @@ class Frame extends InteractAble {
 
   draw() {
     rectMode(CENTER);
+    push();
+    translate(this.pos.x, this.pos.y);
     if(this.mouseIsOver || this.mouseIsPressed || this.mouseWasClicked) {
       this.frameUseColor = this.highLightColor;
     } else {
@@ -27,13 +29,15 @@ class Frame extends InteractAble {
     stroke(this.frameUseColor);
     strokeWeight(this.frameWidth);
     fill(this.mainColor);
-    rect(this.pos.x, this.pos.y, this.width, this.height);
+    rect(0, 0, this.width, this.height);
 
     // Text
     noStroke();
     fill(this.frameColor);
     textAlign(CENTER);
-    text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
+    text(this.name, 0, 0 - this.height * 0.5 - 6);
+    pop();
+    super.draw();
   }
 }
 
@@ -53,17 +57,21 @@ class Logic extends Frame {
 
     this.inputs = [];
     this.output = [];
-    this.bottomSocket = bottomSocket ? new ToggleSocket(this.pos.x, this.pos.y + this.height / 2) : null;
+    this.bottomSocket = bottomSocket ? this.addChild(new ToggleSocket(0, this.height / 2)) : null;
 
     var sockets = max(inputCount, outputCount);
     var pxPerSocket = sockets == 1 ? 60 : 30;
     this.height = max(60, sockets * pxPerSocket); //min 60 px
 
     for (var i = 0; i < inputCount; i++) {
-      this.inputs.push(new inputClass(0, 0));
+      var inputSocket = new inputClass(0, 0);
+      this.addChild(inputSocket);
+      this.inputs.push(inputSocket);
     }
     for (var i = 0; i < outputCount; i++) {
-      this.output.push(new OutputSocket(0, 0));
+      var outputSocket = new OutputSocket(0, 0);
+      this.addChild(outputSocket);
+      this.output.push(outputSocket);
     }
 
     this.positionSockets();
@@ -74,32 +82,24 @@ class Logic extends Frame {
     var pxPerOutput = this.height / this.output.length;
 
     for (var i = 0; i < this.inputs.length; i++) {
-      var x = this.pos.x - this.width / 2;
-      var y = (this.pos.y - this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
+      var x = -this.width / 2;
+      var y = (-this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
       this.inputs[i].pos = createVector(x, y);
     }
 
     for (var i = 0; i < this.output.length; i++) {
-      var x = this.pos.x + this.width / 2;
-      var y = (this.pos.y - this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
+      var x = this.width / 2;
+      var y = (-this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
       this.output[i].pos = createVector(x, y);
     }
 
     if (this.bottomSocket != null) {
-      this.bottomSocket.pos = createVector(this.pos.x, this.pos.y + this.height / 2);
+      this.bottomSocket.pos = createVector(0, this.height / 2);
     }
   }
 
   update() {
-    for (var i = 0; i < this.inputs.length; i++) {
-      var input = this.inputs[i];
-      input.update();
-    }
-
-    if (this.bottomSocket != null) {
-      this.bottomSocket.update();
-    }
-
+    super.update();
     this.applyLogic();
   }
 
@@ -107,30 +107,11 @@ class Logic extends Frame {
 
   draw() {
     super.draw();
-
-    for (var i = 0; i < this.inputs.length; i++) {
-      var input = this.inputs[i];
-      input.draw();
-    }
-    for (var i = 0; i < this.output.length; i++) {
-      var output = this.output[i];
-      output.draw();
-    }
-
-    if (this.bottomSocket != null) {
-      this.bottomSocket.draw();
-    }
   }
 
   remove() {
-    for (var i = 0; i < this.inputs.length; i++) {
-      this.inputs[i].remove();
-    }
-    for (var i = 0; i < this.output.length; i++) {
-      this.output[i].remove();
-    }
-    if(this.bottomSocket != null) {
-      this.bottomSocket.remove();
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].remove();
     }
     super.remove();
   }
@@ -175,10 +156,13 @@ class LogicTimer extends Logic {
 
   draw() {
     super.draw();
+    push();
+    translate(this.pos.x, this.pos.y);
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current/this.max + "%", this.pos.x, this.pos.y);
+    text(this.current/this.max + "%", 0, 0);
+    pop();
   }
 }
 
@@ -207,10 +191,13 @@ class LogicCounter extends Logic {
 
   draw() {
     super.draw();
+    push();
+    translate(this.pos.x, this.pos.y);
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current, this.pos.x, this.pos.y);
+    text(this.current, 0, 0);
+    pop();
   }
 }
 

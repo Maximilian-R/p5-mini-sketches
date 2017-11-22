@@ -6,7 +6,7 @@ function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
 
   editor = new Editor();
-  inventory = new Inventory(width, height);
+  //inventory = new Inventory(width, height);
 
   setupTestData();
 }
@@ -20,7 +20,7 @@ function draw(){
   }
   editor.update();
   editor.draw();
-  inventory.draw();
+  //inventory.draw();
 }
 
 function setupTestData() {
@@ -44,8 +44,24 @@ function setupTestData() {
 class WorldNode {
   constructor(x, y) {
     this.pos = createVector(x, y);
-    worldNodes.push(this);
+    this.children = [];
+    worldNodes.push(this); // this could be like spritekit,
+    // instead create node, than call addtoscene or add as child.
   }
+
+  //children nodes should node be part of world nodes.
+  // when parent node is updated and drawed, it should call for
+  // its children.
+  addChild(node) {
+    worldNodes.splice(worldNodes.indexOf(node), 1);
+    this.children.push(node);
+    return node;
+  }
+  /*
+  removeFromParent()
+  removeAllChildren()
+  this.parent
+  */
 
   isColliding(point) {
     if (this.pos.dist(point) < 1) return true;
@@ -54,8 +70,19 @@ class WorldNode {
 
   canManualRemove() { return true; }
   remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
-  draw() {}
-  update() {}
+  draw() {
+    push();
+    translate(this.pos.x, this.pos.y);
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].draw();
+    }
+    pop();
+  }
+  update() {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].update();
+    }
+  }
 }
 
 class InteractAble extends WorldNode {

@@ -30,9 +30,14 @@ class Socket extends InteractAble {
   /* Add a connection */
   connect(connection) {}
 
-  update() {}
+  update() {
+    super.update();
+  }
 
   draw() {
+    super.draw();
+    push();
+    translate(this.pos.x, this.pos.y);
     if (this.strokeColor) {
       strokeWeight(2);
       stroke(this.strokeColor)
@@ -45,7 +50,8 @@ class Socket extends InteractAble {
     } else {
       fill(45, 250, 142);
     }
-    rect(this.pos.x, this.pos.y, this.width, this.height);
+    rect(0, 0, this.width, this.height);
+    pop();
   }
 }
 
@@ -130,9 +136,15 @@ class OutputSocket extends Socket {
     }
   }
 
+  draw() {
+    super.draw();
+    //print(this.pos);
+  }
+
   connect(connection) { this.connections.push(connection); }
 
   update() {
+    super.update();
     if(this.mouseIsOver) {
       if(editorHoldingNode instanceof Connection) {
         this.strokeColor = color(230, 50, 0);
@@ -182,6 +194,7 @@ class Connection extends InteractAble {
   isOn() { return this.power != 0; }
 
   draw() {
+    super.draw();
     if (this.isOn()) {
       stroke(45, 250, 142);
     } else {
