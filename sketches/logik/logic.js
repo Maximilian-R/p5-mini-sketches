@@ -306,7 +306,7 @@ class LogicNot extends Logic {
 
 class LogicToggle extends Logic {
   constructor(x, y) {
-    super("Toggle", x, y, 1, 1, false, ToggleSocket);
+    super("TOGGLE", x, y, 1, 1, false, ToggleSocket);
     this.toggled = false;
   }
 
@@ -314,6 +314,41 @@ class LogicToggle extends Logic {
     if(this.inputs[0].test()) {
       this.toggled = !this.toggled;
       this.toggled ? this.output[0].setPower(100) : this.output[0].setPower(0);
+    }
+  }
+}
+
+class LogicSplitter extends Logic {
+  constructor(x, y) {
+    super("SPLITTER", x, y, 1, 2, false);
+  }
+
+  applyLogic() {
+    this.output[1].setPower(0);
+    this.output[0].setPower(0);
+    
+    if(this.inputs[0].getPower() > 0) {
+      this.output[0].setPower(100);
+    } else if (this.inputs[1].getPower() < 0) {
+      this.output[1].setPower(100);
+    }
+  }
+}
+
+class LogicCombiner extends Logic {
+  constructor(x, y) {
+    super("COMBINER", x, y, 2, 1, false);
+  }
+
+  applyLogic() {
+    if (this.input[0].isOn() && this.input[0].isOn())  {
+      this.output[0].setPower(0);
+    } else if (this.input[1].isOn()) {
+      this.output[0].setPower(-100);
+    } else if (this.input[0].isOn()) {
+      this.output[0].setPower(100);
+    } else {
+      this.output[0].setPower(0);
     }
   }
 }
