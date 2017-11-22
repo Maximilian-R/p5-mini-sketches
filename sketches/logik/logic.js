@@ -1,4 +1,4 @@
-class Frame extends DragAndDropAble {
+class Frame extends InteractAble {
   constructor(name, x, y) {
     super(x, y);
     this.name = name;
@@ -31,7 +31,7 @@ class Frame extends DragAndDropAble {
     text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
   }
 
-  startDrag() { this.highlight() }
+  pickup() { this.highlight() }
   startHover() { this.highlight() }
   didSelect() { this.highlight() }
   endHover() { this.noHighlight() }

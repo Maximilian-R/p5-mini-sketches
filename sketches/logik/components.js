@@ -5,7 +5,7 @@ behave to power.
 */
 
 
-class Light extends DragAndDropAble {
+class Light extends InteractAble {
   constructor(x, y) {
     super(x, y);
     this.color = color(random(255), random(255), random(255));

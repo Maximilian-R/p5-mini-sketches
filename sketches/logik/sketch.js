@@ -1,9 +1,5 @@
-var logics = [];
-var connections = [];
-var lights = [];
 var editor;
 var inventory;
-
 var worldNodes = [];
 
 function setup(){
@@ -17,7 +13,6 @@ function setup(){
 
 function draw(){
   background(100);
-
 
   for (var i = 0; i < worldNodes.length; i++) {
     worldNodes[i].update();
@@ -56,34 +51,28 @@ class WorldNode {
     worldNodes.push(this);
   }
 
-  canSelect() { return true; }
   isColliding(point) {
     if (this.pos.dist(point) < 1) return true;
     return false;
   }
-  didSelect() {}
-  didUnSelect() {}
+
+  canManualRemove() { return true; }
+  remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
   draw() {}
   update() {}
-  remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
+}
 
+class InteractAble extends WorldNode {
+  constructor(x, y) {
+    super(x, y);
+  }
 
-/* Temporary */
-  startDrag() {}
+  pickup() {}
   drag() {}
   drop() {}
   startHover(editorHoldingNode) {}
   endHover() {}
-}
-
-var nodes = [];
-// TODO: this should be called interactable - and then make DragAndDropAble extends
-// that. This way thing like socket can also be hovered
-// should nodes still exists, or should they only be part of worldNodes
-// and then check if it is or not?
-class DragAndDropAble extends WorldNode {
-  constructor(x, y) {
-    super(x, y);
-    nodes.push(this);
-  }
+  didSelect() {}
+  didUnSelect() {}
+  canSelect() { return true; }
 }

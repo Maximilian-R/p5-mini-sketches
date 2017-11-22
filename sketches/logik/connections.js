@@ -14,6 +14,8 @@ class Socket extends WorldNode {
     return false;
   }
 
+  canManualRemove() { return false; }
+
   remove() {
     for (var i = 0; i < this.connections.length; i++) {
       this.connections[i].remove();

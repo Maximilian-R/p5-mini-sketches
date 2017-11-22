@@ -27,7 +27,7 @@ class Editor {
     if (keyCode == 8) {
       // cancel palcement of connection
       this.outputSocket = null;
-      if(this.clickedNode != null) {
+      if(this.clickedNode != null && this.clickedNode.canManualRemove()) {
         this.clickedNode.remove();
         this.clickedNode = null;
       }
@@ -67,7 +67,7 @@ class Editor {
 
     }
 
-    this.dragNode.startDrag();
+    this.dragNode.pickup();
   }
 
   mouseReleased() {
@@ -92,13 +92,9 @@ class Editor {
   mouseClicked() {
 
     var clickedNode = null;
-    for (var i = 0; i < worldNodes.length; i++) {
-      var node = worldNodes[i];
-      if (node.canSelect() && node.isColliding(this.mouse)) {
-        clickedNode = node;
-        this.clickedNode = node;
-        break;
-      }
+    if (this.hoverNode.canSelect()) {
+      clickedNode = this.hoverNode;
+      this.clickedNode = clickedNode;
     }
     if (clickedNode == null) {
       this.clickedNode = null;
@@ -113,7 +109,7 @@ class Editor {
     for (var i = 0; i < worldNodes.length; i++) {
       var node = worldNodes[i];
       //TODO: Rect detection
-      if (node.pos.dist(this.mouse) < 20) {
+      if (node.isColliding(this.mouse)) {
         newHover = node;
         newHover.startHover(this.dragNode);
         break;

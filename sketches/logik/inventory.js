@@ -57,7 +57,7 @@ class Inventory {
   }
 }
 
-class InventoryItem extends DragAndDropAble {
+class InventoryItem extends InteractAble {
   constructor(initPos, logicClass, text) {
     super(initPos.x, initPos.y);
     this.initPos = initPos;
