@@ -1,4 +1,4 @@
-class Socket extends WorldNode {
+class Socket extends InteractAble {
   constructor(x, y) {
     super(x, y);
     this.color = color(50);
@@ -63,7 +63,8 @@ class InputSocket extends Socket {
     this.connections[0] = connection;
   }
 
-  startHover(editorHoldingNode) {
+  hover(editorHoldingNode) {
+    super.hover();
     if((this.hasConnection() && editorHoldingNode instanceof Connection)
     || (!editorHoldingNode && !this.hasConnection()) ) {
       this.strokeColor = color(230, 50, 0);
@@ -72,7 +73,7 @@ class InputSocket extends Socket {
     }
   }
 
-  endHover() { this.strokeColor = null; }
+  endHover() { super.endHover(); this.strokeColor = null; }
 
   update() {
     super.update();
@@ -132,7 +133,8 @@ class OutputSocket extends Socket {
 
   connect(connection) { this.connections.push(connection); }
 
-  startHover(editorHoldingNode) {
+  hover(editorHoldingNode) {
+    super.hover();
     if(editorHoldingNode instanceof Connection) {
       this.strokeColor = color(230, 50, 0);
     } else {
@@ -140,10 +142,10 @@ class OutputSocket extends Socket {
     }
   }
 
-  endHover() { this.strokeColor = null; }
+  endHover() { super.endHover(); this.strokeColor = null; }
 }
 
-class Connection extends WorldNode {
+class Connection extends InteractAble {
   constructor(input, output = null) {
     super(0, 0);
     this.input; // MultiSocket
@@ -171,7 +173,6 @@ class Connection extends WorldNode {
     var index = this.input.connections.indexOf(this);
     this.input.connections.splice(index, 1);
     if(this.output) this.output.connections.pop();
-    connections.splice(connections.indexOf(this), 1);
     super.remove();
   }
 

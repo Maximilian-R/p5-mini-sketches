@@ -18,12 +18,9 @@ function draw(){
     worldNodes[i].update();
     worldNodes[i].draw();
   }
-
   editor.update();
   editor.draw();
-
   inventory.draw();
-
 }
 
 function setupTestData() {
@@ -41,7 +38,6 @@ function setupTestData() {
   new Light(700, 50);
   new Light(700, 100);
   new Light(700, 150);
-
 }
 
 
@@ -65,14 +61,17 @@ class WorldNode {
 class InteractAble extends WorldNode {
   constructor(x, y) {
     super(x, y);
+    this.isSelected = false;
+    this.isHovered = false;
+    this.isDragged = false;
   }
 
-  pickup() {}
+  pickup() { this.isDragged = true; }
   drag() {}
-  drop() {}
-  startHover(editorHoldingNode) {}
-  endHover() {}
-  didSelect() {}
-  didUnSelect() {}
+  drop() { this.isDragged = false; }
+  hover(editorHoldingNode) {  this.isHovered = true; }
+  endHover() { this.isHovered = false; }
+  didSelect() { this.isSelected = true; }
+  didUnSelect() { this.isSelected = false; }
   canSelect() { return true; }
 }

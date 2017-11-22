@@ -92,11 +92,16 @@ class Editor {
   mouseClicked() {
 
     var clickedNode = null;
-    if (this.hoverNode.canSelect()) {
+    if (this.hoverNode != null && this.hoverNode.canSelect()) {
+      if(this.clickedNode != null) {
+        this.clickedNode.didUnSelect();
+      }
       clickedNode = this.hoverNode;
       this.clickedNode = clickedNode;
+      this.clickedNode.didSelect();
     }
-    if (clickedNode == null) {
+    if (clickedNode == null && this.clickedNode != null) {
+      this.clickedNode.didUnSelect();
       this.clickedNode = null;
     }
 }
@@ -111,7 +116,7 @@ class Editor {
       //TODO: Rect detection
       if (node.isColliding(this.mouse)) {
         newHover = node;
-        newHover.startHover(this.dragNode);
+        newHover.hover(this.dragNode);
         break;
       }
     }

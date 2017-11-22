@@ -13,7 +13,7 @@ class Frame extends InteractAble {
   }
 
   isColliding(point) {
-    if (this.pos.dist(point) < this.width * 0.7) return true;
+    if (this.pos.dist(point) < this.width * 0.5) return true;
     return false;
   }
 
@@ -31,12 +31,18 @@ class Frame extends InteractAble {
     text(this.name, this.pos.x, this.pos.y - this.height * 0.5 - 6);
   }
 
-  pickup() { this.highlight() }
-  startHover() { this.highlight() }
-  didSelect() { this.highlight() }
-  endHover() { this.noHighlight() }
-  drop() { this.noHighlight() }
-  didUnSelect() { this.noHighlight() }
+  pickup() { super.pickup(); this.highlight(); }
+  hover() { super.hover(); this.highlight(); }
+  didSelect() { super.didSelect(); this.highlight();}
+  endHover() {
+    super.endHover();
+    print(this.isSelected);
+    if(!this.isSelected) {
+      this.noHighlight();
+    }
+  }
+  drop() { super.drop(); this.noHighlight(); }
+  didUnSelect() { super.didUnSelect(); this.noHighlight(); }
   highlight() { this.frameUseColor = this.highLightColor; }
   noHighlight() { this.frameUseColor = this.frameColor; }
 }
@@ -199,16 +205,13 @@ class LogicCounter extends Logic {
     }
 
     if(this.inputs[0].test()) {
-      this.current += 1;
+      this.current += this.inputs[0].getPower() > 0 ? 1 : -1 ;
       if (this.current >= this.max) {
         this.current = this.max
+        this.output[0].setPower(100);
+      } else {
+        this.output[0].setPower(0);
       }
-    }
-
-    if (this.current == this.max) {
-      this.output[0].setPower(100);
-    } else {
-      this.output[0].setPower(0);
     }
   }
 
@@ -320,7 +323,7 @@ class LogicSwitch extends Logic {
 
 class LogicSplitter extends Logic {
   constructor(x, y) {
-    super("SPLITTER", x, y, 1, 2, false);
+    super("SPLITTER", x, y, 1, 2);
   }
 
   applyLogic() {
@@ -329,7 +332,7 @@ class LogicSplitter extends Logic {
 
     if(this.inputs[0].getPower() > 0) {
       this.output[0].setPower(100);
-    } else if (this.inputs[1].getPower() < 0) {
+    } else if (this.inputs[0].getPower() < 0) {
       this.output[1].setPower(100);
     }
   }
@@ -337,15 +340,15 @@ class LogicSplitter extends Logic {
 
 class LogicCombiner extends Logic {
   constructor(x, y) {
-    super("COMBINER", x, y, 2, 1, false);
+    super("COMBINER", x, y, 2, 1);
   }
 
   applyLogic() {
-    if (this.input[0].isOn() && this.input[0].isOn())  {
+    if (this.inputs[0].isOn() && this.inputs[1].isOn())  {
       this.output[0].setPower(0);
-    } else if (this.input[1].isOn()) {
+    } else if (this.inputs[1].isOn()) {
       this.output[0].setPower(-100);
-    } else if (this.input[0].isOn()) {
+    } else if (this.inputs[0].isOn()) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);

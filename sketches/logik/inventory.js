@@ -83,12 +83,28 @@ class InventoryItem extends InteractAble {
     text(this.text, this.pos.x, this.pos.y);
   }
 
-  startHover() { this.highlight() }
-  endHover() { this.noHighlight() }
-  highlight() { this.frameColor = color(112, 2, 124); }
-  noHighlight() { this.frameColor = color(255); }
+  isColliding(point) {
+    if (this.pos.dist(point) < 20) return true;
+    return false;
+  }
+
+  hover() {
+    super.hover();
+    this.highlight();
+  }
+  endHover() {
+    super.endHover();
+    this.noHighlight();
+  }
+  highlight() {
+    this.frameColor = color(112, 2, 124);
+  }
+  noHighlight() {
+    this.frameColor = color(255);
+  }
 
   drop() {
+    super.drop();
     new this.logicClass(mouseX, mouseY);
     this.pos = this.initPos;
     this.frameColor = color(255);
