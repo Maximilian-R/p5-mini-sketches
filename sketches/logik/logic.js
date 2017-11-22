@@ -304,7 +304,7 @@ class LogicNot extends Logic {
   }
 }
 
-class LogicToggle extends Logic {
+class LogicSwitch extends Logic {
   constructor(x, y) {
     super("TOGGLE", x, y, 1, 1, false, ToggleSocket);
     this.toggled = false;
@@ -326,7 +326,7 @@ class LogicSplitter extends Logic {
   applyLogic() {
     this.output[1].setPower(0);
     this.output[0].setPower(0);
-    
+
     if(this.inputs[0].getPower() > 0) {
       this.output[0].setPower(100);
     } else if (this.inputs[1].getPower() < 0) {

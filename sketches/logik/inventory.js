@@ -20,7 +20,9 @@ class Inventory {
       new InventoryItem(createVector(x, y), LogicCounter, "COUNTER"),
       new InventoryItem(createVector(x, y), LogicSelector, "SELECTOR"),
       new InventoryItem(createVector(x, y), LogicBattery, "BATTERY"),
-      new InventoryItem(createVector(x, y), LogicToggle, "TOGGLE")
+      new InventoryItem(createVector(x, y), LogicSwitch, "SWITCH"),
+      new InventoryItem(createVector(x, y), LogicSplitter, "SPLITTER"),
+      new InventoryItem(createVector(x, y), LogicCombiner, "COMBINER"),
     ];
 
     this.drag();
