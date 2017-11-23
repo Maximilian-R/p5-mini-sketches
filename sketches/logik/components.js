@@ -15,7 +15,7 @@ class Light extends InteractAble {
   }
 
   isColliding(point) {
-    if (this.pos.dist(point) < this.width / 2) return true;
+    if (this.pos.dist(point) < this.width * 1.1) return true;
     return false;
   }
 
