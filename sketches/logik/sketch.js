@@ -6,7 +6,7 @@ function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
 
   editor = new Editor();
-  //inventory = new Inventory(width, height);
+  inventory = new Inventory(width, height);
 
   setupTestData();
 }
@@ -20,24 +20,24 @@ function draw(){
   }
   editor.update();
   editor.draw();
-  //inventory.draw();
+  inventory.draw();
 }
 
 function setupTestData() {
   new LogicOr(300, 300);
   new LogicAnd(500, 300);
-  new LogicXor(700, 300);
-  new LogicBattery(100, 300);
-  new LogicBattery(500, 500);
-  new LogicNot(700, 500);
-  new LogicSelector(500, 100);
-  new LogicTimer(300, 100);
-  new LogicCounter(100, 100);
-
-  new Light(800, 300);
-  new Light(700, 50);
-  new Light(700, 100);
-  new Light(700, 150);
+  // new LogicXor(700, 300);
+  // new LogicBattery(100, 300);
+  // new LogicBattery(500, 500);
+  // new LogicNot(700, 500);
+  // new LogicSelector(500, 100);
+  // new LogicTimer(300, 100);
+  // new LogicCounter(100, 100);
+  //
+  // new Light(800, 300);
+  // new Light(700, 50);
+  // new Light(700, 100);
+  // new Light(700, 150);
 }
 
 
@@ -45,6 +45,7 @@ class WorldNode {
   constructor(x, y) {
     this.pos = createVector(x, y);
     this.children = [];
+    this.parent = null;
     worldNodes.push(this); // this could be like spritekit,
     // instead create node, than call addtoscene or add as child.
   }
@@ -55,6 +56,7 @@ class WorldNode {
   addChild(node) {
     worldNodes.splice(worldNodes.indexOf(node), 1);
     this.children.push(node);
+    node.parent = this;
     return node;
   }
   /*
@@ -62,10 +64,30 @@ class WorldNode {
   removeAllChildren()
   this.parent
   */
-
   isColliding(point) {
     if (this.pos.dist(point) < 1) return true;
     return false;
+  }
+
+  existNodeAtPoint(mouse) {
+    if (!this.isColliding(mouse)) {
+      return null;
+    }
+    var offsetMouse = mouse.copy().sub(this.pos);
+    for (var j = 0; j < this.children.length; j++) {
+      var child = this.children[j].existNodeAtPoint(offsetMouse);
+      if (child != null) {
+        return child;
+      }
+    }
+    return this;
+  }
+
+  getGlobalPosition() {
+    if (this.parent != null) {
+      return this.parent.getGlobalPosition().add(this.pos.copy());
+    }
+    return this.pos.copy();
   }
 
   canManualRemove() { return true; }

@@ -136,17 +136,12 @@ class OutputSocket extends Socket {
     }
   }
 
-  draw() {
-    super.draw();
-    //print(this.pos);
-  }
-
   connect(connection) { this.connections.push(connection); }
 
   update() {
     super.update();
     if(this.mouseIsOver) {
-      if(editorHoldingNode instanceof Connection) {
+      if(editor.dragNode instanceof Connection) {
         this.strokeColor = color(230, 50, 0);
       } else {
         this.strokeColor = color(0, 230, 50);
@@ -167,7 +162,7 @@ class Connection extends InteractAble {
     if (this.output) this.setOutput(output);
     this.power = 0;
     this.thickness = 8;
-    this.pos = this.input.pos.copy(); // Used for end of connection when no output exists
+    this.pos = this.input.getGlobalPosition(); // Used for end of connection when no output exists
   }
 
   setInput(outputSocket) {
@@ -204,22 +199,20 @@ class Connection extends InteractAble {
     strokeWeight(this.thickness);
     noFill();
 
-    // line(this.input.pos.x, this.input.pos.y, endPoint.x, endPoint.y);
-    // return;
+    var endPoint = this.output ? this.output.getGlobalPosition() : this.pos;
+    var startPoint = this.input.getGlobalPosition();
 
-    var endPoint = this.output ? this.output.pos : this.pos;
-
-    if (this.input.pos.x < endPoint.x) {
-      var middleX = (endPoint.x - this.input.pos.x) / 2;
-      line(this.input.pos.x, this.input.pos.y, this.input.pos.x + middleX, this.input.pos.y);
-      line(this.input.pos.x + middleX, this.input.pos.y, endPoint.x - middleX, endPoint.y);
+    if (startPoint.x < endPoint.x) {
+      var middleX = (endPoint.x - startPoint.x) / 2;
+      line(startPoint.x, startPoint.y, startPoint.x + middleX, startPoint.y);
+      line(startPoint.x + middleX, startPoint.y, endPoint.x - middleX, endPoint.y);
       line(endPoint.x, endPoint.y, endPoint.x - middleX, endPoint.y);
     } else {
-      line(this.input.pos.x, this.input.pos.y, this.input.pos.x + 10, this.input.pos.y);
-      var middleY = (endPoint.y - this.input.pos.y) / 2;
-      line(this.input.pos.x + 10, this.input.pos.y, this.input.pos.x + 10, this.input.pos.y + middleY);
-      line(this.input.pos.x + 10, this.input.pos.y + middleY, endPoint.x - 10, this.input.pos.y + middleY);
-      line(endPoint.x - 10, this.input.pos.y + middleY, endPoint.x - 10, endPoint.y);
+      line(startPoint.x, startPoint.y, startPoint.x + 10, startPoint.y);
+      var middleY = (endPoint.y - startPoint.y) / 2;
+      line(startPoint.x + 10, startPoint.y, startPoint.x + 10, startPoint.y + middleY);
+      line(startPoint.x + 10, startPoint.y + middleY, endPoint.x - 10, startPoint.y + middleY);
+      line(endPoint.x - 10, startPoint.y + middleY, endPoint.x - 10, endPoint.y);
       line(endPoint.x - 10, endPoint.y, endPoint.x, endPoint.y);
     }
   }

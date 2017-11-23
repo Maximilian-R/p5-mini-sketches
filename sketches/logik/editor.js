@@ -113,9 +113,8 @@ class Editor {
     // Check what mouse is hovering on, start or end hover
     var newHover = null;
     for (var i = 0; i < worldNodes.length; i++) {
-      var node = worldNodes[i];
-      //TODO: Rect detection
-      if (node.isColliding(this.mouse)) {
+      var node = worldNodes[i].existNodeAtPoint(this.mouse);
+      if (node != null) {
         newHover = node;
         newHover.mouseIsOver = true;
         break;
