@@ -91,7 +91,8 @@ class WorldNode {
   }
 
   canManualRemove() { return true; }
-  remove() { worldNodes.splice(worldNodes.indexOf(this), 1); }
+  remove() { if(worldNodes.indexOf(this) != -1) 
+    worldNodes.splice(worldNodes.indexOf(this), 1); }
   draw() {
     push();
     translate(this.pos.x, this.pos.y);
