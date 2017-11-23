@@ -72,10 +72,10 @@ class Editor {
 
   mouseReleased() {
     if(this.dragNode == null) {
-      return
+      return;
     }
 
-    //this.dragNode.drop();
+    if(this.dragNode instanceof InteractAble) this.dragNode.mouseReleased();
     this.dragNode.mouseIsPressed = false;
 
     // create or delete temp connection

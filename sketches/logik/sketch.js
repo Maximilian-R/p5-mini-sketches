@@ -115,4 +115,6 @@ class InteractAble extends WorldNode {
     this.mouseIsPressed = false;
     this.mouseWasClicked = false;
   }
+
+  mouseReleased() {}
 }
