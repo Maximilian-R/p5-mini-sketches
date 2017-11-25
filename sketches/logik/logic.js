@@ -214,11 +214,11 @@ class LogicSelector extends Logic {
       if(this.bottomSocket.getPower() < 0) {
         this.selected -= 1;
         if (this.selected < 0) {
-          this.selected = this.outputs.length - 1;
+          this.selected = this.output.length - 1;
         }
       } else if (this.bottomSocket.getPower() > 0) {
         this.selected += 1;
-        if (this.selected > this.outputs.length -1) {
+        if (this.selected > this.output.length -1) {
           this.selected = 0;
         }
       }
