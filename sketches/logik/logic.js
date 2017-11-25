@@ -380,10 +380,21 @@ class LogicKeyInput extends Logic {
   }
 
   applyLogic() {
-    if (keyIsPressed && (char(keyCode) == this.key.toUpperCase() || char(keyCode) == this.key.toLowerCase())) {
+    if (char(mouseHandler.pressedKey) == this.key) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
     }
+  }
+
+  draw() {
+    super.draw();
+    push();
+    translate(this.pos.x, this.pos.y);
+    textAlign(CENTER);
+    fill(255);
+    noStroke();
+    text(this.key, 0, 0);
+    pop();
   }
 }

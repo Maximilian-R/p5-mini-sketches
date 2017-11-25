@@ -13,16 +13,34 @@ function mouseReleased() {
   mouseHandler.mouseReleased();
 }
 
+function keyPressed() {
+  mouseHandler.keyPressed();
+}
+
+function keyReleased() {
+  mouseHandler.keyReleased();
+}
+
 
 class MouseHandler {
   constructor() {
     this.nodesAtMouse = [];
     this.subscribers = [];
     this.mouse;
+
+    this.pressedKey;
   }
 
   subscribe(subscriber) {
     this.subscribers.push(subscriber);
+  }
+
+  keyPressed() {
+    this.pressedKey = keyCode;
+  }
+
+  keyReleased() {
+    this.pressedKey = null;
   }
 
   mouseClicked() {
