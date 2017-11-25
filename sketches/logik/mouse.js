@@ -14,6 +14,7 @@ function mouseReleased() {
 }
 
 function keyPressed() {
+  editor.keyPressed();
   mouseHandler.keyPressed();
 }
 

@@ -1,7 +1,3 @@
-function keyPressed() {
-  editor.keyPressed();
-}
-
 class Editor {
   constructor() {
     this.mouse;
