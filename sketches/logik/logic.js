@@ -75,6 +75,23 @@ class Logic extends Frame {
     }
 
     this.positionSockets();
+
+
+    this.gui = new dat.GUI();
+    this.gui.add(this, 'name');
+    this.gui.hide();
+  }
+
+  deselect() {
+    this.gui.hide();
+  }
+
+  select() {
+    this.gui.show();
+  }
+
+  mouseClicked() {
+
   }
 
   positionSockets() {
@@ -121,6 +138,8 @@ class LogicBattery extends Logic {
   constructor(x, y) {
     super("BATTERY", x, y, 0, 1);
     this.power = 100;
+
+    this.gui.add(this, 'power', -100, 100).step(10);
   }
 
   applyLogic() {
@@ -133,6 +152,8 @@ class LogicTimer extends Logic {
     super("TIMER", x, y, 1, 1, true);
     this.current = 0;
     this.max = 100;
+
+    this.gui.add(this, 'max').step(1);
   }
 
   applyLogic() {
@@ -170,7 +191,11 @@ class LogicCounter extends Logic {
   constructor(x, y) {
     super("COUNTER", x, y, 1, 1, true, ToggleSocket);
     this.current = 0;
+    this.min = 0;
     this.max = 10;
+
+    this.gui.add(this, 'min').step(1);
+    this.gui.add(this, 'max').step(1);
   }
 
   applyLogic() {
@@ -183,6 +208,8 @@ class LogicCounter extends Logic {
       if (this.current >= this.max) {
         this.current = this.max
         this.output[0].setPower(100);
+      } else if (this.current <= this.min) {
+        this.current = this.min;
       } else {
         this.output[0].setPower(0);
       }
@@ -205,6 +232,10 @@ class LogicSelector extends Logic {
   constructor(x, y) {
     super("SELECTOR", x, y, 3, 3, true);
     this.selected = 0;
+    this.choices = 3;
+    // here gui must update the amount of I/O sockets and frame height
+
+    this.gui.add(this, 'choices').min(0).max(10).step(1);
   }
 
   applyLogic() {

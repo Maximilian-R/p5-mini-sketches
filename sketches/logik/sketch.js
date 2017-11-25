@@ -1,12 +1,32 @@
 var editor;
 var inventory;
 var worldNodes = [];
+var mouseHandler;
+
+dat.GUI.prototype.hide = function() {
+    this.domElement.setAttribute("hidden", true);
+};
+
+dat.GUI.prototype.show = function() {
+    this.domElement.removeAttribute("hidden");
+};
+
+dat.GUI.prototype.toggleHide = function() {
+    if(this.domElement.hasAttribute("hidden")) {
+        this.domElement.removeAttribute("hidden");
+    } else {
+        this.domElement.setAttribute("hidden", true);
+    }
+};
 
 function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
 
+
+  mouseHandler = new MouseHandler();
   editor = new Editor();
   inventory = new Inventory(width, height);
+
 
   setupTestData();
 }
@@ -91,7 +111,7 @@ class WorldNode {
   }
 
   canManualRemove() { return true; }
-  remove() { if(worldNodes.indexOf(this) != -1) 
+  remove() { if(worldNodes.indexOf(this) != -1)
     worldNodes.splice(worldNodes.indexOf(this), 1); }
   draw() {
     push();
@@ -115,7 +135,13 @@ class InteractAble extends WorldNode {
     this.mouseIsOver = false;
     this.mouseIsPressed = false;
     this.mouseWasClicked = false;
+
+    mouseHandler.subscribe(this);
   }
 
   mouseReleased() {}
+  mouseClicked() {}
+  mousePressed() {}
+  select() {}
+  deselect() {}
 }

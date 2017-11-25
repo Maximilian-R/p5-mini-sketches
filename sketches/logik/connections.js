@@ -17,7 +17,6 @@ class Socket extends InteractAble {
   canManualRemove() { return false; }
 
   remove() {
-    print(this.connections.length);
     for (var i = this.connections.length - 1; i >= 0; i--) {
       this.connections[i].remove();
     }

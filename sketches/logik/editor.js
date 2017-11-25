@@ -1,15 +1,3 @@
-function mouseClicked() {
-  editor.mouseClicked();
-}
-
-function mousePressed() {
-  editor.mousePressed();
-}
-
-function mouseReleased() {
-  editor.mouseReleased();
-}
-
 function keyPressed() {
   editor.keyPressed();
 }
@@ -75,7 +63,7 @@ class Editor {
       return;
     }
 
-    if(this.dragNode instanceof InteractAble) this.dragNode.mouseReleased();
+    //if(this.dragNode instanceof InteractAble) this.dragNode.mouseReleased();
     this.dragNode.mouseIsPressed = false;
 
     // create or delete temp connection
@@ -96,13 +84,16 @@ class Editor {
     if (this.hoverNode != null) { //&& this.hoverNode.canSelect()
       if(this.clickedNode != null) {
         this.clickedNode.mouseWasClicked = false;
+        this.clickedNode.deselect();
       }
       clickedNode = this.hoverNode;
       this.clickedNode = clickedNode;
       this.clickedNode.mouseWasClicked = true;
+      this.clickedNode.select();
     }
     if (clickedNode == null && this.clickedNode != null) {
       this.clickedNode.mouseWasClicked = false;
+      this.clickedNode.deselect();
       this.clickedNode = null;
     }
 }
