@@ -23,6 +23,7 @@ class Inventory {
       new InventoryItem(createVector(x, y), LogicSwitch, "SWITCH"),
       new InventoryItem(createVector(x, y), LogicSplitter, "SPLITTER"),
       new InventoryItem(createVector(x, y), LogicCombiner, "COMBINER"),
+      new InventoryItem(createVector(x, y), LogicKeyInput, "KEYINPUT"),
       new InventoryItem(createVector(x, y), Light, "LIGHT")
     ];
 

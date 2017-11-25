@@ -12,7 +12,7 @@ class Editor {
   }
 
   keyPressed() {
-    if (keyCode == 8) {
+    if (keyCode == 192) {
       // cancel palcement of connection
       this.outputSocket = null;
       if(this.clickedNode != null && this.clickedNode.canManualRemove()) {

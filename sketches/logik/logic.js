@@ -127,6 +127,7 @@ class Logic extends Frame {
   }
 
   remove() {
+    this.gui.destroy();
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].remove();
     }
@@ -363,6 +364,23 @@ class LogicCombiner extends Logic {
     } else if (this.inputs[1].isOn()) {
       this.output[0].setPower(-100);
     } else if (this.inputs[0].isOn()) {
+      this.output[0].setPower(100);
+    } else {
+      this.output[0].setPower(0);
+    }
+  }
+}
+
+class LogicKeyInput extends Logic {
+  constructor(x, y) {
+    super("KEYINPUT", x, y, 0, 1);
+    this.key = 'A';
+
+    this.gui.add(this, 'key');
+  }
+
+  applyLogic() {
+    if (keyIsPressed && (char(keyCode) == this.key.toUpperCase() || char(keyCode) == this.key.toLowerCase())) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
