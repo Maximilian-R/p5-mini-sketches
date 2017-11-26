@@ -1,14 +1,9 @@
 class Inventory {
   constructor(x, y) {
     this.width = 240;
-    this.height = 160;
-
-    if(x + this.width / 2 > width) {
-      x = width - this.width / 2;
-    }
-    if(y + this.height / 2 > height) {
-      y = height - this.height / 2;
-    }
+    this.height = 200;
+    if(x + this.width / 2 > width) x = width - this.width / 2;
+    if(y + this.height / 2 > height) y = height - this.height / 2;
     this.pos = createVector(x, y);
 
     this.items = [
@@ -27,10 +22,10 @@ class Inventory {
       new InventoryItem(createVector(x, y), Light, "LIGHT")
     ];
 
-    this.positionItems();
+    this.createLayout();
   }
 
-  positionItems() {
+  createLayout() {
     var x = this.items[0].width / 2;
     var y = this.items[0].height / 2;
     for (var i = 0; i < this.items.length; i++) {

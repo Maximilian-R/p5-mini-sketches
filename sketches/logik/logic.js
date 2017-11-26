@@ -3,10 +3,12 @@ class Frame extends InteractAble {
     super(x, y);
     this.name = name;
     this.icon;
+
     this.mainColor = color(50);
     this.frameColor = color(250);
     this.highLightColor = color(112, 2, 124);
     this.frameUseColor = this.frameColor;
+
     this.width = 60;
     this.height = 60;
     this.frameWidth = 6;
@@ -74,7 +76,7 @@ class Logic extends Frame {
       this.output.push(outputSocket);
     }
 
-    this.positionSockets();
+    this.layoutSockets();
 
 
     this.gui = new dat.GUI();
@@ -94,7 +96,7 @@ class Logic extends Frame {
 
   }
 
-  positionSockets() {
+  layoutSockets() {
     var pxPerInput = this.height / this.inputs.length;
     var pxPerOutput = this.height / this.output.length;
 
@@ -121,10 +123,6 @@ class Logic extends Frame {
   }
 
   applyLogic() {}
-
-  draw() {
-    super.draw();
-  }
 
   remove() {
     this.gui.destroy();

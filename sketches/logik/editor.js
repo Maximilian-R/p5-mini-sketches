@@ -1,3 +1,5 @@
+/* All handling of mosue and keys should be handled in inputHandler */
+
 class Editor {
   constructor() {
     this.mouse;
@@ -9,7 +11,7 @@ class Editor {
 
   keyPressed() {
     if (keyCode == 192) {
-      // cancel palcement of connection
+      // Cancel palcement of connection
       this.outputSocket = null;
       if(this.clickedNode != null && this.clickedNode.canManualRemove()) {
         this.clickedNode.remove();
@@ -18,22 +20,8 @@ class Editor {
     }
   }
 
-
-  /* Change to drag and drop functionality
-
-  If hovering on output socket and press mouse,
-    create connection with output.
-    if connection is missing an input, have a temp pos.
-  Drag -> update temp position.
-  If Release on nothing, delete connection.
-  Else if relese on inputSocket add socket to connection.
-
-  */
-
   mousePressed() {
-    if(this.hoverNode == null) {
-      return
-    }
+    if(this.hoverNode == null) return;
     this.dragNode = this.hoverNode;
 
     // Create new Connection
@@ -59,10 +47,9 @@ class Editor {
       return;
     }
 
-    //if(this.dragNode instanceof InteractAble) this.dragNode.mouseReleased();
     this.dragNode.mouseIsPressed = false;
 
-    // create or delete temp connection
+    // Create or delete temp connection
     if (this.dragNode instanceof Connection) {
       if(this.hoverNode instanceof InputSocket) {
         this.dragNode.setOutput(this.hoverNode);
@@ -77,7 +64,7 @@ class Editor {
   mouseClicked() {
 
     var clickedNode = null;
-    if (this.hoverNode != null) { //&& this.hoverNode.canSelect()
+    if (this.hoverNode != null) {
       if(this.clickedNode != null) {
         this.clickedNode.mouseWasClicked = false;
         this.clickedNode.deselect();
