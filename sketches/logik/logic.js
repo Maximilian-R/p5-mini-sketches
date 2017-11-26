@@ -4,9 +4,9 @@ class Frame extends InteractAble {
     this.name = name;
     this.icon;
 
-    this.mainColor = color(50);
-    this.frameColor = color(250);
-    this.highLightColor = color(112, 2, 124);
+    this.mainColor = '#2b3544';
+    this.frameColor = '#e81b64';
+    this.highLightColor = color(250);
     this.frameUseColor = this.frameColor;
 
     this.width = 60;
@@ -20,6 +20,7 @@ class Frame extends InteractAble {
   }
 
   draw() {
+    super.draw();
     rectMode(CENTER);
     push();
     translate(this.pos.x, this.pos.y);
@@ -28,18 +29,18 @@ class Frame extends InteractAble {
     } else {
       this.frameUseColor = this.frameColor;
     }
-    stroke(this.frameUseColor);
+    stroke(color(this.frameUseColor));
     strokeWeight(this.frameWidth);
-    fill(this.mainColor);
-    rect(0, 0, this.width, this.height);
+    fill(color(this.mainColor));
+    rect(0, 0, this.width, this.height, 10);
 
     // Text
     noStroke();
-    fill(this.frameColor);
+    fill(color('#2b3544'));
     textAlign(CENTER);
     text(this.name, 0, 0 - this.height * 0.5 - 6);
     pop();
-    super.draw();
+
   }
 }
 
@@ -80,6 +81,7 @@ class Logic extends Frame {
 
 
     this.gui = new dat.GUI();
+    this.gui.addColor(this, 'frameColor');
     this.gui.add(this, 'name');
     this.gui.hide();
   }
@@ -101,19 +103,19 @@ class Logic extends Frame {
     var pxPerOutput = this.height / this.output.length;
 
     for (var i = 0; i < this.inputs.length; i++) {
-      var x = -this.width / 2;
+      var x = -this.width / 2 - 4;
       var y = (-this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
       this.inputs[i].pos = createVector(x, y);
     }
 
     for (var i = 0; i < this.output.length; i++) {
-      var x = this.width / 2;
+      var x = this.width / 2 + 4;
       var y = (-this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
       this.output[i].pos = createVector(x, y);
     }
 
     if (this.bottomSocket != null) {
-      this.bottomSocket.pos = createVector(0, this.height / 2);
+      this.bottomSocket.pos = createVector(0, this.height / 2 + 4);
     }
   }
 

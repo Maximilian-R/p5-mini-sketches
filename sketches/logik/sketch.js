@@ -14,7 +14,7 @@ function setup(){
 }
 
 function draw(){
-  background(100);
+  background(200);
 
   for (var i = 0; i < worldNodes.length; i++) {
     worldNodes[i].update();

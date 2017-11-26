@@ -48,7 +48,7 @@ class Socket extends InteractAble {
     if(!this.isOn()) {
       fill(this.color);
     } else {
-      fill(45, 250, 142);
+      fill('#7DF9FF');
     }
     rect(0, 0, this.width, this.height);
     pop();
@@ -161,7 +161,7 @@ class Connection extends InteractAble {
     this.setInput(input);
     if (this.output) this.setOutput(output);
     this.power = 0;
-    this.thickness = 8;
+    this.thickness = 6;
     this.pos = this.input.getGlobalPosition(); // Used for end of connection when no output exists
   }
 
@@ -191,9 +191,9 @@ class Connection extends InteractAble {
   draw() {
     super.draw();
     if (this.isOn()) {
-      stroke(45, 250, 142);
+      stroke('#7DF9FF');
     } else {
-      stroke(0, 100, 0);
+      stroke('#2b3544');
     }
     strokeCap(PROJECT);
     strokeWeight(this.thickness);
