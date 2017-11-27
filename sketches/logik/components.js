@@ -7,11 +7,23 @@ behave to power.
 class Light extends InteractAble {
   constructor(x, y) {
     super(x, y);
-    this.color = color(random(255), random(255), random(255));
+    this.color = "#ffae23";
     this.on = false;
     this.width = 40;
     this.height = 40;
     this.input = this.addChild(new InputSocket(-this.width / 2, 0));
+
+    this.gui = new dat.GUI();
+    this.gui.addColor(this, 'color');
+    this.gui.hide();
+  }
+
+  deselect() {
+    this.gui.hide();
+  }
+
+  select() {
+    this.gui.show();
   }
 
   isColliding(point) {
