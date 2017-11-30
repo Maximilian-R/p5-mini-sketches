@@ -73,13 +73,12 @@ class InteractAble extends Node {
     super(x, y);
     this.mouseIsOver = false;
     this.mouseIsPressed = false;
-    this.mouseWasClicked = false;
-    mouseHandler.subscribe(this);
+    this.hasFocus = false;
+    //mouseHandler.subscribe(this);
   }
 
   mouseReleased() {}
   mouseClicked() {}
   mousePressed() {}
-  select() {}
-  deselect() {}
+  setFocus(bool) {}
 }

@@ -79,8 +79,8 @@ class InputSocket extends Socket {
     }
 
     if (this.mouseIsOver) {
-      if((this.hasConnection() && editor.dragNode instanceof Connection)
-      || (!editor.dragNode && !this.hasConnection()) ) {
+      if((this.hasConnection() && editor.connection instanceof Connection)
+      || (!editor.connection && !this.hasConnection()) ) {
         this.strokeColor = color(230, 50, 0);
       } else {
         this.strokeColor = color(0, 230, 50);
@@ -141,7 +141,7 @@ class OutputSocket extends Socket {
   update() {
     super.update();
     if(this.mouseIsOver) {
-      if(editor.dragNode instanceof Connection) {
+      if(editor.connection instanceof Connection) {
         this.strokeColor = color(230, 50, 0);
       } else {
         this.strokeColor = color(0, 230, 50);

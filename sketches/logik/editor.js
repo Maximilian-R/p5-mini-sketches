@@ -2,17 +2,12 @@
 
 class Editor {
   constructor() {
-    this.mouse;
-    this.outputSocket;
-    this.dragNode;
-    this.hoverNode;
-    this.clickedNode;
+    this.clickedNode; // should be removed
   }
 
   keyPressed() {
     if (keyCode == 192) {
-      // Cancel palcement of connection
-      this.outputSocket = null;
+      /* Cancel palcement of connection or delete something */
       if(this.clickedNode != null && this.clickedNode.canManualRemove()) {
         this.clickedNode.remove();
         this.clickedNode = null;
@@ -20,93 +15,71 @@ class Editor {
     }
   }
 
-  mousePressed() {
-    if(this.hoverNode == null) return;
-    this.dragNode = this.hoverNode;
 
-    // Create new Connection
-    if (this.hoverNode instanceof OutputSocket) {
-      var connection = new Connection(this.hoverNode);
-      this.dragNode = connection;
+  /* Open & Close GUI of logics */
+  mouseClicked(nodesClicked) {
+
+    /* Close open GUI */
+    if (this.nodeWithOpenGUI != null) {
+      this.nodeWithOpenGUI.gui.hide();
+      this.nodeWithOpenGUI = null;
     }
 
-    // Create new Connection
-    if (this.hoverNode instanceof InputSocket && this.hoverNode.hasConnection()) {
-      // Disconnect from inputoscket
-      var connection = this.hoverNode.connections.pop();
-      this.dragNode = connection;
-      this.dragNode.output = null;
-
-    }
-
-    this.dragNode.mouseIsPressed = true;
-  }
-
-  mouseReleased() {
-    if(this.dragNode == null) {
-      return;
-    }
-
-    this.dragNode.mouseIsPressed = false;
-
-    // Create or delete temp connection
-    if (this.dragNode instanceof Connection) {
-      if(this.hoverNode instanceof InputSocket) {
-        this.dragNode.setOutput(this.hoverNode);
-      } else {
-        this.dragNode.remove();
-      }
-    }
-
-    this.dragNode = null;
-  }
-
-  mouseClicked() {
-
-    var clickedNode = null;
-    if (this.hoverNode != null) {
-      if(this.clickedNode != null) {
-        this.clickedNode.mouseWasClicked = false;
-        this.clickedNode.deselect();
-      }
-      clickedNode = this.hoverNode;
-      this.clickedNode = clickedNode;
-      this.clickedNode.mouseWasClicked = true;
-      this.clickedNode.select();
-    }
-    if (clickedNode == null && this.clickedNode != null) {
-      this.clickedNode.mouseWasClicked = false;
-      this.clickedNode.deselect();
-      this.clickedNode = null;
-    }
-}
-
-  update() {
-    this.mouse = createVector(mouseX, mouseY);
-
-    // Check what mouse is hovering on, start or end hover
-    var newHover = null;
-    for (var i = 0; i < worldNodes.length; i++) {
-      var node = worldNodes[i].existNodeAtPoint(this.mouse);
-      if (node != null) {
-        newHover = node;
-        newHover.mouseIsOver = true;
+    /* Open GUI for clicked logic */
+    for (var i = 0; i < nodesClicked.length; i++) {
+      if (nodesClicked[i] instanceof Logic) {
+        nodesClicked[i].gui.show();
+        this.nodeWithOpenGUI = nodesClicked[i];
         break;
       }
     }
-    if(this.hoverNode == null) {
-      this.hoverNode = newHover;
-    } else if(newHover != this.hoverNode) {
-      this.hoverNode.mouseIsOver = false;
-      this.hoverNode = newHover;
-    }
+  }
 
-    if (this.dragNode != null) {
-      this.dragNode.pos = this.mouse;
+  /* Create and Move connection */
+  mousePressed(nodesAtMouse) {
+
+    for (var i = 0; i < nodesAtMouse.length; i++) {
+      var node = nodesAtMouse[i];
+
+      // Create new connection
+      if (node instanceof OutputSocket) {
+        this.connection = new Connection(node);
+      }
+
+      // Remove existing connection, create a new
+      if (node instanceof InputSocket && node.hasConnection()) {
+        // Disconnect from InputSocket
+        this.connection = node.connections.pop();
+        this.connection.output = null;
+      }
     }
   }
 
-  draw() {
+  /* Create or drop connection */
+  mouseReleased(nodesAtMouse) {
+    if(this.connection == null) { return; }
+
+    for (var i = 0; i < nodesAtMouse.length; i++) {
+      var nodeAtMouse = nodesAtMouse[i];
+
+      /* Complete or Delete Connection */
+      if (this.connection instanceof Connection) {
+        if(nodeAtMouse instanceof InputSocket) {
+          this.connection.setOutput(nodeAtMouse);
+          this.connection = null;
+        } else {
+          this.connection.remove();
+          this.connection = null;
+        }
+      }
+    }
   }
+
+  mouseDragged() {
+    if(this.connection == null) { return; }
+    this.connection.pos = createVector(mouseX, mouseY);
+  }
+
+  mouseMoved() {}
 
 }

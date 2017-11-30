@@ -18,14 +18,6 @@ class Light extends InteractAble {
     this.gui.hide();
   }
 
-  deselect() {
-    this.gui.hide();
-  }
-
-  select() {
-    this.gui.show();
-  }
-
   isColliding(point) {
     if (this.pos.dist(point) < this.width * 1.1) return true;
     return false;

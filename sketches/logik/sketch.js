@@ -7,7 +7,11 @@ function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
 
   mouseHandler = new MouseHandler();
+  mouseHandler.subscribe(new DragAndDrop());
+
   editor = new Editor();
+  mouseHandler.subscribe(editor);
+
   inventory = new Inventory(width, height);
 
   setupTestData();
@@ -20,8 +24,7 @@ function draw(){
     worldNodes[i].update();
     worldNodes[i].draw();
   }
-  editor.update();
-  editor.draw();
+  mouseHandler.update();
   inventory.draw();
 }
 

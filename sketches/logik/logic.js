@@ -24,7 +24,7 @@ class Frame extends InteractAble {
     rectMode(CENTER);
     push();
     translate(this.pos.x, this.pos.y);
-    if(this.mouseIsOver || this.mouseIsPressed || this.mouseWasClicked) {
+    if(this.mouseIsOver || this.mouseIsPressed || this.hasFocus) {
       this.frameUseColor = this.highLightColor;
     } else {
       this.frameUseColor = this.frameColor;
@@ -79,23 +79,10 @@ class Logic extends Frame {
 
     this.layoutSockets();
 
-
     this.gui = new dat.GUI();
     this.gui.addColor(this, 'frameColor');
     this.gui.add(this, 'name');
     this.gui.hide();
-  }
-
-  deselect() {
-    this.gui.hide();
-  }
-
-  select() {
-    this.gui.show();
-  }
-
-  mouseClicked() {
-
   }
 
   layoutSockets() {
