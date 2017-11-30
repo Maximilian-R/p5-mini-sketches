@@ -87,7 +87,7 @@ class InventoryItem extends InteractAble {
     return false;
   }
 
-  mouseReleased() {
+  createItem() {
     new this.logicClass(mouseX, mouseY);
     this.pos = this.initPos;
     this.frameColor = color(255);
