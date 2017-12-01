@@ -104,9 +104,9 @@ class MouseHandler extends Subscribe {
   /* Key Input */
     keyPressed() {
       this.pressedKey = keyCode;
-      // for (var i = 0; i < this.subscribers.length; i++) {
-      //   this.subscribers[i].keyPressed();
-      // }
+      for (var i = 0; i < this.subscribers.length; i++) {
+        this.subscribers[i].keyPressed();
+      }
     }
 
     keyReleased() {
@@ -143,4 +143,5 @@ class DragAndDrop {
 
   mouseMoved() {}
   mouseClicked() {}
+  keyPressed() {}
 }

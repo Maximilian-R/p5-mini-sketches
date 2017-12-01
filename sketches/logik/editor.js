@@ -4,26 +4,34 @@ class Editor {
   constructor() {
     this.connection;
     this.inventoryItem;
+    this.nodeWithOpenGUI;
   }
 
   keyPressed() {
-    // if (keyCode == 192) {
-    //   /* Cancel palcement of connection or delete something */
-    //   if(this.clickedNode != null && this.clickedNode.canManualRemove()) {
-    //     this.clickedNode.remove();
-    //     this.clickedNode = null;
-    //   }
-    // }
+    if (keyCode == 192) {
+      if(this.nodeWithOpenGUI != null) {
+        this.nodeWithOpenGUI.gui.hide();
+        this.nodeWithOpenGUI.remove();
+        this.nodeWithOpenGUI = null;
+      }
+    }
   }
 
 
   /* Open & Close GUI of logics */
   mouseClicked(nodesClicked) {
 
-    /* Close open GUI */
+    /* Close open GUI or do nothing if click is inside gui */
     if (this.nodeWithOpenGUI != null) {
-      this.nodeWithOpenGUI.gui.hide();
-      this.nodeWithOpenGUI = null;
+
+      var guiBounds = this.nodeWithOpenGUI.gui.domElement.getBoundingClientRect();
+      if (mouseX > guiBounds.x && mouseX < guiBounds.x + guiBounds.width
+      && mouseY < guiBounds.y + guiBounds.height) {
+
+      } else {
+        this.nodeWithOpenGUI.gui.hide();
+        this.nodeWithOpenGUI = null;
+      }
     }
 
     /* Open GUI for clicked logic */
@@ -88,7 +96,6 @@ class Editor {
     if(this.connection == null) { return; }
     this.connection.pos = createVector(mouseX, mouseY);
   }
-
+  
   mouseMoved() {}
-
 }

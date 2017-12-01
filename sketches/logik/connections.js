@@ -23,11 +23,9 @@ class Socket extends InteractAble {
     super.remove();
   }
 
-  /* Check if any power is applied */
   isOn() { return this.power != 0; }
-  /* Check if a connection can be added */
   canEstablishConnection() { return true; }
-  /* Add a connection */
+
   connect(connection) {}
 
   update() {
@@ -150,7 +148,6 @@ class OutputSocket extends Socket {
       this.strokeColor = null;
     }
   }
-
 }
 
 class Connection extends InteractAble {

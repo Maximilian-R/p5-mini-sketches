@@ -14,7 +14,7 @@ function setup(){
 
   inventory = new Inventory(width, height);
 
-  setupTestData();
+  //setupTestData();
 }
 
 function draw(){
@@ -38,7 +38,6 @@ function setupTestData() {
   new LogicSelector(500, 100);
   new LogicTimer(300, 100);
   new LogicCounter(100, 100);
-
   new Light(800, 300);
   new Light(700, 50);
   new Light(700, 100);
