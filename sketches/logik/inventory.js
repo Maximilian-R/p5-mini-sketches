@@ -1,10 +1,10 @@
-class Inventory {
+class Inventory extends Node {
   constructor(x, y) {
+    super(x, y);
     this.width = 240;
     this.height = 200;
-    if(x + this.width / 2 > width) x = width - this.width / 2;
-    if(y + this.height / 2 > height) y = height - this.height / 2;
-    this.pos = createVector(x, y);
+    if(x + this.width / 2 > width) this.pos.x = width - this.width / 2;
+    if(y + this.height / 2 > height) this.pos.y = height - this.height / 2;
 
     this.items = [
       new InventoryItem(createVector(x, y), LogicAnd, "AND"),
@@ -89,7 +89,11 @@ class InventoryItem extends InteractAble {
 
   createItem() {
     new this.logicClass(mouseX, mouseY);
-    this.pos = this.initPos;
+    this.resetItem();
     this.frameColor = color(255);
+  }
+
+  resetItem() {
+    this.pos = this.initPos;
   }
 }

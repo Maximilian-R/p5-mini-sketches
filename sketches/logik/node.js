@@ -1,6 +1,8 @@
 class Node {
   constructor(x, y) {
     this.pos = createVector(x, y);
+    this.width = 0;
+    this.height = 0;
 
     this.children = [];
     this.parent = null;
@@ -22,6 +24,17 @@ class Node {
 
   isColliding(point) {
     if (this.pos.dist(point) < 1) return true;
+    return false;
+  }
+
+  isCollidingRect(point) {
+    /* If rectMode is CENTER */
+    if ( point.x > this.pos.x - this.width * 0.5
+      && point.x < this.pos.x + this.width * 0.5
+      && point.y > this.pos.y - this.height * 0.5
+      && point.y < this.pos.y + this.height * 0.5) {
+        return true;
+    }
     return false;
   }
 

@@ -86,8 +86,11 @@ class Editor {
       }
 
       /* Create InventoryItem item */
-      if (this.inventoryItem != null & nodeAtMouse instanceof InventoryItem) {
+      if (this.inventoryItem != null & nodeAtMouse instanceof InventoryItem
+      && !inventory.isCollidingRect(createVector(mouseX, mouseY))) {
         this.inventoryItem.createItem();
+      } else if (this.inventoryItem != null & nodeAtMouse instanceof InventoryItem){
+        this.inventoryItem.resetItem();
       }
     }
   }
@@ -96,6 +99,6 @@ class Editor {
     if(this.connection == null) { return; }
     this.connection.pos = createVector(mouseX, mouseY);
   }
-  
+
   mouseMoved() {}
 }
