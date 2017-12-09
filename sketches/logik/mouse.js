@@ -124,11 +124,19 @@ class DragAndDrop {
   }
 
   mousePressed(nodes) {
-    //select node
-    if (nodes[0] == null || nodes[0].parent != null) return
+    if (nodes[0] == null) {
+      return;
+    }
     this.node = nodes[0];
-    this.offset = createVector(this.node.getGlobalPosition().x - mouseX,
+
+    /* If it is a child node */
+    if (this.node.parent != null) {
+      this.offset = createVector(-this.node.parent.getGlobalPosition().x,
+      -this.node.parent.getGlobalPosition().y);
+    } else {
+      this.offset = createVector(this.node.getGlobalPosition().x - mouseX,
       this.node.getGlobalPosition().y - mouseY);
+    }
   }
 
   mouseDragged() {

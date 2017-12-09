@@ -1,8 +1,11 @@
-class Inventory extends Node {
+class Inventory extends InteractAble {
   constructor(x, y) {
     super(x, y);
     this.width = 240;
-    this.height = 200;
+    this.height = 240;
+    this.headerMargin = 40;
+
+    /* width and height are global variables for the window size */
     if(x + this.width / 2 > width) this.pos.x = width - this.width / 2;
     if(y + this.height / 2 > height) this.pos.y = height - this.height / 2;
 
@@ -30,9 +33,10 @@ class Inventory extends Node {
     var y = this.items[0].height / 2;
     for (var i = 0; i < this.items.length; i++) {
       var item = this.items[i];
-      item.initPos.x = this.pos.x - this.width / 2 + x;
-      item.initPos.y = this.pos.y - this.height / 2 + y;
+      item.initPos.x = x - this.width / 2;
+      item.initPos.y = y + this.headerMargin - this.height / 2;
       item.pos = item.initPos;
+      this.addChild(item);
       x += item.width;
       if(x + item.width/2 > this.width) {
         y += 40;
@@ -48,9 +52,7 @@ class Inventory extends Node {
     strokeWeight(4);
     rect(this.pos.x, this.pos.y, this.width, this.height);
 
-    for (var i = 0; i < this.items.length; i++) {
-      this.items[i].draw();
-    }
+    super.draw();
   }
 }
 
@@ -80,11 +82,6 @@ class InventoryItem extends InteractAble {
     noStroke();
     fill(255);
     text(this.text, this.pos.x, this.pos.y);
-  }
-
-  isColliding(point) {
-    if (this.pos.dist(point) < 20) return true;
-    return false;
   }
 
   createItem() {

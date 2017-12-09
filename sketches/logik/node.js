@@ -28,19 +28,28 @@ class Node {
   }
 
   isCollidingRect(point) {
-    /* If rectMode is CENTER */
-    if ( point.x > this.pos.x - this.width * 0.5
-      && point.x < this.pos.x + this.width * 0.5
-      && point.y > this.pos.y - this.height * 0.5
-      && point.y < this.pos.y + this.height * 0.5) {
-        return true;
+    /* If rectMode is set to CENTER */
+    if (rectMode()._renderer._rectMode = 'center') {
+      if ( point.x > this.pos.x - this.width * 0.5
+        && point.x < this.pos.x + this.width * 0.5
+        && point.y > this.pos.y - this.height * 0.5
+        && point.y < this.pos.y + this.height * 0.5) {
+          return this;
+      }
+    } else {
+      if ( point.x > this.pos.x
+        && point.x < this.pos.x + this.width
+        && point.y > this.pos.y
+        && point.y < this.pos.y + this.height) {
+          return this;
+      }
     }
-    return false;
+    return null;
   }
 
   /* Return deepest child at given position */
   existNodeAtPoint(mouse) {
-    if (!this.isColliding(mouse)) {
+    if (!this.isCollidingRect(mouse)) {
       return null;
     }
     var offsetMouse = mouse.copy().sub(this.pos);

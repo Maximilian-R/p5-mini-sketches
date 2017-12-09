@@ -71,6 +71,7 @@ class Editor {
 
   /* Create or drop connection */
   mouseReleased(nodesAtMouse) {
+
     for (var i = 0; i < nodesAtMouse.length; i++) {
       var nodeAtMouse = nodesAtMouse[i];
 
@@ -84,14 +85,16 @@ class Editor {
           this.connection = null;
         }
       }
+    }
 
-      /* Create InventoryItem item */
-      if (this.inventoryItem != null & nodeAtMouse instanceof InventoryItem
-      && !inventory.isCollidingRect(createVector(mouseX, mouseY))) {
-        this.inventoryItem.createItem();
-      } else if (this.inventoryItem != null & nodeAtMouse instanceof InventoryItem){
-        this.inventoryItem.resetItem();
-      }
+    /* Create Or reset InventoryItem item  -- Does not care about nodes at mouse */
+    if (this.inventoryItem != null //&& nodeAtMouse instanceof InventoryItem
+    && !inventory.isCollidingRect(createVector(mouseX, mouseY))) {
+      this.inventoryItem.createItem();
+      this.inventoryItem = null;
+    } else if (this.inventoryItem != null) { //&& nodeAtMouse instanceof InventoryItem){
+      this.inventoryItem.resetItem();
+      this.inventoryItem = null;
     }
   }
 
