@@ -12,7 +12,7 @@ function setup(){
   editor = new Editor();
   mouseHandler.subscribe(editor);
 
-  inventory = new Inventory(width, height);
+  loadPlayground();
 
   //setupTestData();
 }
@@ -42,4 +42,17 @@ function setupTestData() {
   new Light(700, 50);
   new Light(700, 100);
   new Light(700, 150);
+}
+
+function loadPlayground() {
+  inventory = new Inventory(width, height);
+}
+
+function resetPlayground() {
+
+  for (var i = worldNodes.length - 1; i >= 0; i--) {
+    worldNodes[i].remove();
+  }
+
+  worldNodes.push(inventory);
 }
