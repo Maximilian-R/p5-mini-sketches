@@ -1,5 +1,6 @@
-class Node {
+class Node extends Serializable {
   constructor(x, y) {
+    super();
     this.pos = createVector(x, y);
     this.width = 0;
     this.height = 0;

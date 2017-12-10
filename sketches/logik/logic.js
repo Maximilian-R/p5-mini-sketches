@@ -79,6 +79,9 @@ class Logic extends Frame {
     this.gui.addColor(this, 'frameColor');
     this.gui.add(this, 'name');
     this.gui.hide();
+
+
+    saveObjects.push(this);
   }
 
   /* Positions Sockets in a nice fashion! */
@@ -117,6 +120,15 @@ class Logic extends Frame {
       this.children[i].remove();
     }
     super.remove();
+  }
+
+  toJson() {
+    var objectJson = {
+       "x" : this.pos.x,
+       "y" : this.pos.y,
+       "name" : this.name
+    };
+    return objectJson;
   }
 }
 
