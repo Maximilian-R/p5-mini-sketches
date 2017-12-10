@@ -80,7 +80,6 @@ class Logic extends Frame {
     this.gui.add(this, 'name');
     this.gui.hide();
 
-
     saveObjects.push(this);
   }
 
@@ -126,7 +125,8 @@ class Logic extends Frame {
     var objectJson = {
        "x" : this.pos.x,
        "y" : this.pos.y,
-       "name" : this.name
+       "name" : this.name,
+       "class" : this.constructor.name
     };
     return objectJson;
   }
@@ -194,6 +194,13 @@ class LogicTimer extends Logic {
     noStroke();
     text(this.current/this.max + "%", 0, 0);
     pop();
+  }
+
+  toJson() {
+    var objectData = super.toJson();
+    objectData["current"] = this.current;
+    objectData["max"] = this.max;
+    return objectData;
   }
 }
 

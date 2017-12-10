@@ -15,6 +15,22 @@ function setup(){
   loadPlayground();
 
   //setupTestData();
+
+  classes = {
+    "LogicOr" : LogicOr,
+    "LogicAnd" : LogicAnd,
+    "LogicNot" : LogicNot,
+    "LogicXor" : LogicXor,
+    "LogicBattery" : LogicBattery,
+    "LogicTimer" : LogicTimer,
+    "LogicCounter" : LogicCounter,
+    "LogicSelector" : LogicSelector,
+    "LogicSwitch" : LogicSwitch,
+    "LogicSplitter" : LogicSplitter,
+    "LogicCombiner" : LogicCombiner,
+    "LogicKeyInput" : LogicKeyInput,
+    "Light" : Light
+  };
 }
 
 function draw(){

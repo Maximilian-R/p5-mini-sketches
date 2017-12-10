@@ -15,7 +15,10 @@ var saveObjects = [];
 
 var loadedJSON;
 
+let classes;
+
 class SaveLoadManager {
+
   static load() {
 
     loadedJSON = loadJSON("logik_savegame.json");
@@ -23,9 +26,11 @@ class SaveLoadManager {
 
   static createObjects() {
     var logics = loadedJSON['Logics'];
+
     for (var i = 0; i < logics.length; i++) {
       var data = logics[i];
-      new LogicOr(data['x'], data['y']);
+      print(data);
+      new classes[data['class']](data['x'], data['y']);
     }
   }
 
