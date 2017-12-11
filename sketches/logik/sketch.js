@@ -2,6 +2,7 @@ var editor;
 var inventory;
 var mouseHandler;
 var worldNodes = [];
+var collisionNodes = [];
 
 function setup(){
   createCanvas(window.innerWidth, window.innerHeight);
@@ -41,27 +42,27 @@ function draw(){
     worldNodes[i].draw();
   }
   mouseHandler.update();
-  inventory.draw();
+  //inventory.draw();
 }
 
 function setupTestData() {
-  new LogicOr(300, 300);
-  new LogicAnd(500, 300);
-  new LogicXor(700, 300);
-  new LogicBattery(100, 300);
-  new LogicBattery(500, 500);
-  new LogicNot(700, 500);
-  new LogicSelector(500, 100);
-  new LogicTimer(300, 100);
-  new LogicCounter(100, 100);
-  new Light(800, 300);
-  new Light(700, 50);
-  new Light(700, 100);
-  new Light(700, 150);
+  Node.addToWorld(new LogicOr(300, 300));
+  Node.addToWorld(new LogicAnd(500, 300));
+  Node.addToWorld(new LogicXor(700, 300));
+  Node.addToWorld(new LogicBattery(100, 300));
+  Node.addToWorld(new LogicBattery(500, 500));
+  Node.addToWorld(new LogicNot(700, 500));
+  Node.addToWorld(new LogicSelector(500, 100));
+  Node.addToWorld(new LogicTimer(300, 100));
+  Node.addToWorld(new LogicCounter(100, 100));
+  Node.addToWorld(new Light(800, 300));
+  Node.addToWorld(new Light(700, 50));
+  Node.addToWorld(new Light(700, 100));
+  Node.addToWorld(new Light(700, 150));
 }
 
 function loadPlayground() {
-  inventory = new Inventory(width, height);
+  inventory = Node.addToWorld(new Inventory(width, height));
 }
 
 function resetPlayground() {

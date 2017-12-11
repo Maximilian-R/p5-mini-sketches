@@ -85,7 +85,7 @@ class InventoryItem extends InteractAble {
   }
 
   createItem() {
-    new this.logicClass(mouseX, mouseY);
+    Node.addToWorld(new this.logicClass(mouseX, mouseY));
     this.resetItem();
     this.frameColor = color(255);
   }

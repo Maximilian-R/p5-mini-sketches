@@ -46,13 +46,12 @@ class Editor {
 
   /* Create and Move connection */
   mousePressed(nodesAtMouse) {
-
     for (var i = 0; i < nodesAtMouse.length; i++) {
       var node = nodesAtMouse[i];
 
       /* Create new connection */
       if (node instanceof OutputSocket) {
-        this.connection = new Connection(node);
+        this.connection = Node.addToWorld(new Connection(node));
       }
 
       /* Remove existing connection, create a new */
@@ -85,6 +84,11 @@ class Editor {
           this.connection = null;
         }
       }
+    }
+
+    if (nodesAtMouse.length == 0 && this.connection != null) {
+      this.connection.remove();
+      this.connection = null;
     }
 
     /* Create Or reset InventoryItem item  -- Does not care about nodes at mouse */

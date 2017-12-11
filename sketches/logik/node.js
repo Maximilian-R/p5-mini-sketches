@@ -7,17 +7,28 @@ class Node extends Serializable {
 
     this.children = [];
     this.parent = null;
-    worldNodes.push(this);
-    /* This should behave like SpriteKit. Create a node, then call addToScene()
-    When Implmented, remove splice on worldnodes from addchild function  */
+  }
+
+  /*
+  Should be a function of a class something like a SKScene...
+  */
+  static addToWorld(node) {
+    worldNodes.push(node);
+    /* Worldnodes are by default detected by collision */
+    collisionNodes.push(node);
+    return node;
   }
 
   addChild(node) {
-    worldNodes.splice(worldNodes.indexOf(node), 1);
     this.children.push(node);
     node.parent = this;
+
+    /* Quickfix to collision detect sockets and inventoryItems */
+    if (node instanceof Socket || node instanceof InventoryItem) collisionNodes.push(node);
+
     return node;
   }
+
   /*
   removeFromParent()
   removeAllChildren()
@@ -29,6 +40,11 @@ class Node extends Serializable {
   }
 
   isCollidingRect(point) {
+
+    if (this.parent != null) {
+      point = point.copy().sub(this.parent.getGlobalPosition());
+    }
+
     /* If rectMode is set to CENTER */
     if (rectMode()._renderer._rectMode = 'center') {
       if ( point.x > this.pos.x - this.width * 0.5
@@ -46,21 +62,6 @@ class Node extends Serializable {
       }
     }
     return null;
-  }
-
-  /* Return deepest child at given position */
-  existNodeAtPoint(mouse) {
-    if (!this.isCollidingRect(mouse)) {
-      return null;
-    }
-    var offsetMouse = mouse.copy().sub(this.pos);
-    for (var j = 0; j < this.children.length; j++) {
-      var child = this.children[j].existNodeAtPoint(offsetMouse);
-      if (child != null) {
-        return child;
-      }
-    }
-    return this;
   }
 
   /* Converts from local to global position */

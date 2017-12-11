@@ -86,9 +86,8 @@ class MouseHandler extends Subscribe {
     }
     this.nodesAtMouse = [];
 
-    // Handle this moved nodes
-    for (var i = 0; i < worldNodes.length; i++) {
-      var node = worldNodes[i].existNodeAtPoint(this.mouse);
+    for (var i = 0; i < collisionNodes.length; i++) {
+      var node = collisionNodes[i].isCollidingRect(this.mouse);
       if (node != null) {
         this.nodesAtMouse.push(node);
         node.mouseIsOver = true;
@@ -124,9 +123,11 @@ class DragAndDrop {
   }
 
   mousePressed(nodes) {
-    if (nodes[0] == null) {
+    if (nodes[0] == null ||
+      (nodes[0].parent != null && !(nodes[0] instanceof InventoryItem))) {
       return;
     }
+
     this.node = nodes[0];
 
     /* If it is a child node */

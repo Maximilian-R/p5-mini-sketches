@@ -18,7 +18,7 @@ class Frame extends InteractAble {
   }
 
   isColliding(point) {
-    if (this.pos.dist(point) < this.width ) return true;
+    if (this.pos.dist(point) < this.width) return true;
     return false;
   }
 
