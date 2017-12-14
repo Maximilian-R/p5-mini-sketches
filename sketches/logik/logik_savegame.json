@@ -1,78 +1,36 @@
 {
   "Logics": [
     {
-      "x": 108,
-      "y": 65,
+      "x": 329,
+      "y": 346,
       "name": "AND",
       "class": "LogicAnd"
     },
     {
-      "x": 255,
-      "y": 71,
-      "name": "OR",
-      "class": "LogicOr"
-    },
-    {
-      "x": 391,
-      "y": 79,
-      "name": "NOT",
-      "class": "LogicNot"
-    },
-    {
-      "x": 525,
-      "y": 78,
-      "name": "XOR",
-      "class": "LogicXor"
-    },
-    {
-      "x": 671,
-      "y": 70,
+      "x": 538,
+      "y": 285,
       "name": "TIMER",
       "class": "LogicTimer",
-      "current": 0,
+      "current": 79,
       "max": 100
     },
     {
-      "x": 110,
-      "y": 198,
-      "name": "COUNTER",
-      "class": "LogicCounter"
-    },
-    {
-      "x": 259,
-      "y": 195,
-      "name": "SELECTOR",
-      "class": "LogicSelector"
-    },
-    {
-      "x": 404,
-      "y": 209,
+      "x": 264,
+      "y": 545,
       "name": "BATTERY",
       "class": "LogicBattery"
     },
     {
-      "x": 542,
-      "y": 207,
+      "x": 572,
+      "y": 427,
       "name": "TOGGLE",
       "class": "LogicSwitch"
     },
     {
-      "x": 685,
-      "y": 220,
-      "name": "SPLITTER",
-      "class": "LogicSplitter"
-    },
-    {
-      "x": 85,
-      "y": 303,
-      "name": "COMBINER",
-      "class": "LogicCombiner"
-    },
-    {
-      "x": 232,
-      "y": 306,
-      "name": "KEYINPUT",
-      "class": "LogicKeyInput"
+      "x": 581,
+      "y": 544,
+      "name": "TOGGLE",
+      "class": "LogicSwitch"
     }
   ]
 }
