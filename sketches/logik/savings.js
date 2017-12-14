@@ -8,7 +8,6 @@
 
 class Serializable {
   toJson() {}
-  fromJson(json) {}
 }
 
 var saveObjects = [];

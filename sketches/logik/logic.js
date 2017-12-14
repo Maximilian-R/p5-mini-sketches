@@ -147,6 +147,12 @@ class LogicBattery extends Logic {
   applyLogic() {
     this.output[0].setPower(this.power);
   }
+
+  toJson() {
+    var objectJson = super.toJson();
+    objectJson['power'] = this.power;
+    return objectJson;
+  }
 }
 
 class LogicTimer extends Logic {
@@ -252,6 +258,14 @@ class LogicCounter extends Logic {
     text(this.current, 0, 0);
     pop();
   }
+
+  toJson() {
+    var objectData = super.toJson();
+    objectData["current"] = this.current;
+    objectData["max"] = this.max;
+    objectData["min"] = this.min;
+    return objectData;
+  }
 }
 
 class LogicSelector extends Logic {
@@ -300,6 +314,13 @@ class LogicSelector extends Logic {
       }
     }
     this.output[this.selected].setPower(100);
+  }
+
+  toJson() {
+    var objectData = super.toJson();
+    objectData["selected"] = this.selected;
+    objectData["choices"] = this.choices;
+    return objectData;
   }
 }
 
@@ -378,6 +399,12 @@ class LogicSwitch extends Logic {
       this.toggled ? this.output[0].setPower(100) : this.output[0].setPower(0);
     }
   }
+
+  toJson() {
+    var objectData = super.toJson();
+    objectData["toggled"] = this.toggled;
+    return objectData;
+  }
 }
 
 class LogicSplitter extends Logic {
@@ -449,6 +476,12 @@ class LogicKeyInput extends Logic {
     noStroke();
     text(this.key, 0, 0);
     pop();
+  }
+
+  toJson() {
+    var objectData = super.toJson();
+    objectData["key"] = this.key;
+    return objectData;
   }
 }
 
