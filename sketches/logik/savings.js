@@ -28,16 +28,15 @@ class SaveLoadManager {
 
     for (var i = 0; i < logics.length; i++) {
       var data = logics[i];
-      print(data);
       var obj = new classes[data['class']](data['x'], data['y']);
-      
-      /* Set saved attributes values */ 
+      /* Set saved attributes values */
       var keys = Object.keys(data);
+
       for (var j = 0; j < keys.length; j++) {
         /* obj[keyname from data[0...length]] = data[0...length] */
-        obj[keys[j]] = data[j];
+        obj[keys[j]] = data[keys[j]];
       }
-      
+
       Node.addToWorld(obj);
     }
   }

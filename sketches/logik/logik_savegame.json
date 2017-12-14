@@ -1,36 +1,35 @@
 {
   "Logics": [
     {
-      "x": 329,
-      "y": 346,
-      "name": "AND",
-      "class": "LogicAnd"
-    },
-    {
-      "x": 538,
-      "y": 285,
+      "x": 428,
+      "y": 263,
       "name": "TIMER",
       "class": "LogicTimer",
-      "current": 79,
+      "current": 60,
       "max": 100
     },
     {
-      "x": 264,
-      "y": 545,
+      "x": 437,
+      "y": 483,
+      "name": "TOGGLE",
+      "class": "LogicSwitch",
+      "toggled": true
+    },
+    {
+      "x": 304,
+      "y": 376,
       "name": "BATTERY",
-      "class": "LogicBattery"
+      "class": "LogicBattery",
+      "power": 100
     },
     {
-      "x": 572,
-      "y": 427,
-      "name": "TOGGLE",
-      "class": "LogicSwitch"
-    },
-    {
-      "x": 581,
-      "y": 544,
-      "name": "TOGGLE",
-      "class": "LogicSwitch"
+      "x": 304,
+      "y": 136,
+      "name": "COUNTER",
+      "class": "LogicCounter",
+      "current": 1,
+      "max": 10,
+      "min": 0
     }
   ]
 }
