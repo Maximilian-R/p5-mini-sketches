@@ -50,7 +50,7 @@ function mousePressed() {
 function particle(x, y) {
   this.pos = createVector(x, y);
   this.vel = createVector(0, 0);
-  this.fo = createVector(0, 0);
+  this.fo = createVector(random(-0.04, 0.04), 0);
 
   this.size = random(1, 6);
 
