@@ -50,13 +50,18 @@ function mousePressed() {
 function particle(x, y) {
   this.pos = createVector(x, y);
   this.vel = createVector(0, 0);
+  this.fo = createVector(0, 0);
 
   this.size = random(1, 6);
 
   this.update = function() {
 
+    var nos = (noise(millis(), this.pos.x, this.pos.y) - 0.5) * 3;
+    this.fo.add(0, nos);
+    
     // Calcualte position/movement
     this.vel = p5.Vector.mult(gravity, this.size);
+    this.vel.add(this.fo);
     this.pos.add(this.vel);
 
     this.bounding();
