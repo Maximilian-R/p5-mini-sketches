@@ -27,9 +27,9 @@ function setup() {
 function draw() {
   clear();
 
-  var yVel = map(mouseY, 0, height, -1, 1);
+  var yVel = map(height * 0.6, 0, height, -1, 1);
   gravity.y = yVel;
-  var xVel = map(mouseX, 0, width, -1, 1);
+  var xVel = map(width * 0.5, 0, width, -1, 1);
   gravity.x = xVel;
 
 
