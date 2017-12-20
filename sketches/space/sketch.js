@@ -27,7 +27,7 @@ function setup() {
 function draw() {
   clear();
 
-  var yVel = map(height * 0.6, 0, height, -1, 1);
+  var yVel = map(height * 0.7, 0, height, -1, 1);
   gravity.y = yVel;
   var xVel = map(width * 0.5, 0, width, -1, 1);
   gravity.x = xVel;
@@ -56,7 +56,7 @@ function particle(x, y) {
 
   this.update = function() {
 
-    var nos = random(-0.01, 0.01);
+    var nos = random(-0.04, 0.04);
     this.fo.add(nos);
     this.fo.limit(2);
     
