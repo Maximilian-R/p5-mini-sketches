@@ -56,7 +56,7 @@ function particle(x, y) {
 
   this.update = function() {
 
-    var nos = (noise(millis(), this.pos.x, this.pos.y) - 0.5);
+    var nos = random(-0.01, 0.01);
     this.fo.add(nos);
     this.fo.limit(2);
     
