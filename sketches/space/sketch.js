@@ -3,7 +3,7 @@ var totalParticles = 200;
 var gravity;
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(window.innerWidth, window.innerHeight);
 
   // Give the canvas a gradient background. Drawing a gradient background each frame takes to much performance.
   var can = document.getElementById("defaultCanvas0");
