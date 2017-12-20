@@ -56,8 +56,9 @@ function particle(x, y) {
 
   this.update = function() {
 
-    var nos = (noise(millis(), this.pos.x, this.pos.y) - 0.5) * 3;
+    var nos = (noise(millis(), this.pos.x, this.pos.y) - 0.5);
     this.fo.add(0, nos);
+    this.fo.limit(3);
     
     // Calcualte position/movement
     this.vel = p5.Vector.mult(gravity, this.size);
