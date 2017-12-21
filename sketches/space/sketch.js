@@ -48,10 +48,6 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-function mousePressed() {
-  print("CONSOLE");
-}
-
 function particle(x, y) {
   this.pos = createVector(x, y);
   this.vel = createVector(0, 0);
