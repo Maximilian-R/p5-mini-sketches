@@ -3,7 +3,7 @@ var totalParticles = 200;
 var gravity;
 var wind;
 function mousePressed() {
-  wind = createVector(2, 0.3);
+  wind = createVector(random(-2, 2), random(-0.4, 0.4));
 }
 
 function setup() {
