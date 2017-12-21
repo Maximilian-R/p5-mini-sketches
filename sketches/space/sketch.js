@@ -1,6 +1,10 @@
 var particles = [];
 var totalParticles = 200;
 var gravity;
+var wind;
+function mousePressed() {
+  wind = createVector(2, 0.3);
+}
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
@@ -21,6 +25,7 @@ function setup() {
   }
 
   gravity = createVector(0.0, 0.4);
+  wind = createVector(0, 0);
 
 }
 
@@ -63,6 +68,7 @@ function particle(x, y) {
     // Calcualte position/movement
     this.vel = p5.Vector.mult(gravity, this.size);
     this.vel.add(this.fo);
+    this.vel.add(wind);
     this.pos.add(this.vel);
 
     this.bounding();
