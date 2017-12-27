@@ -1,16 +1,13 @@
-//https://gamedevelopment.tutsplus.com/tutorials/adding-turbulence-to-a-particle-system--gamedev-13332
-// https://www.youtube.com/watch?v=b8oVAS9IdZM
 var emitter;
-
 var gravity;
+var wind;
 
-let spriteSheet;
-let textures = [];
+// let spriteSheet;
+// let textures = [];
 
 function preload() {
   //spriteSheet = loadImage("flakes32.png");
 }
-
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight, WEBGL);
@@ -18,6 +15,7 @@ function setup() {
   emitter = new ParticleEmitter();
 
   gravity = createVector(0, 0.8, 0);
+  wind = createVector(0.5, 0, 0);
   vortex = new Vortex();
 
   // for (var x = 0; x < spriteSheet.width; x+= 32) {
@@ -29,9 +27,15 @@ function setup() {
 }
 
 function draw() {
+
+  wind.x += random(-0.02, 0.02);
+  wind.z += random(-0.02, 0.02);
+  wind.limit(0.2);
+
+
   background(33, 46, 66);
 
-camera(0, 0, -300);
+  camera(0, 0, -300);
 
   fill(100, 100, 240, 10);
   push();
@@ -40,12 +44,8 @@ camera(0, 0, -300);
   pop();
 
   emitter.update();
-
   vortex.update();
-  //vortex.pos.x = mouseX - width * 0.5;
-  //vortex.pos.y = mouseY - height * 0.5;
 }
-
 
 var vortexOn = true;
 function mousePressed() {
@@ -58,8 +58,6 @@ class ParticleEmitter {
     this.particles = [];
 
     this.spawnbox = createVector(1000, 40, 500);
-
-    this.counter = 0;
     this.spawnRate = 2;
   }
 
@@ -72,8 +70,7 @@ class ParticleEmitter {
   }
 
   update() {
-    this.counter++;
-    if(this.counter % this.spawnRate == 0) {
+    if(frameCount % this.spawnRate == 0) {
       this.spawnParticle();
     }
 
@@ -94,31 +91,28 @@ class ParticleEmitter {
   }
 }
 
-
-
 class Particle {
   constructor(pos) {
     this.pos = pos;
     this.acc = createVector(0, 0, 0);
     this.vel = createVector(0, 0, 0);
     this.randomForce = createVector(0, 0, 0);
-
     this.alpha = 255;
-
     this.dead = false;
-
     this.size = random(1, 4);
   }
 
   update() {
+
     this.randomForce.add(random(-0.06, 0.06), 0, random(-0.06, 0.06));
 
-    //this.vel = createVector(0, 0, 0);
-    //var downForce = p5.Vector.mult(gravity, this.size);
-    var downForce = gravity;
-    this.vel.add(downForce);
-    this.vel.add(this.randomForce);
+    /* Apply forces */
 
+    this.acc.add(gravity);
+    this.acc.add(wind);
+    this.acc.add(this.randomForce);
+
+    if (vortex.power != 0) {
       var dx = this.pos.x - vortex.pos.x;
       var dz = this.pos.z - vortex.pos.z;
       var vx = -dz*vortex.getPower();
@@ -127,8 +121,12 @@ class Particle {
 
       this.acc.x += (vx - this.vel.x) * factor;
       this.acc.z += (vz - this.vel.z) * factor;
-      this.vel.add(this.acc);
-      this.acc.mult(0);
+    }
+
+    this.vel.add(this.acc);
+    this.acc.mult(0);
+
+    /* Air resistance */
 
     var c = 0.04;
     var speed = this.vel.mag();
@@ -139,17 +137,18 @@ class Particle {
     drag.mult(dragMagnitude);
     this.vel.add(drag);
 
-
+    /* Fall until hit ground, then fade out */
 
     if (this.pos.y < 300) {
       this.pos.add(this.vel);
     } else {
       this.alpha -= 3;
+      if(this.alpha <= 0) {
+        this.dead = true;
+      }
     }
 
-    if(this.alpha <= 0) {
-      this.dead = true;
-    }
+    /* Draw */
 
     fill(255, this.alpha);
     push();
