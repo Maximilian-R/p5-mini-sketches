@@ -4,22 +4,34 @@ var emitter;
 
 var gravity;
 
+let spriteSheet;
+let textures = [];
+
+function preload() {
+  //spriteSheet = loadImage("flakes32.png");
+}
+
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight, WEBGL);
 
   emitter = new ParticleEmitter();
 
-  gravity = createVector(0, 1.0, 0);
+  gravity = createVector(0, 0.8, 0);
   vortex = new Vortex();
+
+  // for (var x = 0; x < spriteSheet.width; x+= 32) {
+  //   for (var y = 0; y < spriteSheet.height; y+= 32) {
+  //     let img = spriteSheet.get(x, y, 32, 32);
+  //     textures.push(img);
+  //   }
+  // }
 }
 
 function draw() {
   background(33, 46, 66);
-  orbitControl();
 
-  pointLight(255, 255, 255, 0, 0, 0);
-
+camera(0, 0, -300);
 
   fill(100, 100, 240, 10);
   push();
@@ -29,14 +41,15 @@ function draw() {
 
   emitter.update();
 
-  rotateX(millis() / 1000);
-
-  vortex.pos.x = mouseX - width * 0.5;
-  vortex.pos.y = mouseY - height * 0.5;
+  vortex.update();
+  //vortex.pos.x = mouseX - width * 0.5;
+  //vortex.pos.y = mouseY - height * 0.5;
 }
 
+
+var vortexOn = true;
 function mousePressed() {
-  emitter.spawnParticle();
+  vortexOn = !vortexOn;
 }
 
 class ParticleEmitter {
@@ -86,33 +99,47 @@ class ParticleEmitter {
 class Particle {
   constructor(pos) {
     this.pos = pos;
-    this.vel;
+    this.acc = createVector(0, 0, 0);
+    this.vel = createVector(0, 0, 0);
     this.randomForce = createVector(0, 0, 0);
 
     this.alpha = 255;
 
     this.dead = false;
 
-    this.size = random(1, 5);
-    this.mass = random()
+    this.size = random(1, 4);
   }
 
   update() {
-    this.randomForce.add(random(-0.04, 0.04), 0, random(-0.04, 0.04));
+    this.randomForce.add(random(-0.06, 0.06), 0, random(-0.06, 0.06));
 
-    this.vel = createVector(0, 0, 0);
-    var downForce = p5.Vector.mult(gravity, this.size);
+    //this.vel = createVector(0, 0, 0);
+    //var downForce = p5.Vector.mult(gravity, this.size);
+    var downForce = gravity;
     this.vel.add(downForce);
     this.vel.add(this.randomForce);
 
-    var dx = this.pos.x - vortex.pos.x;
-    var dz = this.pos.z - vortex.pos.z;
-    var vx = -dz*vortex.speed;
-    var vz =  dx*vortex.speed;
-    var factor = 1 / (1 + (dx * dx + dz * dz) / vortex.scale);
+      var dx = this.pos.x - vortex.pos.x;
+      var dz = this.pos.z - vortex.pos.z;
+      var vx = -dz*vortex.getPower();
+      var vz =  dx*vortex.getPower();
+      var factor = 1 / (1 + (dx * dx + dz * dz) / vortex.scale);
 
-    this.vel.x += (vx - this.vel.x) * factor;
-    this.vel.z += (vz - this.vel.z) * factor;
+      this.acc.x += (vx - this.vel.x) * factor;
+      this.acc.z += (vz - this.vel.z) * factor;
+      this.vel.add(this.acc);
+      this.acc.mult(0);
+
+    var c = 0.04;
+    var speed = this.vel.mag();
+    var dragMagnitude = c * speed * speed;
+    var drag = this.vel.copy();
+    drag.mult(-1);
+    drag.normalize();
+    drag.mult(dragMagnitude);
+    this.vel.add(drag);
+
+
 
     if (this.pos.y < 300) {
       this.pos.add(this.vel);
@@ -137,7 +164,28 @@ var vortex;
 class Vortex {
   constructor() {
     this.pos = createVector(0, -800, -600);
-    this.speed = 2000;
+    this.speed = 700;
     this.scale = 1;
+
+    this.power = 1.0;
+  }
+
+  getPower() {
+    return this.speed * this.power;
+  }
+
+  update() {
+    if(!vortexOn) {
+      this.power -= 0.01;
+      if (this.power < 0) {
+        this.power = 0.0;
+      }
+    } else {
+      this.power += 0.01;
+      if (this.power > 1) {
+        this.power = 1;
+      }
+    }
+
   }
 }
