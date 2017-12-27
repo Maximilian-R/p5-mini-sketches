@@ -126,7 +126,7 @@ class Logic extends Frame {
        "x" : this.pos.x,
        "y" : this.pos.y,
        "name" : this.name,
-       "class" : this.constructor.name
+       "class" : this.constructor.names
     };
     return objectJson;
   }

@@ -41,6 +41,16 @@ class SaveLoadManager {
     }
   }
 
+
+  /* Each logic save its connection from its outputs...
+  When creating objects wait with creating connnections,
+  just add them to a waiting array until all logics exists.
+
+  It most know from what logic and output index to
+  what logic and input index or togglesocket...
+
+
+   */
   static save() {
     var json = {};
     json['Logics'] = [];
@@ -50,7 +60,6 @@ class SaveLoadManager {
     }
 
     print(json);
-
     saveJSON(json, 'logik_savegame.json')
   }
 

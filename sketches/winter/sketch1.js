@@ -12,6 +12,14 @@ function preload() {
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight, WEBGL);
 
+  // Give the canvas a gradient background. Drawing a gradient background each frame takes to much performance.
+  var can = document.getElementById("defaultCanvas0");
+  can.style.background = "-webkit-radial-gradient(#1b2735 0%,#090a0f 100%)";
+  can.style.background = "-o-radial-gradient(#1b2735,#090a0f 100%)";
+  can.style.background = "-moz-radial-gradient(#1b2735,#090a0f)";
+  can.style.background = "radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%";
+
+
   emitter = new ParticleEmitter();
 
   gravity = createVector(0, 0.8, 0);
@@ -33,11 +41,11 @@ function draw() {
   wind.limit(0.2);
 
 
-  background(33, 46, 66);
+  //background(33, 46, 66);
 
   camera(0, 0, -300);
 
-  fill(100, 100, 240, 10);
+  fill(50, 100);
   push();
   translate(0, 300, 0);
   box(5000, 40, 5000);
@@ -154,6 +162,7 @@ class Particle {
     push();
     translate(this.pos.x, this.pos.y, this.pos.z);
     sphere(this.size);
+
     pop();
   }
 }
