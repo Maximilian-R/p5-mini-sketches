@@ -23,7 +23,7 @@ function updateImage() {
     green1 = img.pixels[i + 1];
     blue1 = img.pixels[i + 2];
 
-    if (within(red1, 0, 100) && within(green1, 100, 255) && within(blue1, 0, 100)) {
+    if (green1 > red1 + blue1) {
       img.pixels[i] = 255;
       img.pixels[i + 1] = 255;
       img.pixels[i + 2] = 255;
