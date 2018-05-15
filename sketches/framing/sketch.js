@@ -1,7 +1,7 @@
 var img;
 
 function preload() {
-  img = loadImage("obama.jpg");
+  img = loadImage("green_screen_test.jpg");
 }
 
 function setup(){
