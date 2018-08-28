@@ -1,0 +1,97 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Maximilian</title>
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body class>
+<div class = "container-fluid" id = "bodyContainer">
+
+  <!-- Presentation -->
+
+  <!-- Presentation END -->
+
+  <div class = "row row-centered">
+
+  <div class = "col-xs-12">
+    <div id ="1" onclick="usedTicket(1)" class="outer nopadding hvr-grow-rotate">
+      <div id = "1.1" class="inner">
+        <p class = "ticketnum">#20170224:01</p>
+        <div class="top left corner"></div>
+        <div class="top right corner"></div>
+        <div class="ticketcontent"><h6>Golden Ticket</h6><p>En upplevelsepresent tillsammans med familjen</p></div>
+        <div class="bottom right corner"></div>
+        <div class="bottom left corner"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class = "col-xs-12">
+    <div id ="1" onclick="usedTicket(2)" class="outer nopadding hvr-grow-rotate">
+      <div id = "1.1" class="inner">
+        <p class = "ticketnum">#20170429:02</p>
+        <div class="top left corner"></div>
+        <div class="top right corner"></div>
+        <div class="ticketcontent"><h6>Golden Ticket</h6><p>En upplevelsepresent tillsammans med familjen</p></div>
+        <div class="bottom right corner"></div>
+        <div class="bottom left corner"></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+function usedTicket(numberID) {
+  var state = "true";
+  localStorage.setItem(numberID, state);
+  setUsed(numberID.toString() + ".1");
+}
+
+function resetAll() {
+  var state = "false";
+  for (i = 1; i <= 1; i++) {  /* Change number of iterates */
+    localStorage.setItem(i, state);
+  }
+  location.reload();
+}
+
+function resetTicket(numberID) {
+localStorage.setItem(numberID, "false");
+}
+
+(function() {
+  for (i = 1; i <= 1; i++) {
+    if (localStorage.getItem(i).valueOf() == "true") {
+      setUsed(i.toString()+".1");
+    }
+  }
+})();
+
+function setUsed(id) {
+  document.getElementById(id).className += " used";
+}
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
