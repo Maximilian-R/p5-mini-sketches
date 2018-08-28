@@ -58,7 +58,8 @@ body {
 
 .Main h1 {
   text-align: center;
-  font-size: 40px;
+  font-size: 4em;
+  font-weight: 100;
 }
 
 .ContactBar {
@@ -80,4 +81,80 @@ body {
 
 .ContactBar a:hover {
   color: rgb(54, 209, 255);
+}
+
+
+
+
+.projekt {
+  overflow: hidden;
+  border-left: 2px solid black;
+  margin-left: 20px;
+}
+
+.projekt li {
+  float: left;
+  margin: 20px;
+  color: black;
+  list-style-type: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
+.projekt-sample {
+  display: inline-block;
+  width: 12em;
+  background-color: white;
+  position: relative;
+}
+
+.projekt-sample img {
+  width: 12em;
+  height: 12em;
+  margin: 0px;
+}
+
+.links {
+  list-style-type: none;
+  padding: 0;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.links a {
+  cursor: pointer;
+}
+
+.links img {
+  height: 2.5em;
+  width: 2.5em;
+}
+
+.links a:hover img {
+  background-color: rgb(54, 209, 255);
+  border-radius: 50%;
+}
+
+
+
+
+.overlay {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  overflow: hidden;
+  width: 100%;
+  height:0;
+  transition: .5s ease;
+}
+
+.projekt-sample:hover .overlay {
+  bottom: 0;
+  height: 100%;
 }
