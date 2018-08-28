@@ -5,12 +5,12 @@ src: url("http://www-und.ida.liu.se/~maxra079/Present/fonts/RosewoodStd-Fill.otf
 
 @font-face {
 font-family: Coliseum;
-src: url("https://github.com/Maximilian-R/p5_mini_sketches/tree/master/sketches/goldenticket/fonts/Coliseum.otf") format("opentype");
+src: url("https://maximilian-r.github.io/p5_mini_sketches/sketches/goldenticket/fonts/Coliseum.otf") format("opentype");
 }
 
 @font-face {
 font-family: Typewriter;
-src: url("https://github.com/Maximilian-R/p5_mini_sketches/tree/master/sketches/goldenticket/fonts/typewriter.otf") format("opentype");
+src: url("https://maximilian-r.github.io/p5_mini_sketches/sketches/goldenticket/fonts/typewriter.otf") format("opentype");
 }
 
 .bottle {
