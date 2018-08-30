@@ -3,6 +3,14 @@ var vehicles = [];
 var enemy;
 var useFontSize = 200;
 var fontBox;
+var labels = [
+  "Algorithm","Array","Boolean","Block","Bracket","Binary","Class","10110",
+  "Complie","Concat","Catch","Datatype","Debug","Declare","Double","Element",
+  "Error","Escape","Event","Foreach","Float","Function","HTML","Integer",
+  "Java","Label","Method","Null","Parse","Private","Public","Program","Random",
+  "Return","Server","Shift","Source","Stack","Switch","Swift","String","Super",
+  "System","Thread","Value",
+];
 
 
 function windowResized() {
@@ -15,63 +23,33 @@ function preload() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
+
   textFont(font);
-
   colorMode(HSB, 100);
+  noCursor();
 
-  enemy = new Enemy(-width * .5, height * .5);
-
+  enemy = new Enemy(0, 0);
   word = labels[round(random(labels.length))];
   changeWord(word);
 }
 
-var labels = [
-  "Algorithm",
-  "Array",
-  "Boolean",
-  "Block",
-  "Bracket",
-  "Binary",
-  "Class",
-  "10110",
-  "Complie",
-  "Concat",
-  "Catch",
-  "Datatype",
-  "Debug",
-  "Declare",
-  "Double",
-  "Element",
-  "Error",
-  "Escape",
-  "Event",
-  "Foreach",
-  "Float",
-  "Function",
-  "HTML",
-  "Integer",
-  "Java",
-  "Label",
-  "Method",
-  "Null",
-  "Parse",
-  "Private",
-  "Public",
-  "Program",
-  "Random",
-  "Return",
-  "Server",
-  "Shift",
-  "Source",
-  "Stack",
-  "Switch",
-  "Swift",
-  "String",
-  "Super",
-  "System",
-  "Thread",
-  "Value",
-];
+function draw() {
+
+  background(0, 100 * 0.5);
+
+  enemy.update();
+  enemy.render();
+
+  if (frameCount % 300 == 0) {
+    changeWord(labels[floor(random(labels.length))]);
+  }
+
+  vehicles.forEach(function(v) {
+      v.behavior();
+      v.update();
+      v.render();
+  });
+}
 
 function changeWord(s) {
   points = font.textToPoints(s, width * .5, height * .5, useFontSize);
@@ -101,24 +79,10 @@ function changeWord(s) {
   }.bind(this));
 }
 
-function draw() {
-
-  background(0, 100 * 0.5);
-
-  enemy.update();
-  enemy.render();
-
-  vehicles.forEach(function(v) {
-      v.behavior();
-      v.update();
-      v.render();
-  });
-}
-
 function Enemy(x, y) {
   this.x = x;
   this.y = y;
-  this.speed = 10;
+  this.speed = 8;
   this.r = 16;
   this.passed = false;
   this.index = 0;
@@ -135,26 +99,27 @@ Enemy.prototype.render = function() {
 }
 
 Enemy.prototype.update = function() {
-  this.timePassed++;
-  this.x += this.speed;
-
-  if (this.x >= width && this.timePassed >= 60 * 4)  {
-    this.x = 0;
-    this.timePassed = 0;
-    this.passed = false;
-  }
-
-  if(this.x > width * 0.6 && !this.passed) {
-    this.passed = true;
-    newIndex = 0;
-    do {
-      newIndex = floor(random(labels.length));
-    } while(newIndex == this.index);
-
-    this.index = newIndex;
-    changeWord(labels[this.index]);
-  }
-
+  this.x = mouseX;
+  this.y = mouseY;
+  // this.timePassed++;
+  // this.x += this.speed;
+  //
+  // if (this.x >= width && this.timePassed >= 60 * 4)  {
+  //   this.x = 0;
+  //   this.timePassed = 0;
+  //   this.passed = false;
+  // }
+  //
+  // if(this.x > width * 0.6 && !this.passed) {
+  //   this.passed = true;
+  //   newIndex = 0;
+  //   do {
+  //     newIndex = floor(random(labels.length));
+  //   } while(newIndex == this.index);
+  //
+  //   this.index = newIndex;
+  //   changeWord(labels[this.index]);
+  // }
 }
 
 function Vehicle(x, y) {

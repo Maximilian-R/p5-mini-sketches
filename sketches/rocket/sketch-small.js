@@ -6,7 +6,7 @@ var time;
 
 
 function windowResized() {
-  resizeCanvas(windowWidth, 300);
+  resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
 function preload() {
@@ -14,8 +14,8 @@ function preload() {
 }
 
 function setup() {
-  var canvas = createCanvas(windowWidth, 300);
-  canvas.parent('sketch-holder');
+  var canvas = createCanvas(window.innerWidth, window.innerHeight);
+  //canvas.parent('sketch-holder');
   textFont(font);
 
   colorMode(HSB, 100);
@@ -87,7 +87,7 @@ function Vehicle(x, y) {
 
   this.r = 8;
   this.maxSpeed = 2;
-  this.maxForce = 1;
+  this.maxForce = 0.8;
 }
 
 Vehicle.prototype.behavior = function() {
@@ -181,7 +181,4 @@ Vehicle.prototype.render = function() {
     fill(92 - c, s - d - m, 100);
     ellipse(this.pos.x, this.pos.y, i);
   }
-
-
-
 }
