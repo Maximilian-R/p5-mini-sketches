@@ -70,8 +70,8 @@ function changeWord(s) {
   points.forEach(function(p, index) {
     if(index >= vehicles.length) {
       v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
-      v.pos.x = random(width);
-      v.pos.y = -50;
+      v.pos.x = width / 2;
+      v.pos.y = height / 2;
       vehicles.push(v);
     }
       vehicles[index].target.x = p.x - b.w * .5;
