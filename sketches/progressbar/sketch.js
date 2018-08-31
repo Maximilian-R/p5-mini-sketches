@@ -23,4 +23,10 @@ function draw() {
   p1.update();
   p2.update();
   p3.update();
+
+  if (frameCount % 200 == 0) {
+    p1.setValue(random(0, 100), true);
+    p2.setValue(random(0, 100), true);
+    p3.setValue(random(0, 100), true);
+  }
 }
