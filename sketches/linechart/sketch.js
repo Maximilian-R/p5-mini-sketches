@@ -18,8 +18,8 @@ function setup() {
 
   this.pointsSlider = createSlider(2, width, width / 2);
   this.scaleSlider  = createSlider(0, 150, 25);
-  //this.pointsSlider .position( 20, height - 40);
-  //this.scaleSlider  .position(160, height - 40);
+  this.pointsSlider .position( 20, height - 40);
+  this.scaleSlider  .position(160, height - 40);
 
   let w = 700;
   let h = w;
