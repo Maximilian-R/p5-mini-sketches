@@ -11,7 +11,7 @@ let noiseDataSet;
 let lineChart;
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(window.innerWidth, window.innerHeight);
   noiseSeed(0);
   cursor(MOVE);
   textAlign(RIGHT);
@@ -21,7 +21,7 @@ function setup() {
   this.pointsSlider .position( 20, height - 40);
   this.scaleSlider  .position(160, height - 40);
 
-  let w = 700;
+  let w = min(width, height) - 100;
   let h = w;
   lineChart = new LineChart(50, 50, w, h);
   noiseDataSet = new NoiseDataSet(h);
