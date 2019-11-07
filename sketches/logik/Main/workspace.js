@@ -1,3 +1,5 @@
+let eletricRefreshRate = 2;
+
 class Workspace {
     constructor() {
       this.position = createVector(0, 0);
@@ -54,7 +56,7 @@ class Workspace {
     update() {
       MouseHandler.update();
   
-      if(frameCount % 2 === 0) {
+      if(frameCount % eletricRefreshRate === 0) {
         electricComponents.forEach((c) => {
           c.prepareState();
         });

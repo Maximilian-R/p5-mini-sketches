@@ -55,7 +55,7 @@ function draw(){
 
 function setupTestData() {
   let classes = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
-  LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, Light];
+  LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, Light, LogicMeasure];
 
 
   for(let i = 0; i < classes.length; i++) {
@@ -64,7 +64,6 @@ function setupTestData() {
       let y = SQUARE_SIZE + (SQUARE_SIZE * 3 * j);
       world.addToWorld(new classes[i](x, y));
     }
-   
   }
 
   

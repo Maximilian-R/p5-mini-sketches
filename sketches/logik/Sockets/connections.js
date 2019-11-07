@@ -86,10 +86,8 @@ class InputSocket extends Socket {
   prepareState() {
     //if (!this.hasConnection()) return;
     const incomingPower = this.hasConnection() ? this.connections[0].power : 0;
-    if (incomingPower !== 0 && this.power !== incomingPower) {
+    if (incomingPower !== this.power) {
       this.nextState = new State(incomingPower);
-    } else if (incomingPower === 0 && this.power !== 0) {
-      this.nextState = new State(0);
     }
   }
 }
@@ -102,27 +100,30 @@ Ask for it to toggle when calling apply logic and execute something
 class ToggleSocket extends InputSocket {
   constructor(x, y) {
     super(x, y);
-    this.toggle = false;
-    this.needReset = false;
+    this.toggled = false;
   }
 
-  test() {
-    if(this.toggle && !this.needReset) {
-      this.toggle = false;
-      this.needReset = true;
+  check() {
+    if (this.toggled) {
+      this.toggled = false;
       return true;
     }
     return false;
   }
 
-  update() {
-    super.update();
-    if (this.power == 0) {
-      this.needReset = false;
-    } else {
-      if(!this.needReset) {
-        this.toggle = true;
+  prepareState() {
+    const incomingPower = this.hasConnection() ? this.connections[0].power : 0;
+    if (incomingPower !== this.power) {
+
+      // Toggle whenever going from 0 to on, or from positive <-> negative
+      const wasZero = incomingPower !== 0 && this.power === 0;
+      const posToNeg = incomingPower < 0 && this.power > 0;
+      const negToPos = incomingPower > 0 && this.power < 0;
+      if (wasZero || posToNeg || negToPos) {
+        this.toggled = true;
       }
+
+      this.nextState = new State(incomingPower);
     }
   }
 }

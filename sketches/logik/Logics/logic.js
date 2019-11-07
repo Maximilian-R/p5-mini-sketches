@@ -146,21 +146,30 @@ class LogicBattery extends Logic {
 
     /* Logic Specific Attributes */
     this.maxPower = 100;
-    this.minPower = 100;
+    this.minPower = -100;
+    this.selectedPower = 0;
     /* Configure GUI */
-    this.gui.add(this, 'power', this.minPower, this.maxPower).step(10);
+    this.gui.add(this, 'selectedPower').min(this.minPower).max(this.maxPower).step(10);
   }
 
   /* Always apply configured power */
   prepareState() {
-    // Turn on the battery if off
-    if(this.power === 0) {
-      this.nextState = new State(100);
+    if(this.power !== this.selectedPower) {
+      this.nextState = new State(this.selectedPower);
+      
     }
     // Set power to output socket
-    if(this.power > 0 && !this.output[0].isOn()) {
+    if(this.power !== this.output[0].power) {
       this.output[0].setPower(this.power);
     }
+  }
+
+  draw() {
+    super.draw();
+    textAlign(CENTER);
+    fill(255);
+    noStroke();
+    text(this.power, this.dimension.width / 2, this.dimension.height / 2);
   }
 
   toJson() {
@@ -188,7 +197,7 @@ class LogicTimer extends Logic {
   Resets by applying power to togglesocket at bottom
   */
   prepareState() {
-    if(this.bottomSocket.test()) {
+    if(this.bottomSocket.check()) {
       this.current = 0;
     }
 
@@ -243,12 +252,12 @@ class LogicCounter extends Logic {
   Reset with togglesocket at bottom.
   */
   prepareState() {
-    if(this.bottomSocket.test()) {
+    if(this.bottomSocket.check()) {
       this.current = 0;
       this.output[0].setPower(0);
     }
 
-    if(this.inputs[0].test()) {
+    if(this.inputs[0].check()) {
       this.current += this.inputs[0].power > 0 ? 1 : -1 ;
       if (this.current >= this.max) {
         this.current = this.max
@@ -302,7 +311,7 @@ class LogicSelector extends Logic {
   depending on positive or negative signal
   */
   prepareState() {
-    if(this.bottomSocket.test()) {
+    if(this.bottomSocket.check()) {
       this.output[this.selected].setPower(0);
       if(this.bottomSocket.power < 0) {
         this.selected -= 1;
@@ -379,6 +388,27 @@ class LogicWaypoint extends Logic {
   }
 }
 
+class LogicMeasure extends Logic {
+  constructor(x, y) {
+    super("MEASURE", x, y, 1, 0);
+  }
+
+  draw() {
+    super.draw();
+    textAlign(CENTER);
+    fill(255);
+    noStroke();
+    text(this.power, this.dimension.width / 2, this.dimension.height / 2);
+  }
+
+  /* Outputs the input */
+  prepareState() {
+    if(this.inputs[0].power !== this.power) {
+      this.nextState = new State(this.inputs[0].power);
+    }
+  }
+}
+
 class LogicXor extends Logic {
   constructor(x, y) {
     super("XOR", x, y, 2, 1);
@@ -419,7 +449,7 @@ class LogicSwitch extends Logic {
 
   /* Whenever an input signal is given, change state */
   prepareState() {
-    if(this.inputs[0].test()) {
+    if(this.inputs[0].check()) {
       this.toggled = !this.toggled;
       this.output[0].setPower(this.toggled ? 100 : 0);
     }
