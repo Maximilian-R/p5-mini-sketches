@@ -1,10 +1,17 @@
 /* All handling of mosue and keys should be handled in inputHandler */
 
 class Editor {
-  constructor() {
+  constructor(workspace) {
+    this.workspace = workspace;
+    this.grid = new Grid();
+    this.cursor = createVector(0, 0);
+
     this.connection;
     this.inventoryItem;
     this.nodeWithOpenGUI;
+
+    MouseHandler.subscribe(this);
+    KeyboardHandler.subscribe(this);
   }
 
   keyPressed() {
@@ -34,9 +41,9 @@ class Editor {
       }
     }
 
-    /* Open GUI for clicked logic */
+    /* Open GUI*/
     for (var i = 0; i < nodesClicked.length; i++) {
-      if (nodesClicked[i] instanceof Logic) {
+      if (nodesClicked[i].gui != null) {
         nodesClicked[i].gui.show();
         this.nodeWithOpenGUI = nodesClicked[i];
         break;
@@ -51,7 +58,7 @@ class Editor {
 
       /* Create new connection */
       if (node instanceof OutputSocket) {
-        this.connection = Node.addToWorld(new Connection(node));
+        this.connection = world.addToWorld(new Connection(node));
       }
 
       /* Remove existing connection, create a new */
@@ -103,9 +110,24 @@ class Editor {
   }
 
   mouseDragged() {
+    this.positionGrid();
     if(this.connection == null) { return; }
-    this.connection.pos = createVector(mouseX, mouseY);
+    this.connection.endPosition = world.positionInWorld(createVector(mouseX, mouseY));
   }
 
-  mouseMoved() {}
+  mouseMoved() {
+    this.positionGrid();
+  }
+  
+  positionGrid() {
+    let mousePos = this.grid.snapToGrid(this.workspace.positionInWorld(createVector(mouseX, mouseY)));
+    this.cursor = this.grid.snapToGrid(mousePos);
+    this.grid.position = this.cursor;
+  }
+
+  draw() {
+    this.grid.draw();
+    fill(0);
+    //ellipse(this.cursor.x, this.cursor.y,  10, 10);
+  }
 }

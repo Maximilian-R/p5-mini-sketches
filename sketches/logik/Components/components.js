@@ -6,12 +6,10 @@ behave to power.
 
 class Light extends InteractAble {
   constructor(x, y) {
-    super(x, y);
+    super(x, y, new Dimension(SQUARE_SIZE, SQUARE_SIZE));
     this.color = "#ffae23";
     this.on = false;
-    this.width = 40;
-    this.height = 40;
-    this.input = this.addChild(new InputSocket(-this.width / 2, 0));
+    this.input = this.addChild(new InputSocket(-10, this.dimension.height / 2 - 5));
 
     this.gui = new dat.GUI();
     this.gui.addColor(this, 'color');
@@ -19,7 +17,7 @@ class Light extends InteractAble {
   }
 
   isColliding(point) {
-    if (this.pos.dist(point) < this.width * 1.1) return true;
+    if (this.position.dist(point) < this.dimension.width * 1.1) return true;
     return false;
   }
 
@@ -34,17 +32,13 @@ class Light extends InteractAble {
   }
 
   draw() {
-    super.draw();
-    push();
-    translate(this.pos.x, this.pos.y);
     noStroke();
     if (this.on)  {
       fill(this.color);
     } else {
       fill(150);
     }
-    rect(0, 0, this.width, this.height);
-    pop();
+    rect(0, 0, this.dimension.width, this.dimension.height);
   }
 
   remove() {

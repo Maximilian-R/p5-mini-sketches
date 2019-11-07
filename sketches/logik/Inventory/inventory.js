@@ -1,13 +1,12 @@
 class Inventory extends InteractAble {
   constructor(x, y) {
     super(x, y);
-    this.width = 240;
-    this.height = 240;
+    this.dimension = new Dimension(240, 240);
     this.headerMargin = 40;
 
     /* width and height are global variables for the window size */
-    if(x + this.width / 2 > width) this.pos.x = width - this.width / 2;
-    if(y + this.height / 2 > height) this.pos.y = height - this.height / 2;
+    if(x + this.width / 2 > width) this.position.x = width - this.width / 2;
+    if(y + this.height / 2 > height) this.position.y = height - this.height / 2;
 
     this.items = [
       new InventoryItem(createVector(x, y), LogicAnd, "AND"),
@@ -28,6 +27,14 @@ class Inventory extends InteractAble {
     this.createLayout();
   }
 
+  get width() {
+    return this.dimension.width;
+  }
+
+  get height() {
+    return this.dimension.height;
+  }
+
   createLayout() {
     var x = this.items[0].width / 2;
     var y = this.items[0].height / 2;
@@ -46,13 +53,12 @@ class Inventory extends InteractAble {
   }
 
   draw() {
-    rectMode(CENTER);
+    //rectMode(CENTER);
     fill(170);
     stroke(255);
-    strokeWeight(4);
-    rect(this.pos.x, this.pos.y, this.width, this.height);
-
-    super.draw();
+    strokeWeight(2);
+    rect(this.position.x, this.position.y, this.width, this.height);
+    
   }
 }
 
@@ -68,8 +74,8 @@ class InventoryItem extends InteractAble {
   }
 
   draw() {
-    rectMode(CENTER);
-    textAlign(CENTER);
+    //rectMode(CENTER);
+    //textAlign(CENTER);
 
     fill(170);
     if(this.mouseIsOver) {
@@ -77,15 +83,15 @@ class InventoryItem extends InteractAble {
     } else {
       stroke(255);
     }
-    rect(this.pos.x, this.pos.y, this.width, this.height);
+    rect(this.position.x, this.position.y, this.width - 2, this.height - 2);
 
     noStroke();
     fill(255);
-    text(this.text, this.pos.x, this.pos.y);
+    text(this.text, this.position.x, this.position.y);
   }
 
   createItem() {
-    Node.addToWorld(new this.logicClass(mouseX, mouseY));
+    world.addToWorld(new this.logicClass(mouseX, mouseY));
     this.resetItem();
     this.frameColor = color(255);
   }

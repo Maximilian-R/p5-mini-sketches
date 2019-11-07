@@ -37,7 +37,7 @@ class SaveLoadManager {
         obj[keys[j]] = data[keys[j]];
       }
 
-      Node.addToWorld(obj);
+      world.addToWorld(obj);
     }
   }
 

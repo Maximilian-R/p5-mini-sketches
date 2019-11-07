@@ -1,14 +1,17 @@
-/* ------------ Give Mousehandler controll of all input functions ----------- */
+/* ------------ Give Mouse/Keyboard-handler controll of all input functions ----------- */
 
-function mouseClicked() { mouseHandler.mouseClicked(); }
-function mousePressed() { mouseHandler.mousePressed(); }
-function mouseReleased() { mouseHandler.mouseReleased(); }
-function mouseDragged() { mouseHandler.mouseDragged(); }
-function mouseMoved() { mouseHandler.mouseMoved(); }
-function keyPressed() { mouseHandler.keyPressed(); }
-function keyReleased() { mouseHandler.keyReleased(); }
+function mouseClicked() { MouseHandler.mouseClicked(); }
+function mousePressed() { MouseHandler.mousePressed(); }
+function mouseReleased() { MouseHandler.mouseReleased(); }
+function mouseDragged() { MouseHandler.mouseDragged(); }
+function mouseMoved() { MouseHandler.mouseMoved(); }
+function keyPressed() { KeyboardHandler.keyPressed(); }
+function keyReleased() { KeyboardHandler.keyReleased(); }
 
-/* -------------------------------------------------------------------------- */
+function mouseWheel(event) {
+  world.camera.scroll(event.deltaX, event.deltaY);
+  world.editor.positionGrid();
+}
 
 class Subscribe {
   constructor() {
@@ -20,8 +23,41 @@ class Subscribe {
   }
 }
 
+class KeyboardHandlerClass extends Subscribe {
+  constructor() {
+    super();
+    this.pressedKeys = [];
+  }
 
-class MouseHandler extends Subscribe {
+  /* Key Input */
+  keyPressed() {
+    this.pressedKeys.push(keyCode);
+
+    for (var i = 0; i < this.subscribers.length; i++) {
+      this.subscribers[i].keyPressed(keyCode);
+    }
+  }
+
+  keyReleased() {
+    this.pressedKeys.splice(this.pressedKeys.indexOf(keyCode), 1);
+    // for (var i = 0; i < this.subscribers.length; i++) {
+    //   this.subscribers[i].keyReleased();
+    // }
+  }
+
+  isCharPressed(character) {
+    var hasChar = false;
+    for(var i = 0; i < this.pressedKeys.length; i++) {
+      if (char(this.pressedKeys[i]) === character) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+
+class MouseHandlerClass extends Subscribe {
   constructor() {
     super();
     this.mouse = createVector(0, 0);
@@ -85,9 +121,9 @@ class MouseHandler extends Subscribe {
       this.nodesAtMouse[i].mouseIsOver = false;
     }
     this.nodesAtMouse = [];
-
     for (var i = 0; i < collisionNodes.length; i++) {
-      var node = collisionNodes[i].isCollidingRect(this.mouse);
+      let worldPos = world.positionInWorld(this.mouse.copy());
+      let node = collisionNodes[i].isCollidingRect(worldPos);
       if (node != null) {
         this.nodesAtMouse.push(node);
         node.mouseIsOver = true;
@@ -99,21 +135,6 @@ class MouseHandler extends Subscribe {
     this.mouse.x = mouseX;
     this.mouse.y = mouseY;
   }
-
-  /* Key Input */
-    keyPressed() {
-      this.pressedKey = keyCode;
-      for (var i = 0; i < this.subscribers.length; i++) {
-        this.subscribers[i].keyPressed();
-      }
-    }
-
-    keyReleased() {
-      this.pressedKey = null;
-      // for (var i = 0; i < this.subscribers.length; i++) {
-      //   this.subscribers[i].keyReleased();
-      // }
-    }
 }
 
 class DragAndDrop {
@@ -142,7 +163,7 @@ class DragAndDrop {
 
   mouseDragged() {
     if (this.node == null) return
-    this.node.pos = createVector(mouseX, mouseY).add(this.offset);
+    this.node.position = world.editor.grid.snapToGrid(createVector(mouseX, mouseY).add(this.offset));
   }
 
   mouseReleased() {

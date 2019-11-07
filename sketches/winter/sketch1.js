@@ -45,7 +45,7 @@ function draw() {
 
   camera(0, 0, -300);
 
-  fill(50, 100);
+  fill(50, 50);
   push();
   translate(0, 300, 0);
   box(5000, 40, 5000);

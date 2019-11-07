@@ -10,7 +10,7 @@ class Frame extends PlaceAble {
   }
 
   draw() {
-    rectMode(CENTER);
+    //rectMode(CENTER);
     stroke(this.frameColor);
     strokeWeight(this.frameWidth);
     fill(this.mainColor);

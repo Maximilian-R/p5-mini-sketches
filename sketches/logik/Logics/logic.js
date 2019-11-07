@@ -1,6 +1,45 @@
-class Frame extends InteractAble {
-  constructor(name, x, y) {
-    super(x, y);
+// Only update nextstate in prepareState?
+// use applylogic still for certain things?
+// dont send new state every prepareState...
+
+class ElectricComponent extends InteractAble {
+  constructor(x, y, dimension) {
+    super(x, y, dimension);
+    this.currentState = new State(0);
+    this.nextState; 
+
+    electricComponents.push(this);
+  }
+
+  get power() { return this.currentState.power }
+  prepareState() {}
+  updateState() {
+    if (this.nextState) {
+      this.currentState = this.nextState;
+      this.nextState = null;
+    }
+  }
+}
+
+class State {
+  constructor(power) {
+    this.power = power;
+  }
+}
+
+const MIN_SIZE = 2;
+class Logic extends ElectricComponent {
+  constructor(name, x, y, inputCount, outputCount, bottomSocket = false, inputClass = InputSocket) {
+    let p = world.editor.grid.snapToGrid(createVector(x, y));
+    super(p.x, p.y);  
+
+    // SQUARE size
+    this.size = new Dimension(0, 0);
+
+    /* Sockets */
+    this.inputs = [];
+    this.output = [];
+    this.bottomSocket;
 
     /* Common Attributes */
     this.name = name;
@@ -8,71 +47,13 @@ class Frame extends InteractAble {
 
     /* Color Attributes */
     this.mainColor = '#2b3544';
-    this.frameColor = '#e81b64';
+    this.frameColor = '#3ea285';
     this.highLightColor = color(250);
 
     /* Size Attributes */
-    this.width = 60;
-    this.height = 60;
     this.frameWidth = 6;
-  }
 
-  isColliding(point) {
-    if (this.pos.dist(point) < this.width) return true;
-    return false;
-  }
-
-  draw() {
-    super.draw();
-
-    /* Draw Frame */
-    rectMode(CENTER);
-    push();
-    translate(this.pos.x, this.pos.y);
-    if(this.mouseIsOver || this.mouseIsPressed || this.hasFocus) {
-      stroke(color(this.highLightColor));
-    } else {
-      stroke(color(this.frameColor));
-    }
-    strokeWeight(this.frameWidth);
-    fill(color(this.mainColor));
-    rect(0, 0, this.width, this.height, 10);
-
-    /* Text Above Frame */
-    noStroke();
-    fill(color('#2b3544'));
-    textAlign(CENTER);
-    text(this.name, 0, 0 - this.height * 0.5 - 6);
-    pop();
-  }
-}
-
-class Logic extends Frame {
-  constructor(name, x, y, inputCount, outputCount, bottomSocket = false, inputClass = InputSocket) {
-    super(name, x, y);
-
-    /* Sockets */
-    this.inputs = [];
-    this.output = [];
-    this.bottomSocket = bottomSocket ? this.addChild(new ToggleSocket(0, this.height / 2)) : null;
-
-    /* Calculate Required Height for all sockets to get space */
-    var maxSockets = max(inputCount, outputCount);
-    var pxPerSocket = maxSockets == 1 ? 60 : 30;
-    this.height = max(60, maxSockets * pxPerSocket); /* Min 60 px */
-
-    /* Create Defined Sockets */
-    for (var i = 0; i < inputCount; i++) {
-      var inputSocket = new inputClass(0, 0);
-      this.addChild(inputSocket);
-      this.inputs.push(inputSocket);
-    }
-    for (var i = 0; i < outputCount; i++) {
-      var outputSocket = new OutputSocket(0, 0);
-      this.addChild(outputSocket);
-      this.output.push(outputSocket);
-    }
-    this.layoutSockets();
+    this.setup(inputCount, outputCount, inputClass, bottomSocket);
 
     /* Create GUI */
     this.gui = new dat.GUI();
@@ -80,38 +61,65 @@ class Logic extends Frame {
     this.gui.add(this, 'name');
     this.gui.hide();
 
-    saveObjects.push(this);
+    saveObjects.push(this);    
   }
 
-  /* Positions Sockets in a nice fashion! */
-  layoutSockets() {
-    var pxPerInput = this.height / this.inputs.length;
-    var pxPerOutput = this.height / this.output.length;
+  isColliding(point) {
+    if (this.position.dist(point) < this.dimension.width) return true;
+    return false;
+  }
 
-    for (var i = 0; i < this.inputs.length; i++) {
-      var x = -this.width / 2 - 4;
-      var y = (-this.height / 2) + (pxPerInput * i) + (pxPerInput / 2);
-      this.inputs[i].pos = createVector(x, y);
+  setup(inputs = 0, outputs = 0, inputClass, bottomSocket) {
+    let maxSockets = max(inputs, outputs);
+
+    this.size = new Dimension(2, max(MIN_SIZE, maxSockets));
+    this.dimension = new Dimension(this.size.width * SQUARE_SIZE, this.size.height * SQUARE_SIZE);
+
+    this.inputs = [];
+    this.output = [];
+    this.bottomSocket = bottomSocket ? this.addChild(new ToggleSocket(this.dimension.width / 2 - 5, this.dimension.height)) : null;
+
+    let inputOffset = inputs > 1 ? -SQUARE_SIZE * 0.5 : 0;
+    for (let i = 0; i < inputs; i++) {
+      let socket = new inputClass();
+      let y = inputOffset + SQUARE_SIZE * (i + 1) - socket.dimension.height / 2;
+      let x = -socket.dimension.width;
+      socket.position = createVector(x, y);
+      this.addChild(socket);
+      this.inputs.push(socket);
     }
-
-    for (var i = 0; i < this.output.length; i++) {
-      var x = this.width / 2 + 4;
-      var y = (-this.height / 2) + (pxPerOutput * i) + (pxPerOutput / 2);
-      this.output[i].pos = createVector(x, y);
-    }
-
-    if (this.bottomSocket != null) {
-      this.bottomSocket.pos = createVector(0, this.height / 2 + 4);
+    
+    let outputOffset = outputs > 1 ? -SQUARE_SIZE * 0.5 : 0;
+    for (let i = 0; i < outputs; i++) {
+      let socket = new OutputSocket();
+      let y = outputOffset + SQUARE_SIZE * (i + 1) - socket.dimension.height / 2;
+      let x = this.dimension.width;
+      socket.position = createVector(x, y);
+      this.addChild(socket);
+      this.output.push(socket);
     }
   }
 
-  update() {
-    super.update();
-    this.applyLogic();
-  }
+  draw() {
+    push();
+    fill(color(this.mainColor));
+    strokeWeight(this.frameWidth);
+    if(this.mouseIsOver || this.mouseIsPressed || this.hasFocus) {
+      stroke(color(this.highLightColor));
+    } else {
+      stroke(color(this.frameColor));
+    }
+    strokeWeight(6);
+    rect(0, 0, this.dimension.width, this.dimension.height, 10, 10);
 
-  /* Apply Logic is called Once every update to define power to output sockets */
-  applyLogic() {}
+    /* Text Above Frame */
+    noStroke();
+    fill(color('#2b3544'));
+    textAlign(CENTER);
+    text(this.name, this.dimension.width / 2, - 6);
+
+    pop();
+  }
 
   remove() {
     this.gui.destroy();
@@ -137,15 +145,22 @@ class LogicBattery extends Logic {
     super("BATTERY", x, y, 0, 1);
 
     /* Logic Specific Attributes */
-    this.power = 100;
-
+    this.maxPower = 100;
+    this.minPower = 100;
     /* Configure GUI */
-    this.gui.add(this, 'power', -100, 100).step(10);
+    this.gui.add(this, 'power', this.minPower, this.maxPower).step(10);
   }
 
   /* Always apply configured power */
-  applyLogic() {
-    this.output[0].setPower(this.power);
+  prepareState() {
+    // Turn on the battery if off
+    if(this.power === 0) {
+      this.nextState = new State(100);
+    }
+    // Set power to output socket
+    if(this.power > 0 && !this.output[0].isOn()) {
+      this.output[0].setPower(this.power);
+    }
   }
 
   toJson() {
@@ -172,7 +187,7 @@ class LogicTimer extends Logic {
   Send output power when reached maximum
   Resets by applying power to togglesocket at bottom
   */
-  applyLogic() {
+  prepareState() {
     if(this.bottomSocket.test()) {
       this.current = 0;
     }
@@ -193,13 +208,10 @@ class LogicTimer extends Logic {
 
   draw() {
     super.draw();
-    push();
-    translate(this.pos.x, this.pos.y);
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current/this.max + "%", 0, 0);
-    pop();
+    text(this.current/this.max + "%", this.dimension.width / 2, this.dimension.height / 2);
   }
 
   toJson() {
@@ -230,16 +242,17 @@ class LogicCounter extends Logic {
   Whenever Full, apply power to output
   Reset with togglesocket at bottom.
   */
-  applyLogic() {
+  prepareState() {
     if(this.bottomSocket.test()) {
       this.current = 0;
+      this.output[0].setPower(0);
     }
 
     if(this.inputs[0].test()) {
-      this.current += this.inputs[0].getPower() > 0 ? 1 : -1 ;
+      this.current += this.inputs[0].power > 0 ? 1 : -1 ;
       if (this.current >= this.max) {
         this.current = this.max
-        this.output[0].setPower(100);
+        this.output[0].setPower(100);;
       } else if (this.current <= this.min) {
         this.current = this.min;
       } else {
@@ -250,13 +263,10 @@ class LogicCounter extends Logic {
 
   draw() {
     super.draw();
-    push();
-    translate(this.pos.x, this.pos.y);
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current, 0, 0);
-    pop();
+    text(this.current, this.dimension.width / 2, this.dimension.height / 2);
   }
 
   toJson() {
@@ -270,11 +280,11 @@ class LogicCounter extends Logic {
 
 class LogicSelector extends Logic {
   constructor(x, y) {
-    super("SELECTOR", x, y, 3, 3, true);
+    super("SELECTOR", x, y, 4, 4, true);
 
     /* Logic Specific Attributes */
     this.selected = 0;
-    this.choices = 3;
+    this.choices = 4;
 
     // TODO:
     // should be handled in main logic
@@ -291,15 +301,15 @@ class LogicSelector extends Logic {
   Togglesocket at bottom functions as a cycle, either forward or backward
   depending on positive or negative signal
   */
-  applyLogic() {
+  prepareState() {
     if(this.bottomSocket.test()) {
       this.output[this.selected].setPower(0);
-      if(this.bottomSocket.getPower() < 0) {
+      if(this.bottomSocket.power < 0) {
         this.selected -= 1;
         if (this.selected < 0) {
           this.selected = this.output.length - 1;
         }
-      } else if (this.bottomSocket.getPower() > 0) {
+      } else if (this.bottomSocket.power > 0) {
         this.selected += 1;
         if (this.selected > this.output.length -1) {
           this.selected = 0;
@@ -330,9 +340,9 @@ class LogicOr extends Logic {
   }
 
   /* When at least one input is on, send output */
-  applyLogic() {
+  prepareState() {
     if(this.inputs[0].isOn() || this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+      this.output[0].setPower(max(this.inputs[0].power, this.inputs[1].power));
     } else {
       this.output[0].setPower(0);
     }
@@ -345,9 +355,24 @@ class LogicAnd extends Logic {
   }
 
   /* When all inputs are on, send output */
-  applyLogic() {
+  prepareState() {
     if(this.inputs[0].isOn() && this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+      this.output[0].setPower(max(this.inputs[0].power, this.inputs[1].power));
+    } else {
+      this.output[0].setPower(0);
+    }
+  }
+}
+
+class LogicWaypoint extends Logic {
+  constructor(x, y) {
+    super("WAYPOINT", x, y, 1, 1);
+  }
+
+  /* Outputs the input */
+  prepareState() {
+    if(this.inputs[0].isOn()) {
+      this.output[0].setPower(this.inputs[0].power);
     } else {
       this.output[0].setPower(0);
     }
@@ -360,9 +385,9 @@ class LogicXor extends Logic {
   }
 
   /* When one and only one input is on, send output */
-  applyLogic() {
+  prepareState() {
     if(this.inputs[0].isOn() != this.inputs[1].isOn()) {
-      this.output[0].setPower(max(this.inputs[0].getPower(), this.inputs[1].getPower()));
+      this.output[0].setPower(max(this.inputs[0].power, this.inputs[1].power));
     } else {
       this.output[0].setPower(0);
     }
@@ -375,8 +400,8 @@ class LogicNot extends Logic {
   }
 
   /* Send output opposite of input */
-  applyLogic() {
-    if(this.inputs[0].isOn() == false) {
+  prepareState() {
+    if(this.inputs[0].isOn() === false) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
@@ -393,10 +418,10 @@ class LogicSwitch extends Logic {
   }
 
   /* Whenever an input signal is given, change state */
-  applyLogic() {
+  prepareState() {
     if(this.inputs[0].test()) {
       this.toggled = !this.toggled;
-      this.toggled ? this.output[0].setPower(100) : this.output[0].setPower(0);
+      this.output[0].setPower(this.toggled ? 100 : 0);
     }
   }
 
@@ -411,16 +436,18 @@ class LogicSplitter extends Logic {
   constructor(x, y) {
     super("SPLITTER", x, y, 1, 2);
   }
-
+  
   /* Input splits negative and positve signal into two separate outputs */
-  applyLogic() {
-    this.output[1].setPower(0);
-    this.output[0].setPower(0);
-
-    if(this.inputs[0].getPower() > 0) {
+  prepareState() {
+    if(this.inputs[0].power > 0) {
       this.output[0].setPower(100);
-    } else if (this.inputs[0].getPower() < 0) {
+      this.output[1].setPower(0);
+    } else if (this.inputs[0].power < 0) {
       this.output[1].setPower(100);
+      this.output[0].setPower(0);
+    } else {
+      this.output[0].setPower(0);
+      this.output[1].setPower(0);
     }
   }
 }
@@ -434,7 +461,7 @@ class LogicCombiner extends Logic {
   Input combines a negative and positve input into one output with positive
   or negative signal
   */
-  applyLogic() {
+  prepareState() {
     if (this.inputs[0].isOn() && this.inputs[1].isOn())  {
       this.output[0].setPower(0);
     } else if (this.inputs[1].isOn()) {
@@ -459,8 +486,8 @@ class LogicKeyInput extends Logic {
   }
 
   /* Whenever chosen key is pressed, send output power */
-  applyLogic() {
-    if (char(mouseHandler.pressedKey) == this.key) {
+  prepareState() {
+    if (KeyboardHandler.isCharPressed(this.key)) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
@@ -469,13 +496,10 @@ class LogicKeyInput extends Logic {
 
   draw() {
     super.draw();
-    push();
-    translate(this.pos.x, this.pos.y);
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.key, 0, 0);
-    pop();
+    text(this.key, this.dimension.width / 2, this.dimension.height / 2);
   }
 
   toJson() {
@@ -496,7 +520,7 @@ class LogicKeyInput extends Logic {
 //   applyLogic() {
 //     /* Give power to a random output connections
 //     REQUIRES A NEW KIND OF OUTPUT SOCKET */
-//     if (char(mouseHandler.pressedKey) == this.key) {
+//     if (char(MouseHandler.pressedKey) == this.key) {
 //       this.output[0].setPower(100);
 //     } else {
 //       this.output[0].setPower(0);
