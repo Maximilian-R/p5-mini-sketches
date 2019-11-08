@@ -2,9 +2,9 @@
 // use applylogic still for certain things?
 // dont send new state every prepareState...
 
-class ElectricComponent extends InteractAble {
-  constructor(x, y, dimension) {
-    super(x, y, dimension);
+class ElectricComponent extends GameObject {
+  constructor(x, y) {
+    super(x, y);
     this.currentState = new State(0);
     this.nextState; 
 
@@ -35,6 +35,7 @@ class Logic extends ElectricComponent {
 
     // SQUARE size
     this.size = new Dimension(0, 0);
+    this.collider = new ColliderBox(this, this.size);
 
     /* Sockets */
     this.inputs = [];
@@ -46,6 +47,7 @@ class Logic extends ElectricComponent {
     this.icon;
 
     /* Color Attributes */
+    this.isHighlight = false;
     this.mainColor = '#2b3544';
     this.frameColor = '#3ea285';
     this.highLightColor = color(250);
@@ -64,26 +66,29 @@ class Logic extends ElectricComponent {
     saveObjects.push(this);    
   }
 
-  isColliding(point) {
-    if (this.position.dist(point) < this.dimension.width) return true;
-    return false;
+  get width() {
+    return this.size.width * SQUARE_SIZE;
+  }
+
+  get height() {
+    return this.size.height * SQUARE_SIZE;
   }
 
   setup(inputs = 0, outputs = 0, inputClass, bottomSocket) {
     let maxSockets = max(inputs, outputs);
 
     this.size = new Dimension(2, max(MIN_SIZE, maxSockets));
-    this.dimension = new Dimension(this.size.width * SQUARE_SIZE, this.size.height * SQUARE_SIZE);
+    this.collider.dimension = new Dimension(this.width, this.height);
 
     this.inputs = [];
     this.output = [];
-    this.bottomSocket = bottomSocket ? this.addChild(new ToggleSocket(this.dimension.width / 2 - 5, this.dimension.height)) : null;
+    this.bottomSocket = bottomSocket ? this.addChild(new ToggleSocket(this.width / 2 - 5, this.height)) : null;
 
     let inputOffset = inputs > 1 ? -SQUARE_SIZE * 0.5 : 0;
     for (let i = 0; i < inputs; i++) {
       let socket = new inputClass();
-      let y = inputOffset + SQUARE_SIZE * (i + 1) - socket.dimension.height / 2;
-      let x = -socket.dimension.width;
+      let y = inputOffset + SQUARE_SIZE * (i + 1) - socket.collider.dimension.height / 2;
+      let x = -socket.collider.dimension.width;
       socket.position = createVector(x, y);
       this.addChild(socket);
       this.inputs.push(socket);
@@ -92,8 +97,8 @@ class Logic extends ElectricComponent {
     let outputOffset = outputs > 1 ? -SQUARE_SIZE * 0.5 : 0;
     for (let i = 0; i < outputs; i++) {
       let socket = new OutputSocket();
-      let y = outputOffset + SQUARE_SIZE * (i + 1) - socket.dimension.height / 2;
-      let x = this.dimension.width;
+      let y = outputOffset + SQUARE_SIZE * (i + 1) - socket.collider.dimension.height / 2;
+      let x = this.width;
       socket.position = createVector(x, y);
       this.addChild(socket);
       this.output.push(socket);
@@ -104,19 +109,19 @@ class Logic extends ElectricComponent {
     push();
     fill(color(this.mainColor));
     strokeWeight(this.frameWidth);
-    if(this.mouseIsOver || this.mouseIsPressed || this.hasFocus) {
+    if(this.isHighlight) {
       stroke(color(this.highLightColor));
     } else {
       stroke(color(this.frameColor));
     }
     strokeWeight(6);
-    rect(0, 0, this.dimension.width, this.dimension.height, 10, 10);
+    rect(0, 0, this.width, this.height, 10, 10);
 
     /* Text Above Frame */
     noStroke();
     fill(color('#2b3544'));
     textAlign(CENTER);
-    text(this.name, this.dimension.width / 2, - 6);
+    text(this.name, this.width / 2, - 6);
 
     pop();
   }
@@ -169,7 +174,7 @@ class LogicBattery extends Logic {
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.power, this.dimension.width / 2, this.dimension.height / 2);
+    text(this.power, this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -220,7 +225,7 @@ class LogicTimer extends Logic {
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current/this.max + "%", this.dimension.width / 2, this.dimension.height / 2);
+    text(this.current/this.max + "%", this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -275,7 +280,7 @@ class LogicCounter extends Logic {
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.current, this.dimension.width / 2, this.dimension.height / 2);
+    text(this.current, this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -398,7 +403,7 @@ class LogicMeasure extends Logic {
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.power, this.dimension.width / 2, this.dimension.height / 2);
+    text(this.power, this.width / 2, this.height / 2);
   }
 
   /* Outputs the input */
@@ -529,7 +534,7 @@ class LogicKeyInput extends Logic {
     textAlign(CENTER);
     fill(255);
     noStroke();
-    text(this.key, this.dimension.width / 2, this.dimension.height / 2);
+    text(this.key, this.width / 2, this.height / 2);
   }
 
   toJson() {

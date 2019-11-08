@@ -54,9 +54,11 @@ function draw(){
 }
 
 function setupTestData() {
-  let classes = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
+  let classes1 = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
   LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, Light, LogicMeasure];
 
+  
+  let classes = [LogicBattery];
 
   for(let i = 0; i < classes.length; i++) {
     let x = SQUARE_SIZE + (SQUARE_SIZE * 3 * i);

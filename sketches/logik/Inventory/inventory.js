@@ -1,4 +1,4 @@
-class Inventory extends InteractAble {
+class Inventory extends GameObject {
   constructor(x, y) {
     super(x, y);
     this.dimension = new Dimension(240, 240);
@@ -62,7 +62,7 @@ class Inventory extends InteractAble {
   }
 }
 
-class InventoryItem extends InteractAble {
+class InventoryItem extends GameObject {
   constructor(initPos, logicClass, text) {
     super(initPos.x, initPos.y);
     this.initPos = initPos;
@@ -71,6 +71,8 @@ class InventoryItem extends InteractAble {
     this.text = text;
     this.width = 80;
     this.height = 40;
+
+    this.isHighlight = false;
   }
 
   draw() {
@@ -78,7 +80,7 @@ class InventoryItem extends InteractAble {
     //textAlign(CENTER);
 
     fill(170);
-    if(this.mouseIsOver) {
+    if(this.isHighlight) {
       stroke(112, 2, 124);
     } else {
       stroke(255);

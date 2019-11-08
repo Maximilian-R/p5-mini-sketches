@@ -1,15 +1,21 @@
 class Socket extends ElectricComponent {
   constructor(x, y) {
-    super(x, y, new Dimension(12, 12));
+    super(x, y);
+    this.size = new Dimension(12, 12);
+    this.collider = new ColliderBox(this, this.size);
     this.color = color(50);
     this.strokeColor;
     //this.power = 0;
     this.connections = [];
+    this.isHighlight = false;
   }
 
-  isColliding(point) {
-    if (this.position.dist(point) < this.dimension.width) return true;
-    return false;
+  get width() {
+    return this.size.width;
+  }
+
+  get height() {
+    return this.size.height;
   }
 
   canManualRemove() { return false; }
@@ -44,7 +50,7 @@ class Socket extends ElectricComponent {
     } else {
       fill('#7DF9FF');
     }
-    rect(0, 0, this.dimension.width, this.dimension.height, 3, 3);
+    rect(0, 0, this.width, this.height, 3, 3);
   }
 }
 
@@ -71,7 +77,7 @@ class InputSocket extends Socket {
       //this.power = 0;
     }
 
-    if (this.mouseIsOver) {
+    if (this.isHighlight) {
       if((this.hasConnection() && world.editor.connection instanceof Connection)
       || (!world.editor.connection && !this.hasConnection()) ) {
         this.strokeColor = color(230, 50, 0);
@@ -145,7 +151,7 @@ class OutputSocket extends Socket {
 
   update() {
     super.update();
-    if(this.mouseIsOver) {
+    if(this.isHighlight) {
       if(world.editor.connection instanceof Connection) {
         this.strokeColor = color(230, 50, 0);
       } else {

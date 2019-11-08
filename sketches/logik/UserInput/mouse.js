@@ -71,13 +71,13 @@ class MouseHandlerClass extends Subscribe {
   mouseClicked() {
     // Remove focus from last click
     for (var i = 0; i < this.nodesClicked.length; i++) {
-      this.nodesClicked[i].hasFocus = false;
+      this.nodesClicked[i].isHighlight = false;
     }
     this.nodesClicked = [];
 
     // Give focus from this click
     for (var i = 0; i < this.nodesAtMouse.length; i++) {
-      this.nodesAtMouse[i].hasFocus = true;
+      this.nodesAtMouse[i].isHighlight = true;
       this.nodesClicked.push(this.nodesAtMouse[i]);
     }
 
@@ -118,15 +118,18 @@ class MouseHandlerClass extends Subscribe {
   updateNodesAtMouse() {
     // Handle last moved nodes
     for (var i = 0; i < this.nodesAtMouse.length; i++) {
-      this.nodesAtMouse[i].mouseIsOver = false;
+      // Editor or similar should be changing isHighlight...
+      this.nodesAtMouse[i].isHighlight = false;
     }
     this.nodesAtMouse = [];
     for (var i = 0; i < collisionNodes.length; i++) {
-      let worldPos = world.positionInWorld(this.mouse.copy());
-      let node = collisionNodes[i].isCollidingRect(worldPos);
-      if (node != null) {
-        this.nodesAtMouse.push(node);
-        node.mouseIsOver = true;
+      let positionInWorld = world.positionInWorld(this.mouse.copy());
+      let collisionObject = collisionNodes[i];
+      let isColliding = collisionObject.isColliding(positionInWorld);
+      if (isColliding) {
+        this.nodesAtMouse.push(collisionObject.gameObject);
+        // should not be handled here?
+        collisionObject.gameObject.isHighlight = true;
       }
     }
   }

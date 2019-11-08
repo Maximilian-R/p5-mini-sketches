@@ -4,21 +4,19 @@ override update method and define how your class should
 behave to power.
 */
 
-class Light extends InteractAble {
+class Light extends GameObject {
   constructor(x, y) {
-    super(x, y, new Dimension(SQUARE_SIZE, SQUARE_SIZE));
+    super(x, y);
+    this.size = new Dimension(SQUARE_SIZE, SQUARE_SIZE);
+    this.collider = new ColliderBox(this, this.size);
+
     this.color = "#ffae23";
     this.on = false;
-    this.input = this.addChild(new InputSocket(-10, this.dimension.height / 2 - 5));
+    this.input = this.addChild(new InputSocket(-10, this.size.height / 2 - 5));
 
     this.gui = new dat.GUI();
     this.gui.addColor(this, 'color');
     this.gui.hide();
-  }
-
-  isColliding(point) {
-    if (this.position.dist(point) < this.dimension.width * 1.1) return true;
-    return false;
   }
 
   update() {
@@ -38,7 +36,7 @@ class Light extends InteractAble {
     } else {
       fill(150);
     }
-    rect(0, 0, this.dimension.width, this.dimension.height);
+    rect(0, 0, this.size.width, this.size.height);
   }
 
   remove() {

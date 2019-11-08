@@ -13,7 +13,6 @@ class Workspace {
   
     addToWorld(gameObject) {
       this.gameObjects.push(gameObject);
-      collisionNodes.push(gameObject);
       return gameObject;
     }
   

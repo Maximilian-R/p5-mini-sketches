@@ -1,8 +1,7 @@
 class GameObject extends Serializable {
-  constructor(x, y, dimension = new Dimension(0, 0)) {
+  constructor(x, y) {
     super();
     this.position = createVector(x, y);
-    this.dimension = dimension;
 
     this.children = [];
     this.parent;
@@ -11,12 +10,6 @@ class GameObject extends Serializable {
   addChild(node) {
     this.children.push(node);
     node.parent = this;
-
-    /* Quickfix to collision detect sockets and inventoryItems 
-      Could check children of colliding "main" but sockets migth be outside of the "main"
-    */
-    if (node instanceof Socket || node instanceof InventoryItem) collisionNodes.push(node);
-
     return node;
   }
 
@@ -24,36 +17,6 @@ class GameObject extends Serializable {
   removeFromParent()
   removeAllChildren()
   */
-
-  isColliding(point) {
-    if (this.position.dist(point) < 1) return true;
-    return false;
-  }
-
-  isCollidingRect(point) {
-
-    if (this.parent != null) {
-      point = point.copy().sub(this.parent.getGlobalPosition());
-    }
-
-    /* If rectMode is set to CENTER */
-    /* if (rectMode()._renderer._rectMode = 'center') {
-      if ( point.x > this.position.x - this.dimension.width * 0.5
-        && point.x < this.position.x + this.dimension.width * 0.5
-        && point.y > this.position.y - this.dimension.height * 0.5
-        && point.y < this.position.y + this.dimension.height * 0.5) {
-          return this;
-      }
-    } else { */
-      if ( point.x > this.position.x
-        && point.x < this.position.x + this.dimension.width
-        && point.y > this.position.y
-        && point.y < this.position.y + this.dimension.height) {
-          return this;
-      //}
-    }
-    return null;
-  }
 
   /* Converts from local to global position */
   getGlobalPosition() {
@@ -88,17 +51,57 @@ class GameObject extends Serializable {
   }
 }
 
-class InteractAble extends GameObject {
-  constructor(x, y, dimension) {
-    super(x, y, dimension);
-    this.mouseIsOver = false;
-    this.mouseIsPressed = false;
-    this.hasFocus = false;
+// Interactable
+// hovered, clicked, released, pressed, 
+
+// Drag&Drop
+// has a [] of all gameobjects, modifies the gameojbect position
+// gameobject know nothing about this
+
+// Editor 
+
+// Each gameobject that should be interactable/drag&drop must have a collider.
+
+// Gameobject know nothing aboud interactable, color is set from an editor? 
+
+class ColliderBox {
+  constructor(gameObject, dimension) {
+    this.gameObject = gameObject;
+    this.dimension = dimension;
+
+    collisionNodes.push(this);
   }
 
-  mouseReleased() {}
-  mouseClicked() {}
-  mousePressed() {}
+  get position() {
+    return this.gameObject.getGlobalPosition();
+  }
+
+  isCollidingTemp(point) { //isCollidingPoint
+    return this.position.dist(point) < this.dimension.width
+        && this.position.dist(point) < this.dimension.height;
+  }
+
+  isColliding(point) {  
+    // Issue: keep switching between center and corner...
+    // rectMode()._renderer._rectMode = 'center'
+    if (false) { 
+      if ( point.x > this.position.x - this.dimension.width * 0.5
+        && point.x < this.position.x + this.dimension.width * 0.5
+        && point.y > this.position.y - this.dimension.height * 0.5
+        && point.y < this.position.y + this.dimension.height * 0.5) {
+          return this;
+      }
+    } else {
+      if ( point.x > this.position.x
+        && point.x < this.position.x + this.dimension.width
+        && point.y > this.position.y
+        && point.y < this.position.y + this.dimension.height) {
+          return this;
+      }
+    }
+    return null;
+  }
+
 }
 
 class Dimension {

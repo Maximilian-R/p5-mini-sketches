@@ -54,12 +54,12 @@ class Connection extends ElectricComponent {
   
       //var endPoint = this.output ? this.output.getGlobalPosition() : this.endPosition;
       //var startPoint = this.input.getGlobalPosition();
-      let startOffset = createVector(this.input.dimension.width / 2, this.input.dimension.height / 2);
+      let startOffset = createVector(this.input.width / 2, this.input.height / 2);
       let startPoint = this.input.getGlobalPosition().add(startOffset);
   
       let endPoint;
       if (this.output) {
-        let endOffset = createVector(this.output.dimension.width / 2, this.output.dimension.height / 2);
+        let endOffset = createVector(this.output.width / 2, this.output.height / 2);
         endPoint = this.output.getGlobalPosition().add(endOffset);
       } else {
         endPoint = this.endPosition;
