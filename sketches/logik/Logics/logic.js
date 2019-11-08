@@ -1,6 +1,6 @@
 // Only update nextstate in prepareState?
 // use applylogic still for certain things?
-// dont send new state every prepareState...
+// dont send new state every prepareState...?
 
 class ElectricComponent extends GameObject {
   constructor(x, y) {
@@ -30,6 +30,7 @@ class State {
 const MIN_SIZE = 2;
 class Logic extends ElectricComponent {
   constructor(name, x, y, inputCount, outputCount, bottomSocket = false, inputClass = InputSocket) {
+    // Only editor should create new components, there positiong should be fixed
     let p = world.editor.grid.snapToGrid(createVector(x, y));
     super(p.x, p.y);  
 
@@ -45,6 +46,7 @@ class Logic extends ElectricComponent {
     /* Common Attributes */
     this.name = name;
     this.icon;
+    this.centerText;
 
     /* Color Attributes */
     this.isHighlight = false;
@@ -123,6 +125,14 @@ class Logic extends ElectricComponent {
     textAlign(CENTER);
     text(this.name, this.width / 2, - 6);
 
+    /* Center Text */
+    if (this.centerText !== undefined) {
+      textAlign(CENTER);
+      fill(255);
+      noStroke();
+      text(this.centerText, this.width / 2, this.height / 2);
+    }
+
     pop();
   }
 
@@ -170,11 +180,8 @@ class LogicBattery extends Logic {
   }
 
   draw() {
+    this.centerText = this.power;
     super.draw();
-    textAlign(CENTER);
-    fill(255);
-    noStroke();
-    text(this.power, this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -221,11 +228,8 @@ class LogicTimer extends Logic {
   }
 
   draw() {
+    this.centerText = this.current/this.max + "%";
     super.draw();
-    textAlign(CENTER);
-    fill(255);
-    noStroke();
-    text(this.current/this.max + "%", this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -276,11 +280,8 @@ class LogicCounter extends Logic {
   }
 
   draw() {
+    this.centerText = this.current;
     super.draw();
-    textAlign(CENTER);
-    fill(255);
-    noStroke();
-    text(this.current, this.width / 2, this.height / 2);
   }
 
   toJson() {
@@ -399,11 +400,8 @@ class LogicMeasure extends Logic {
   }
 
   draw() {
+    this.centerText = this.power;
     super.draw();
-    textAlign(CENTER);
-    fill(255);
-    noStroke();
-    text(this.power, this.width / 2, this.height / 2);
   }
 
   /* Outputs the input */
@@ -530,11 +528,8 @@ class LogicKeyInput extends Logic {
   }
 
   draw() {
+    this.centerText = this.key;
     super.draw();
-    textAlign(CENTER);
-    fill(255);
-    noStroke();
-    text(this.key, this.width / 2, this.height / 2);
   }
 
   toJson() {

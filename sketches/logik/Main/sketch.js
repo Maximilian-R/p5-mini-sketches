@@ -3,9 +3,9 @@ var world;
 var inventory;
 var MouseHandler;
 var KeyboardHandler;
+var CollisionHandler;
 
 var electricComponents = [];
-var collisionNodes = [];
 
 var menu;
 
@@ -21,6 +21,8 @@ function setup(){
   MouseHandler.subscribe(new DragAndDrop());
 
   KeyboardHandler = new KeyboardHandlerClass();
+
+  CollisionHandler = new CollisionHandlerClass();
 
   world = new Workspace();
 
@@ -54,11 +56,8 @@ function draw(){
 }
 
 function setupTestData() {
-  let classes1 = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
+  let classes = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
   LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, Light, LogicMeasure];
-
-  
-  let classes = [LogicBattery];
 
   for(let i = 0; i < classes.length; i++) {
     let x = SQUARE_SIZE + (SQUARE_SIZE * 3 * i);

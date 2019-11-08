@@ -63,13 +63,33 @@ class GameObject extends Serializable {
 // Each gameobject that should be interactable/drag&drop must have a collider.
 
 // Gameobject know nothing aboud interactable, color is set from an editor? 
+class CollisionHandlerClass {
+  constructor() {
+    this.colliders = [];
+  }
+
+  add(collider) {
+    this.colliders.push(collider);
+  }
+
+  collidingWith(position) {
+    let colliding = [];
+    for(let i = 0; i < this.colliders.length; i++) {
+      if (this.colliders[i].isColliding(position)) {
+        colliding.push(this.colliders[i]);
+      }
+    }
+    return colliding;
+  }
+}
+
 
 class ColliderBox {
   constructor(gameObject, dimension) {
     this.gameObject = gameObject;
     this.dimension = dimension;
 
-    collisionNodes.push(this);
+    CollisionHandler.add(this);
   }
 
   get position() {

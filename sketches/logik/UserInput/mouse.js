@@ -121,16 +121,15 @@ class MouseHandlerClass extends Subscribe {
       // Editor or similar should be changing isHighlight...
       this.nodesAtMouse[i].isHighlight = false;
     }
+
     this.nodesAtMouse = [];
-    for (var i = 0; i < collisionNodes.length; i++) {
-      let positionInWorld = world.positionInWorld(this.mouse.copy());
-      let collisionObject = collisionNodes[i];
-      let isColliding = collisionObject.isColliding(positionInWorld);
-      if (isColliding) {
-        this.nodesAtMouse.push(collisionObject.gameObject);
-        // should not be handled here?
-        collisionObject.gameObject.isHighlight = true;
-      }
+    let mouseInWorld = world.positionInWorld(this.mouse.copy());
+    let colliders = CollisionHandler.collidingWith(mouseInWorld);
+    for (var i = 0; i < colliders.length; i++) {
+      let collider = colliders[i];
+      this.nodesAtMouse.push(collider.gameObject);
+      // Editor or similar should be changing isHighlight...
+      collider.gameObject.isHighlight = true;
     }
   }
 
