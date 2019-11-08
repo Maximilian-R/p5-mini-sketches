@@ -33,6 +33,7 @@ class GameObject extends Serializable {
   draw() {}
   update() {}
 
+  // Shall not be overridden, use draw
   gameDraw() {
     push();
     translate(this.position.x, this.position.y);
@@ -43,6 +44,7 @@ class GameObject extends Serializable {
     pop();
   }
 
+  // Shall not be overridden, use update
   gameUpdate() {
     this.update();
     this.children.forEach((child) => {

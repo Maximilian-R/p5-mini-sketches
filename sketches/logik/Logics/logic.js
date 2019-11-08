@@ -2,6 +2,12 @@
 // use applylogic still for certain things?
 // dont send new state every prepareState...?
 
+
+//could preparestate logic just happen in update instead?
+// then electric could be moved into a component, not inhertiance.
+// Update is called more frequantly, just make sure to do changes when neccesary?
+// or make it event based? listen to when sockets gets a change,
+// that would help from applying changes every update also.
 class ElectricComponent extends GameObject {
   constructor(x, y) {
     super(x, y);
@@ -161,8 +167,8 @@ class LogicBattery extends Logic {
 
     /* Logic Specific Attributes */
     this.maxPower = 100;
-    this.minPower = -100;
-    this.selectedPower = 0;
+    this.minPower = 0;
+    this.selectedPower = 100;
     /* Configure GUI */
     this.gui.add(this, 'selectedPower').min(this.minPower).max(this.maxPower).step(10);
   }
@@ -295,11 +301,11 @@ class LogicCounter extends Logic {
 
 class LogicSelector extends Logic {
   constructor(x, y) {
-    super("SELECTOR", x, y, 4, 4, true);
+    super("SELECTOR", x, y, 2, 2, true);
 
     /* Logic Specific Attributes */
     this.selected = 0;
-    this.choices = 4;
+    this.choices = 2;
 
     // TODO:
     // should be handled in main logic
@@ -495,6 +501,10 @@ class LogicCombiner extends Logic {
   or negative signal
   */
   prepareState() {
+    const sum = this.inputs[0].power - this.inputs[1].power;
+    this.output[0].setPower(sum);
+    return;
+
     if (this.inputs[0].isOn() && this.inputs[1].isOn())  {
       this.output[0].setPower(0);
     } else if (this.inputs[1].isOn()) {

@@ -56,8 +56,8 @@ function draw(){
 }
 
 function setupTestData() {
-  let classes = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector,
-  LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, Light, LogicMeasure];
+  let classes = [LogicOr, LogicAnd, LogicXor, LogicTimer, LogicNot, LogicSelector, LogicSwitch,
+  LogicBattery, LogicCounter, LogicCombiner, LogicSplitter, LogicKeyInput, LogicWaypoint, LogicMeasure];
 
   for(let i = 0; i < classes.length; i++) {
     let x = SQUARE_SIZE + (SQUARE_SIZE * 3 * i);
@@ -65,6 +65,12 @@ function setupTestData() {
       let y = SQUARE_SIZE + (SQUARE_SIZE * 3 * j);
       world.addToWorld(new classes[i](x, y));
     }
+  }
+
+  for (let i = 0; i < 10; i++) {
+    let x = SQUARE_SIZE + (SQUARE_SIZE * 2 * i);
+    let y = window.innerHeight - SQUARE_SIZE * 2;
+    world.addToWorld(new Light(x, y));
   }
 
   
