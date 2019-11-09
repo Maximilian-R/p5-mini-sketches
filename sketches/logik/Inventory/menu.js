@@ -1,11 +1,10 @@
 function mouseWheel(event) {
-
-    menu.deltaScroll(event.delta);
+    mainHandler.inventory.deltaScroll(event.delta);
 }
 
 class Menu {
     constructor() {
-        this.size = createVector(200, window.innerHeight);
+        this.size = createVector(60, window.innerHeight);
         this.pos = createVector(window.innerWidth - this.size.x, 0);
 
         this.scroll = 0;
@@ -26,8 +25,8 @@ class Menu {
             "Light"
         ];
 
-        this.itemSize = createVector(this.size.x, 100);
-        this.itemSpacing = 10;
+        this.itemSize = createVector(this.size.x, 60);
+        this.itemSpacing = 4;
 
         this.maxScroll = this.items.length * (this.itemSize.y + this.itemSpacing) - this.size.y - this.itemSpacing;
     }

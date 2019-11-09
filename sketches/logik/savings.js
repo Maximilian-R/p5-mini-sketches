@@ -37,7 +37,7 @@ class SaveLoadManager {
         obj[keys[j]] = data[keys[j]];
       }
 
-      world.addToWorld(obj);
+      mainHandler.world.addToWorld(obj);
     }
   }
 

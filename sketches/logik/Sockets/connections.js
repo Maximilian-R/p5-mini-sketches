@@ -78,8 +78,8 @@ class InputSocket extends Socket {
     }
 
     if (this.isHighlight) {
-      if((this.hasConnection() && world.editor.connection instanceof Connection)
-      || (!world.editor.connection && !this.hasConnection()) ) {
+      if((this.hasConnection() && mainHandler.world.editor.connection instanceof Connection)
+      || (!mainHandler.world.editor.connection && !this.hasConnection()) ) {
         this.strokeColor = color(230, 50, 0);
       } else {
         this.strokeColor = color(0, 230, 50);
@@ -152,7 +152,7 @@ class OutputSocket extends Socket {
   update() {
     super.update();
     if(this.isHighlight) {
-      if(world.editor.connection instanceof Connection) {
+      if(mainHandler.world.editor.connection instanceof Connection) {
         this.strokeColor = color(230, 50, 0);
       } else {
         this.strokeColor = color(0, 230, 50);

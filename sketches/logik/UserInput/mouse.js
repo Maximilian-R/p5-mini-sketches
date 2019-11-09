@@ -1,16 +1,16 @@
 /* ------------ Give Mouse/Keyboard-handler controll of all input functions ----------- */
 
-function mouseClicked() { MouseHandler.mouseClicked(); }
-function mousePressed() { MouseHandler.mousePressed(); }
-function mouseReleased() { MouseHandler.mouseReleased(); }
-function mouseDragged() { MouseHandler.mouseDragged(); }
-function mouseMoved() { MouseHandler.mouseMoved(); }
-function keyPressed() { KeyboardHandler.keyPressed(); }
-function keyReleased() { KeyboardHandler.keyReleased(); }
+function mouseClicked() { mainHandler.mouseHandler.mouseClicked(); }
+function mousePressed() { mainHandler.mouseHandler.mousePressed(); }
+function mouseReleased() { mainHandler.mouseHandler.mouseReleased(); }
+function mouseDragged() { mainHandler.mouseHandler.mouseDragged(); }
+function mouseMoved() { mainHandler.mouseHandler.mouseMoved(); }
+function keyPressed() { mainHandler.keyboardHandler.keyPressed(); }
+function keyReleased() { mainHandler.keyboardHandler.keyReleased(); }
 
 function mouseWheel(event) {
-  world.camera.scroll(event.deltaX, event.deltaY);
-  world.editor.positionGrid();
+  mainHandler.world.camera.scroll(event.deltaX, event.deltaY);
+  mainHandler.world.editor.positionGrid();
 }
 
 class Subscribe {
@@ -123,8 +123,8 @@ class MouseHandlerClass extends Subscribe {
     }
 
     this.nodesAtMouse = [];
-    let mouseInWorld = world.positionInWorld(this.mouse.copy());
-    let colliders = CollisionHandler.collidingWith(mouseInWorld);
+    let mouseInWorld = mainHandler.world.positionInWorld(this.mouse.copy());
+    let colliders = mainHandler.collisionHandler.collidingWith(mouseInWorld);
     for (var i = 0; i < colliders.length; i++) {
       let collider = colliders[i];
       this.nodesAtMouse.push(collider.gameObject);
@@ -165,7 +165,7 @@ class DragAndDrop {
 
   mouseDragged() {
     if (this.node == null) return
-    this.node.position = world.editor.grid.snapToGrid(createVector(mouseX, mouseY).add(this.offset));
+    this.node.position = mainHandler.world.editor.grid.snapToGrid(createVector(mouseX, mouseY).add(this.offset));
   }
 
   mouseReleased() {

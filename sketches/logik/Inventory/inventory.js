@@ -93,7 +93,7 @@ class InventoryItem extends GameObject {
   }
 
   createItem() {
-    world.addToWorld(new this.logicClass(mouseX, mouseY));
+    mainHandler.world.addToWorld(new this.logicClass(mouseX, mouseY));
     this.resetItem();
     this.frameColor = color(255);
   }

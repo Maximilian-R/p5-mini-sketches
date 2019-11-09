@@ -1,31 +1,84 @@
-var world;
+let mainHandler;
+
+/* 
+  gameobject handler
+  electric handler 
+
+  ui
+  workspace
+
+  editor | works with the workspace and ui
+*/ 
+
+class Main {
+  constructor() {
+    this.mouseHandler;
+    this.keyboardHandler;
+    this.collisionHandler;
+    this.electricHandler;
+    this.world;
+
+    this.inventory;
+  }
+
+  setup() {
+    this.mouseHandler = new MouseHandlerClass();
+    this.mouseHandler.subscribe(new DragAndDrop());
+
+    this.keyboardHandler = new KeyboardHandlerClass();
+    this.collisionHandler = new CollisionHandlerClass();
+    this.electricHandler = new ElectricHandler();
+    this.world = new Workspace();
+
+    this.inventory = new Menu();
+  }
+
+  update() {
+    this.mouseHandler.update();
+    this.electricHandler.update();
+    this.world.update();
+  }
+
+  draw() {
+    this.world.draw();
+    this.inventory.draw();
+  }
+}
+
+class ElectricHandler {
+  constructor() {
+    this.refreshRate = 2;
+    this.components = [];
+  }
+
+  add(eletric) {
+    this.components.push(eletric);
+  }
+
+  update() {
+    if(frameCount % this.refreshRate === 0) {
+      this.components.forEach((c) => {
+        c.prepareState();
+      });
+      this.components.forEach((c) => {
+        c.updateState();
+      });
+    }
+  }
+}
+
 
 var inventory;
-var MouseHandler;
-var KeyboardHandler;
-var CollisionHandler;
-
-var electricComponents = [];
-
-var menu;
 
 var debug = false;
 const SQUARE_SIZE = 30;
 
-function setup(){
+function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-
   rectMode(CORNER);
-  
-  MouseHandler = new MouseHandlerClass();
-  MouseHandler.subscribe(new DragAndDrop());
 
-  KeyboardHandler = new KeyboardHandlerClass();
-
-  CollisionHandler = new CollisionHandlerClass();
-
-  world = new Workspace();
-
+  mainHandler = new Main();
+  mainHandler.setup();
   setupTestData();
 
   classes = {
@@ -51,8 +104,8 @@ function draw(){
   // Bug?? if not setting every time it will become center on mpouse move, wtf...
   rectMode(CORNER);
 
-  world.update();
-  world.draw();
+  mainHandler.update();
+  mainHandler.draw();
 }
 
 function setupTestData() {
@@ -63,24 +116,13 @@ function setupTestData() {
     let x = SQUARE_SIZE + (SQUARE_SIZE * 3 * i);
     for(let j = 0; j < 3; j++) {
       let y = SQUARE_SIZE + (SQUARE_SIZE * 3 * j);
-      world.addToWorld(new classes[i](x, y));
+      mainHandler.world.addToWorld(new classes[i](x, y));
     }
   }
 
   for (let i = 0; i < 10; i++) {
     let x = SQUARE_SIZE + (SQUARE_SIZE * 2 * i);
     let y = window.innerHeight - SQUARE_SIZE * 2;
-    world.addToWorld(new Light(x, y));
+    mainHandler.world.addToWorld(new Light(x, y));
   }
-
-  
-
 }
-
-function resetPlayground() {
-  for (var i = world.gameObjects.length - 1; i >= 0; i--) {
-    world.gameObjects[i].remove();
-  }
-
-  world.gameObjects.push(inventory);
-} 

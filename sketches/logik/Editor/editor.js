@@ -10,8 +10,8 @@ class Editor {
     this.inventoryItem;
     this.nodeWithOpenGUI;
 
-    MouseHandler.subscribe(this);
-    KeyboardHandler.subscribe(this);
+    mainHandler.mouseHandler.subscribe(this);
+    mainHandler.keyboardHandler.subscribe(this);
   }
 
   keyPressed() {
@@ -58,7 +58,7 @@ class Editor {
 
       /* Create new connection */
       if (node instanceof OutputSocket) {
-        this.connection = world.addToWorld(new Connection(node));
+        this.connection = mainHandler.world.addToWorld(new Connection(node));
       }
 
       /* Remove existing connection, create a new */
@@ -112,7 +112,7 @@ class Editor {
   mouseDragged() {
     this.positionGrid();
     if(this.connection == null) { return; }
-    this.connection.endPosition = world.positionInWorld(createVector(mouseX, mouseY));
+    this.connection.endPosition = mainHandler.world.positionInWorld(createVector(mouseX, mouseY));
   }
 
   mouseMoved() {

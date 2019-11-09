@@ -6,7 +6,7 @@ behave to power.
 
 class Light extends GameObject {
   constructor(x, y) {
-    let p = world.editor.grid.snapToGrid(createVector(x, y));
+    let p = mainHandler.world.editor.grid.snapToGrid(createVector(x, y));
     super(p.x, p.y);
     this.size = new Dimension(SQUARE_SIZE, SQUARE_SIZE);
     this.collider = new ColliderBox(this, this.size);

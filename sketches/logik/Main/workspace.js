@@ -1,4 +1,25 @@
-let eletricRefreshRate = 2;
+class GameObjectHandler {
+  constructor() {
+    this.gameObjects = [];
+  }
+
+  addToWorld(gameObject) {
+    this.gameObjects.push(gameObject);
+    return gameObject;
+  }
+
+  draw() {
+    this.gameObjects.forEach((o) => {
+      o.gameDraw();
+    });
+  }
+
+  update() {
+    this.gameObjects.forEach((o) => {
+      o.gameUpdate();
+    });
+  }
+}
 
 class Workspace {
     constructor() {
@@ -6,13 +27,14 @@ class Workspace {
       this.dimension = new Dimension(2000, 2000);
       this.camera = new Camera();
       this.editor = new Editor(this);
+      this.gameObjectHandler = new GameObjectHandler();
+
       //this.inventory = new Inventory(window.innerWidth - 240, 500);
-    
-      this.gameObjects = [];
     }
-  
+
+    /* redundant */
     addToWorld(gameObject) {
-      this.gameObjects.push(gameObject);
+      this.gameObjectHandler.addToWorld(gameObject);
       return gameObject;
     }
   
@@ -39,10 +61,7 @@ class Workspace {
         }
       }
   
-      this.gameObjects.forEach((o) => {
-        o.gameDraw();
-      });
-  
+      this.gameObjectHandler.draw();
       pop();
       
       this.editor.draw();
@@ -53,23 +72,10 @@ class Workspace {
     }
   
     update() {
-      MouseHandler.update();
-  
-      if(frameCount % eletricRefreshRate === 0) {
-        electricComponents.forEach((c) => {
-          c.prepareState();
-        });
-        electricComponents.forEach((c) => {
-          c.updateState();
-        });
-      }
-  
-      this.gameObjects.forEach((o) => {
-        o.gameUpdate();
-      });
+      this.gameObjectHandler.update();
+      //this.editor.update?
 
       //this.inventory.update();
-      
     }  
   }
   

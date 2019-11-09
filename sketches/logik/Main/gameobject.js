@@ -28,7 +28,7 @@ class GameObject extends Serializable {
 
   canManualRemove() { return true; }
 
-  remove() { if(world.gameObjects.indexOf(this) != -1) world.gameObjects.splice(world.gameObjects.indexOf(this), 1); }
+  remove() { if(mainHandler.world.gameObjects.indexOf(this) != -1) mainHandler.world.gameObjects.splice(mainHandler.world.gameObjects.indexOf(this), 1); }
   
   draw() {}
   update() {}
@@ -91,7 +91,7 @@ class ColliderBox {
     this.gameObject = gameObject;
     this.dimension = dimension;
 
-    CollisionHandler.add(this);
+    mainHandler.collisionHandler.add(this);
   }
 
   get position() {

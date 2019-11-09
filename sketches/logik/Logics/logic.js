@@ -14,7 +14,7 @@ class ElectricComponent extends GameObject {
     this.currentState = new State(0);
     this.nextState; 
 
-    electricComponents.push(this);
+    mainHandler.electricHandler.add(this);
   }
 
   get power() { return this.currentState.power }
@@ -37,7 +37,7 @@ const MIN_SIZE = 2;
 class Logic extends ElectricComponent {
   constructor(name, x, y, inputCount, outputCount, bottomSocket = false, inputClass = InputSocket) {
     // Only editor should create new components, there positiong should be fixed
-    let p = world.editor.grid.snapToGrid(createVector(x, y));
+    let p = mainHandler.world.editor.grid.snapToGrid(createVector(x, y));
     super(p.x, p.y);  
 
     // SQUARE size
@@ -530,7 +530,7 @@ class LogicKeyInput extends Logic {
 
   /* Whenever chosen key is pressed, send output power */
   prepareState() {
-    if (KeyboardHandler.isCharPressed(this.key)) {
+    if (mainHandler.keyboardHandler.isCharPressed(this.key)) {
       this.output[0].setPower(100);
     } else {
       this.output[0].setPower(0);
