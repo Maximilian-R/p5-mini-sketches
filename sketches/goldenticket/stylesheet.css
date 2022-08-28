@@ -1,176 +1,105 @@
-/* @font-face {
-font-family: Rosewood;
-src: url("http://www-und.ida.liu.se/~maxra079/Present/fonts/RosewoodStd-Fill.otf") format("opentype");
-} */
-
-@font-face {
-font-family: Coliseum;
-src: url("https://maximilian-r.github.io/p5_mini_sketches/sketches/goldenticket/fonts/Coliseum.otf") format("opentype");
+.container {
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@font-face {
-font-family: Typewriter;
-src: url("https://maximilian-r.github.io/p5_mini_sketches/sketches/goldenticket/fonts/typewriter.otf") format("opentype");
+.container > .ticket:not(:last-child) {
+  margin-bottom: 4rem;
 }
 
-.bottle {
-  width: 300px;
-}
-
-#bottle-left {
-  float: left;
-
-}
-
-#bottle-right {
-  float: right;
-  -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: "FlipH";
-
-}
-
-h1 {
-  font-size: 80px;
-  text-align: center;
-  line-height: 120px;
-
-  background: -moz-linear-gradient(left, rgba(158,86,20,1) 0%, rgba(212,144,57,1) 7%, rgba(130,70,5,1) 31%, rgba(250,227,125,1) 68%, rgba(158,86,20,1) 75%, rgba(217,177,83,1) 89%, rgba(172,114,43,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(158,86,20,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(158,86,20,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-#time {
-  font-size: 20px;
-  text-align: center;
-  background: -moz-linear-gradient(left, rgba(158,86,20,1) 0%, rgba(212,144,57,1) 7%, rgba(130,70,5,1) 31%, rgba(250,227,125,1) 68%, rgba(158,86,20,1) 75%, rgba(217,177,83,1) 89%, rgba(172,114,43,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(158,86,20,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(158,86,20,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-#age {
-  line-height: 200px;
-  font-size: 160px;
-}
-
-.champagneImg {
-  width: 400px;
-  position: absolute;
-}
-
-#champagne1 {
-
-}
-
-#champagne2 {
-  -moz-transform: scaleX(-1);
-  -o-transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-  filter: FlipH;
-  -ms-filter: "FlipH";
-}
-
-.row-centered {
-    text-align:center;
-}
-
-.nopadding {
-   padding: 0 !important;
-}
-
-.ticketblock {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.outer {
+.ticket {
+  cursor: pointer;
   overflow: hidden;
-  width: 540px;
-  margin: 20px;
+  position: relative;
+  transition: transform 200ms ease-in-out;
 }
-.inner {
+
+.ticket:hover,
+.ticket:focus,
+.ticket:active {
+  transform: scale(1.05) rotate(6deg);
+}
+
+.ticket-corners {
   border: 1px solid #888;
-
-text-align: center;
-text-transform: uppercase;
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#9e5614+0,d49039+7,824605+31,fae37d+68,ffffff+74,d9b153+89,ac722b+100 */
-background: rgb(158,86,20); /* Old browsers */
-background: -moz-linear-gradient(left, rgba(158,86,20,1) 0%, rgba(212,144,57,1) 7%, rgba(130,70,5,1) 31%, rgba(250,227,125,1) 68%, rgba(255,252,211,1) 75%, rgba(217,177,83,1) 89%, rgba(172,114,43,1) 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(left, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(255,252,211,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, rgba(158,86,20,1) 0%,rgba(212,144,57,1) 7%,rgba(130,70,5,1) 31%,rgba(250,227,125,1) 68%,rgba(255,252,211,1) 75%,rgba(217,177,83,1) 89%,rgba(172,114,43,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-
-
--webkit-background-origin: padding-box;
-background-origin: padding-box;
--webkit-background-clip: border-box;
-background-clip: border-box;
--webkit-background-size: auto auto;
-background-size: auto auto;
--webkit-box-shadow: 0 -1px 1px 0 rgba(255,255,255,0.701961) inset, 0 1px 1px 0 rgb(177,106,2) ;
-box-shadow: 0 -1px 1px 0 rgba(255,255,255,0.701961) inset, 0 1px 1px 0 rgb(177,106,2) ;
-text-shadow: 0 1px 1px rgba(0,0,0,0.498039) ;
--webkit-transition: none;
--moz-transition: none;
--o-transition: none;
-transition: none;
--webkit-transform: none;
-transform: none;
--webkit-transform-origin: 50% 50% 0;
-transform-origin: 50% 50% 0;
-
+  text-transform: uppercase;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#9e5614+0,d49039+7,824605+31,fae37d+68,ffffff+74,d9b153+89,ac722b+100 */
+  background: linear-gradient(
+    to right,
+    rgba(158, 86, 20, 1) 0%,
+    rgba(212, 144, 57, 1) 7%,
+    rgba(130, 70, 5, 1) 31%,
+    rgba(250, 227, 125, 1) 68%,
+    rgba(255, 252, 211, 1) 75%,
+    rgba(217, 177, 83, 1) 89%,
+    rgba(172, 114, 43, 1) 100%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  box-shadow: 0 -1px 4px 0 rgba(255, 255, 255, 0.7) inset;
 }
 
-.inner::before{
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -6px;
-  bottom: 26px;
-
-  background-repeat: repeat;
-  width: 14px;
-  background-size: 20px 30px;
-  background-image:
-    radial-gradient(circle at -5px 15px, transparent 13px, white 13px);
-
-  -ms-transform: rotate(180deg); /* IE 9 */
-  -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-  transform: rotate(180deg);
+.ticket.used .ticket-corners {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#595959+12,666666+34,1c1c1c+64,474747+79 */
+  background: rgb(89, 89, 89);
+  background: linear-gradient(
+    to right,
+    rgba(89, 89, 89, 1) 12%,
+    rgba(102, 102, 102, 1) 34%,
+    rgba(28, 28, 28, 1) 64%,
+    rgba(71, 71, 71, 1) 79%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 
-.inner::after{
-  content: "";
-  position: absolute;
-  top: 26px;
-  right: -6px;
-  bottom: 0;
-
-  background-repeat: repeat;
-  width: 14px;
-  background-size: 20px 30px;
-  background-image:
-    radial-gradient(circle at -5px 15px, transparent 12px, white 13px);
-
-  -ms-transform: rotate(0deg); /* IE 9 */
-  -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
-  transform: rotate(0deg);
+.ticket-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 2rem 1rem;
 }
 
+.ticket-body h6 {
+  font-family: "Antonio", sans-serif;
+  font-size: 120px;
+  font-size: 6rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid black;
+  margin: 0;
+  line-height: 1;
+}
 
-.used {
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#595959+12,666666+34,1c1c1c+64,474747+79 */
-background: rgb(89,89,89); /* Old browsers */
-background: -moz-linear-gradient(right, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 34%, rgba(28,28,28,1) 64%, rgba(71,71,71,1) 79%); /* FF3.6-15 */
-background: -webkit-linear-gradient(right, rgba(89,89,89,1) 12%,rgba(102,102,102,1) 34%,rgba(28,28,28,1) 64%,rgba(71,71,71,1) 79%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, rgba(89,89,89,1) 12%,rgba(102,102,102,1) 34%,rgba(28,28,28,1) 64%,rgba(71,71,71,1) 79%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+.ticket-body p {
+  margin: 0;
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.ticket-id {
+  font-family: "Antonio", sans-serif;
+  font-size: 2rem;
+  margin-top: -1.5rem;
+  align-self: flex-end;
+
+  background: linear-gradient(to bottom, #cd7f32 0%, #be7023 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.used .ticket-id {
+  background: linear-gradient(
+    to right,
+    rgba(158, 86, 20, 1) 0%,
+    rgba(212, 144, 57, 1) 7%,
+    rgba(130, 70, 5, 1) 31%,
+    rgba(250, 227, 125, 1) 68%,
+    rgba(158, 86, 20, 1) 75%,
+    rgba(217, 177, 83, 1) 89%,
+    rgba(172, 114, 43, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .corner {
@@ -179,168 +108,22 @@ background: linear-gradient(to right, rgba(89,89,89,1) 12%,rgba(102,102,102,1) 3
   border: 1px solid #888;
   border-radius: 50%;
   background-color: #fff;
-}
-.inner .top {
-  margin-top: -30px;
-}
-.inner .bottom {
-  margin-top: -30px;
-  margin-bottom: -32px;
-}
-.inner .left {
-  float: left;
-  margin-left: -30px;
-}
-.inner .right {
-  float: right;
-  margin-right: -30px;
-}
-.ticketcontent {
-  min-height: 200px;
-  display: table;
-  width: 100%;
-}
-
-.ticketcontent h6 {
-  font-family: Coliseum;
-  font-size: 120px;
-  border-bottom: 4px solid black;
-  line-height: 132px;
-
-}
-
-.ticketcontent p {
-  font-family: Typewriter !important;
-  font-size: 18px;
-  color: black;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.ticketnum {
-  font-family: Coliseum;
-  font-size: 40px;
   position: absolute;
-  right: 60px;
-
-background: linear-gradient(to bottom, #CD7F32 0%, #BE7023 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+}
+.ticket-corners .top {
+  top: -30px;
+}
+.ticket-corners .bottom {
+  bottom: -30px;
+}
+.ticket-corners .left {
+  left: -30px;
+}
+.ticket-corners .right {
+  right: -30px;
 }
 
-.signature {
-  font-family: Coliseum;
-  font-size: 80px;
-  color: black;
-}
-
-
-@-webkit-keyframes hvr-buzz-out {
-  10% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
-  }
-
-  20% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
-  }
-
-  30% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
-  }
-
-  40% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
-  }
-
-  50% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
-  }
-
-  60% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
-  }
-
-  70% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
-  }
-
-  80% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
-  }
-
-  90% {
-    -webkit-transform: translateX(1px) rotate(0);
-    transform: translateX(1px) rotate(0);
-  }
-
-  100% {
-    -webkit-transform: translateX(-1px) rotate(0);
-    transform: translateX(-1px) rotate(0);
-  }
-}
-
-@keyframes hvr-buzz-out {
-  10% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
-  }
-
-  20% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
-  }
-
-  30% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
-  }
-
-  40% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
-  }
-
-  50% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
-  }
-
-  60% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
-  }
-
-  70% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
-  }
-
-  80% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
-  }
-
-  90% {
-    -webkit-transform: translateX(1px) rotate(0);
-    transform: translateX(1px) rotate(0);
-  }
-
-  100% {
-    -webkit-transform: translateX(-1px) rotate(0);
-    transform: translateX(-1px) rotate(0);
-  }
-}
-
-.outer:after {
+.ticket::after {
   content: "";
   position: absolute;
   top: -110%;
@@ -356,13 +139,11 @@ background: linear-gradient(to bottom, #CD7F32 0%, #BE7023 100%);
     rgba(255, 255, 255, 0.13) 0%,
     rgba(255, 255, 255, 0.13) 77%,
     rgba(255, 255, 255, 0.5) 92%,
-    rgba(255, 255, 255, 0.0) 100%
+    rgba(255, 255, 255, 0) 100%
   );
 }
 
-/* Hover state - trigger effect */
-
-.outer:hover:after {
+.ticket:hover::after {
   opacity: 1;
   top: -30%;
   left: -30%;
@@ -371,28 +152,32 @@ background: linear-gradient(to bottom, #CD7F32 0%, #BE7023 100%);
   transition-timing-function: ease;
 }
 
-/* Active state */
-
-.outer:active:after {
+.ticket:active::after {
   opacity: 0;
 }
 
-
-.hvr-grow-rotate {
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
+.ticket-corners::before,
+.ticket-corners::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background-repeat: repeat;
+  background-size: 20px 26px;
+  background-image: radial-gradient(
+    circle at -5px 15px,
+    transparent 12px,
+    white 13px
+  );
+  transform: rotate(0deg);
 }
-.hvr-grow-rotate:hover, .hvr-grow-rotate:focus, .hvr-grow-rotate:active {
-  -webkit-transform: scale(1.1) rotate(4deg);
-  transform: scale(1.1) rotate(4deg);
-  }
+
+.ticket-corners::before {
+  left: -8px;
+  transform: rotate(180deg);
+}
+
+.ticket-corners::after {
+  right: -8px;
+}
