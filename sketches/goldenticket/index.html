@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <div class="ticket used">
+      <div class="ticket">
         <div class="ticket-corners">
           <div class="top left corner"></div>
           <div class="top right corner"></div>
@@ -43,6 +43,42 @@
           <div class="bottom left corner"></div>
         </div>
       </div>
+
+      <div class="ticket">
+        <div class="ticket-corners">
+          <div class="top left corner"></div>
+          <div class="top right corner"></div>
+          <div class="ticket-body">
+            <div class="ticket-id">#20170224:03</div>
+            <h6>Golden Ticket</h6>
+            <p>This golden ticket ensures admitance</p>
+          </div>
+          <div class="bottom right corner"></div>
+          <div class="bottom left corner"></div>
+        </div>
+      </div>
+
+      <div class="ticket">
+        <div class="ticket-corners">
+          <div class="top left corner"></div>
+          <div class="top right corner"></div>
+          <div class="ticket-body">
+            <div class="ticket-id">#20170224:04</div>
+            <h6>Golden Ticket</h6>
+            <p>This golden ticket ensures admitance</p>
+          </div>
+          <div class="bottom right corner"></div>
+          <div class="bottom left corner"></div>
+        </div>
+      </div>
     </div>
+
+    <script>
+      document.querySelectorAll(".ticket").forEach((ticket) => {
+        ticket.addEventListener("click", (event) => {
+          event.target.classList.toggle("used");
+        });
+      });
+    </script>
   </body>
 </html>
