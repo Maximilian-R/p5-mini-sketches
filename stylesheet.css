@@ -43,6 +43,16 @@ ul {
   gap: 1.5rem;
 }
 
+.sketch-preview h3 {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 3rem;
+  padding: 0.5rem 0.5rem;
+}
+
 .sketch-preview a {
   position: relative;
   text-decoration: none;
@@ -56,13 +66,47 @@ ul {
   transition: all 200ms ease-out;
 }
 
+.sketch-preview div {
+  position: relative;
+}
+
+.sketch-preview div {
+  max-width: 200px;
+  max-height: 200px;
+}
+
 .sketch-preview img {
   max-width: 200px;
   max-height: 200px;
 }
 
+.sketch-preview p {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  font-size: 0.8rem;
+  margin: 0;
+  top: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  transition: opacity 200ms ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
 .sketch-preview a:hover {
   transform: translate(0px, -10px);
+}
+
+.sketch-preview a:hover p {
+  opacity: 1;
 }
 
 footer {
