@@ -11,7 +11,6 @@ const size = [window.innerWidth, window.innerHeight];
 
 function setup() {
   createCanvas(...size);
-  pg = createGraphics(...size);
   stroke(0);
   strokeWeight(1);
   frameRate(1);
@@ -28,29 +27,27 @@ function setup() {
   mountain1 = color(100);
   mountain2 = color(150);
 
-  countryMap();
-  heatMap = createHeatMap();
-  drawBiomes();
-  createHeightMap();
+  const countryMap = createCountryMap();
+  image(countryMap, 0, 0, ...size);
+
+  const heatMap = createHeatMap();
+  image(heatMap, 0, 0, ...size);
+
+  const biomeMap = createBiomesMap(countryMap, heatMap);
+  image(biomeMap, 0, 0, ...size);
+
+  const heightMap = createHeightMap();
+  //image(heightMap, 0, 0, ...size);
 }
 
 let currentA = 0;
 
 function draw() {
   noLoop();
-  currentA = pg.get(mouseX, mouseY)[3];
+  //currentA = pg.get(mouseX, mouseY)[3];
 
   translate(window.innerWidth / 2, window.innerHeight / 2);
   //drawWorld();
-}
-
-function countryMap() {
-  push();
-  pg.noStroke();
-  pg.translate(size[0] / 2, size[1] / 2);
-  drawWorld(pg);
-  pop();
-  //image(pg, 0, 0);
 }
 
 function createHeatMap() {
@@ -64,7 +61,6 @@ function createHeatMap() {
     }
   }
   img.updatePixels();
-  image(img, 0, 0, ...size);
   return img;
 }
 
@@ -85,23 +81,23 @@ function createHeightMap() {
     }
   }
   img.updatePixels();
-  //image(img, 0, 0, ...size);
   return img;
 }
 
-function drawBiomes() {
-  const img = createImage(size[0] * 2, size[1] * 2);
-  img.loadPixels();
-  pg.loadPixels();
-
+function createBiomesMap(borderMap, heatMap) {
   const d = pixelDensity();
+  const img = createImage(size[0] * d, size[1] * d);
+  img.loadPixels();
+  borderMap.loadPixels();
+
   const noiseDivider = 150;
 
-  for (let x = 0; x < pg.width * d; x++) {
-    for (let y = 0; y < pg.height * d; y++) {
-      const index = (x + y * pg.width * d) * 4;
+  for (let x = 0; x < borderMap.width * d; x++) {
+    for (let y = 0; y < borderMap.height * d; y++) {
+      const index = (x + y * borderMap.width * d) * 4;
 
-      if (pg.pixels[index + 3] > 0) {
+      // only draw biome on land - sea has a value of 0
+      if (borderMap.pixels[index + 3] > 0) {
         const heat = map(heatMap.pixels[index + 3], 0, 255, -0.3, 0.3);
         const biome = noise(x / noiseDivider, y / noiseDivider) + heat;
         const biome2 = noise(y / noiseDivider, x / noiseDivider) + heat;
@@ -122,16 +118,22 @@ function drawBiomes() {
     }
   }
   img.updatePixels();
-  image(img, 0, 0, ...size);
+  return img;
 }
 
-function drawWorld(graphics) {
+function createCountryMap() {
+  const img = createGraphics(...size);
+
+  push();
+  img.noStroke();
+  img.translate(size[0] / 2, size[1] / 2);
+
   let alpha = 1;
 
   for (const country of world.features) {
     const geometry = country.geometry;
     const isActive = alpha === currentA;
-    const c = graphics
+    const c = img
       ? color(0, 255, 0, alpha)
       : isActive
       ? color(14, 232, 218)
@@ -139,27 +141,30 @@ function drawWorld(graphics) {
 
     alpha++;
 
-    graphics ? graphics.fill(c) : fill(c);
+    img ? img.fill(c) : fill(c);
     noFill();
 
     if (geometry.type === "Polygon") {
       const polygon = geometry.coordinates[0];
-      drawPolygon(polygon, graphics);
+      drawPolygon(polygon, img);
     } else if (geometry.type === "MultiPolygon") {
       const polygons = geometry.coordinates;
       for (const polygon of polygons) {
-        drawPolygon(polygon[0], graphics);
+        drawPolygon(polygon[0], img);
       }
     }
   }
+
+  pop();
+  return img;
 }
 
-function drawPolygon(polygon, graphics) {
-  graphics ? graphics.beginShape() : beginShape();
+function drawPolygon(polygon, img) {
+  img ? img.beginShape() : beginShape();
   for (const coordinate of polygon) {
-    graphics
-      ? graphics.vertex(coordinate[0] * scale, coordinate[1] * -1 * scale)
+    img
+      ? img.vertex(coordinate[0] * scale, coordinate[1] * -1 * scale)
       : vertex(coordinate[0] * scale, coordinate[1] * -1 * scale);
   }
-  graphics ? graphics.endShape(CLOSE) : endShape(CLOSE);
+  img ? img.endShape(CLOSE) : endShape(CLOSE);
 }
