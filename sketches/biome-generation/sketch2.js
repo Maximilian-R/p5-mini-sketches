@@ -2,22 +2,14 @@ const scale = 3.7;
 const world = world50;
 const size = [window.innerWidth, window.innerHeight];
 
-/* 
-  land
-  height
-  temperature (annual)
-  precipitation (annual)
-*/
-
 function setup() {
   createCanvas(...size);
   stroke(0);
   strokeWeight(1);
   frameRate(1);
-  background(27, 68, 122);
 
   //noiseSeed(0);
-
+  water1 = color(27, 68, 122);
   dessert1 = color(255, 187, 69);
   dessert2 = color(194, 109, 6);
   forrest1 = color(6, 105, 59);
@@ -28,26 +20,19 @@ function setup() {
   mountain2 = color(150);
 
   const countryMap = createCountryMap();
-  image(countryMap, 0, 0, ...size);
-
   const heatMap = createHeatMap();
-  image(heatMap, 0, 0, ...size);
-
-  const biomeMap = createBiomesMap(countryMap, heatMap);
-  image(biomeMap, 0, 0, ...size);
-
   const heightMap = createHeightMap();
+  const biomeMap = createBiomesMap(countryMap, heatMap, heightMap);
+
+  //background(27, 68, 122);
+  //image(countryMap, 0, 0, ...size);
+  //image(heatMap, 0, 0, ...size);
   //image(heightMap, 0, 0, ...size);
+  image(biomeMap, 0, 0, ...size);
 }
 
-let currentA = 0;
-
 function draw() {
-  noLoop();
-  //currentA = pg.get(mouseX, mouseY)[3];
-
-  translate(window.innerWidth / 2, window.innerHeight / 2);
-  //drawWorld();
+  //noLoop();
 }
 
 function createHeatMap() {
@@ -73,18 +58,19 @@ function createHeightMap() {
     for (let x = 0; x < img.width; x++) {
       const index = (x + y * img.width) * 4;
       const height = noise(x / noiseDivider, y / noiseDivider);
-      const c = height > 0.7 ? 255 : 0;
-      img.pixels[index] = c;
-      img.pixels[index + 1] = c;
-      img.pixels[index + 2] = c;
-      img.pixels[index + 3] = 255;
+      const c = color(0, 0, 0, height * 255);
+
+      img.pixels[index] = c.levels[0];
+      img.pixels[index + 1] = c.levels[1];
+      img.pixels[index + 2] = c.levels[2];
+      img.pixels[index + 3] = c.levels[3];
     }
   }
   img.updatePixels();
   return img;
 }
 
-function createBiomesMap(borderMap, heatMap) {
+function createBiomesMap(borderMap, heatMap, heightMap) {
   const d = pixelDensity();
   const img = createImage(size[0] * d, size[1] * d);
   img.loadPixels();
@@ -110,9 +96,18 @@ function createBiomesMap(borderMap, heatMap) {
             : biome < 0.6
             ? lerpColor(forrest1, forrest2, alpha)
             : lerpColor(dessert1, dessert2, alpha);
-        img.pixels[index] = c.levels[0];
-        img.pixels[index + 1] = c.levels[1];
-        img.pixels[index + 2] = c.levels[2];
+
+        const height = map(heightMap.pixels[index + 3], 0, 255, -50, 50);
+        img.pixels[index] = c.levels[0] + height;
+        img.pixels[index + 1] = c.levels[1] + height;
+        img.pixels[index + 2] = c.levels[2] + height;
+        img.pixels[index + 3] = c.levels[3];
+      } else {
+        const height = map(heightMap.pixels[index + 3], 0, 255, 0, -50);
+        const c = water1;
+        img.pixels[index] = c.levels[0] + height;
+        img.pixels[index + 1] = c.levels[1] + height;
+        img.pixels[index + 2] = c.levels[2] + height;
         img.pixels[index + 3] = c.levels[3];
       }
     }
@@ -122,49 +117,38 @@ function createBiomesMap(borderMap, heatMap) {
 }
 
 function createCountryMap() {
-  const img = createGraphics(...size);
+  const graphics = createGraphics(...size);
 
   push();
-  img.noStroke();
-  img.translate(size[0] / 2, size[1] / 2);
+  graphics.noStroke();
+  graphics.translate(size[0] / 2, size[1] / 2);
 
   let alpha = 1;
 
   for (const country of world.features) {
     const geometry = country.geometry;
-    const isActive = alpha === currentA;
-    const c = img
-      ? color(0, 255, 0, alpha)
-      : isActive
-      ? color(14, 232, 218)
-      : color(0, 0, 0, 255);
-
-    alpha++;
-
-    img ? img.fill(c) : fill(c);
-    noFill();
+    let c = color(255, 255, 255, alpha++);
+    graphics.fill(c);
 
     if (geometry.type === "Polygon") {
       const polygon = geometry.coordinates[0];
-      drawPolygon(polygon, img);
+      drawPolygon(polygon, graphics);
     } else if (geometry.type === "MultiPolygon") {
       const polygons = geometry.coordinates;
       for (const polygon of polygons) {
-        drawPolygon(polygon[0], img);
+        drawPolygon(polygon[0], graphics);
       }
     }
   }
 
   pop();
-  return img;
+  return graphics;
 }
 
 function drawPolygon(polygon, img) {
-  img ? img.beginShape() : beginShape();
+  img.beginShape();
   for (const coordinate of polygon) {
-    img
-      ? img.vertex(coordinate[0] * scale, coordinate[1] * -1 * scale)
-      : vertex(coordinate[0] * scale, coordinate[1] * -1 * scale);
+    img.vertex(coordinate[0] * scale, coordinate[1] * -1 * scale);
   }
-  img ? img.endShape(CLOSE) : endShape(CLOSE);
+  img.endShape(CLOSE);
 }
