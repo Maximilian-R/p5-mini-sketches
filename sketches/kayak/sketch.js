@@ -1,17 +1,25 @@
 let kayak;
-const SCALE = 3;
+const SCALE = 2;
+const COLORS = {};
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
 
-  kayak = new Kayak();
+  COLORS.theme1 = color("#f8b2bc");
+  COLORS.theme2 = color("#f5929f");
+  COLORS.theme3 = color("#755bba");
+
+  COLORS.theme1 = color("#459cc4");
+  COLORS.theme2 = color("#daeff5");
+  COLORS.theme3 = color("#1e6687");
+  COLORS.kayak1 = color("#eee");
+
+  kayak = new Kayak(createVector(0, height / 2));
 }
 
 function draw() {
-  background("#f8b2bc");
-
-  //kayak.goTo(createVector(mouseX, mouseY));
+  background(COLORS.theme1);
 
   // ZOOM in close on kayak and translate to move along
 
@@ -26,152 +34,179 @@ function draw() {
 }
 
 class Kayak {
-  constructor() {
-    this.position = createVector(100, height / 2);
-    this.lastPosition = this.position.copy();
+  constructor(position) {
+    this.position = position;
     this.movement = createVector(2, 0);
-    this.wake = new Wake(this, 6, color("#f5929f"));
-    this.wake2 = new Wake(this, 3, color("#755bba"));
+    this.direction = 0;
+    this.magnitude = 0;
+    this.wake = new DoubleWake(this);
     this.throttle = 1;
   }
 
-  goTo(position) {
-    this.lastPosition = this.position.copy();
-    this.position = position;
-    this.movement = p5.Vector.sub(this.position, this.lastPosition);
-  }
-
-  rotate(angle) {
-    this.movement.rotate(angle);
-  }
-
   update() {
+    // do not rotate directly, apply a force from the side
     if (keyIsPressed) {
       if (keyIsDown(LEFT_ARROW)) {
-        this.rotate(-0.03);
+        this.movement.rotate(-0.01);
       }
       if (keyIsDown(RIGHT_ARROW)) {
-        this.rotate(0.03);
+        this.movement.rotate(0.01);
       }
     }
 
     this.position.add(this.movement);
+    this.direction = this.movement.heading();
+    this.magnitude = this.movement.mag();
+
     this.wake.update();
-    this.wake2.update();
   }
 
   draw() {
-    //shadow
-    // push();
-    // translate(this.position.x, this.position.y);
-    // fill(0, 0, 10);
-    // ellipse(5, 10, 20, 20);
-    // pop();
+    // shadow
 
     this.wake.draw();
-    this.wake2.draw();
 
     push();
     translate(this.position.x, this.position.y);
-    fill(255, 255, 255);
+    fill(COLORS.kayak1);
     ellipse(0, 0, 20, 20);
+
+    rotate(this.direction);
+
+    // translate(-50.354, -18);
+
+    // beginShape();
+    // vertex(18.93, 37.749);
+
+    // bezierVertex(55.156, 24.688, 94.573, 17.762, 142.3, 14.869);
+    // bezierVertex(187.447, 13.525, 309.661, 28.99, 309.437, 41.586);
+    // bezierVertex(309.22, 53.745, 209.837, 69.436, 147.268, 70.595);
+    // bezierVertex(104.544, 71.386, 47.021, 58.906, 19.484, 50.2);
+    // vertex(18.93, 37.749);
+
+    // endShape();
+
     pop();
   }
 }
 
+class DoubleWake {
+  constructor(kayak) {
+    this.wake1 = new Wake(kayak, 8, 1.2, COLORS.theme2);
+    this.wake2 = new Wake(kayak, 4, 0.6, COLORS.theme3);
+  }
+
+  update() {
+    this.wake1.update();
+    this.wake2.update();
+  }
+
+  draw() {
+    this.wake1.draw();
+    this.wake2.draw();
+  }
+}
+
 class Wake {
-  constructor(kayak, spread, wakeColor) {
+  constructor(kayak, waveHeight, acceleration, wakeColor) {
     this.kayak = kayak;
-    this.color = wakeColor ?? color(255);
-    this.spread = spread ?? 5;
-    this.trail1 = new Trail(kayak, HALF_PI, this.spread);
-    this.trail2 = new Trail(kayak, -HALF_PI, this.spread);
+    this.color = wakeColor;
+    this.trail1 = new Trail(kayak, HALF_PI, waveHeight, acceleration);
+    this.trail2 = new Trail(kayak, -HALF_PI, waveHeight, acceleration);
   }
 
   update() {
     this.trail1.update();
     this.trail2.update();
-
-    this.angle += TWO_PI / 50;
   }
 
   draw() {
-    if (this.trail1.particles.length == 0 || this.trail2.particles.length == 0)
-      return;
-
     push();
     strokeWeight(1);
+
+    const alpha = 255;
+    fill(
+      this.color.levels[0],
+      this.color.levels[1],
+      this.color.levels[2],
+      alpha
+    );
+    stroke(
+      this.color.levels[0],
+      this.color.levels[1],
+      this.color.levels[2],
+      alpha
+    );
+
     beginShape(QUAD_STRIP);
 
     for (let index = 0; index < this.trail1.particles.length; index++) {
       // const alpha = map(index, 0, this.trail1.particles.length, 255, 0);
-      const alpha = 255;
-      fill(
-        this.color.levels[0],
-        this.color.levels[1],
-        this.color.levels[2],
-        alpha
-      );
-      stroke(
-        this.color.levels[0],
-        this.color.levels[1],
-        this.color.levels[2],
-        alpha
-      );
 
       let particle = this.trail1.particles[index];
       vertex(particle.position.x, particle.position.y);
-      //ellipse(particle.position.x, particle.position.y, 5, 5);
+      // ellipse(particle.position.x, particle.position.y, 5, 5);
 
       particle = this.trail2.particles[index];
       vertex(particle.position.x, particle.position.y);
-      //ellipse(particle.position.x, particle.position.y, 5, 5);
+      // ellipse(particle.position.x, particle.position.y, 5, 5);
     }
-
     endShape();
+
     pop();
   }
 }
 
 class Trail {
-  constructor(kayak, rotate, spread) {
+  constructor(kayak, angle, waveHeight, acceleration) {
     this.kayak = kayak;
-    this.particles = [];
     this.maxParticles = 100;
+    this.spawnRate = 2;
+    this.particles = [];
 
-    this.spread = spread;
-    this.rotate = rotate;
+    this.angle = angle;
 
-    this.angle = 0;
+    this.waveHeight = waveHeight;
+    this.waveInterval = TWO_PI / 30;
+    this.acceleration = acceleration;
+    this.friction = 0.98;
+    this.t = 0;
   }
 
   add() {
-    const direction = this.kayak.movement.copy().rotate(this.rotate);
-    const offset = direction
-      .copy()
-      .normalize()
-      .mult(map(sin(this.angle), 0, 1, this.spread / 1.5, this.spread));
+    const distance = map(
+      sin(this.t),
+      0,
+      1,
+      this.waveHeight * 0.5,
+      this.waveHeight
+    );
+    const direction = this.kayak.movement.copy().normalize().rotate(this.angle);
+    const offset = p5.Vector.mult(direction, distance);
 
-    this.particles.unshift({
-      position: this.kayak.position.copy().add(offset),
-      movement: direction.mult(this.spread / 20),
+    const position = p5.Vector.add(this.kayak.position, offset);
+    const movement = p5.Vector.mult(direction, this.acceleration);
+
+    this.particles.push({
+      position: position,
+      movement: movement,
     });
 
     while (this.particles.length > this.maxParticles) {
-      this.particles.pop();
+      this.particles.shift();
     }
   }
 
   update() {
-    if (frameCount % 2 === 0 && this.kayak.movement.mag() > 0.1) {
+    if (frameCount % this.spawnRate === 0 && this.magnitude != 0) {
       this.add();
     }
 
     this.particles.forEach((particle) => {
       particle.position.add(particle.movement);
-      particle.movement.mult(0.98);
+      particle.movement.mult(this.friction);
     });
 
-    this.angle += TWO_PI / 25;
+    this.t += this.waveInterval;
   }
 }
