@@ -41,16 +41,17 @@ class Kayak {
     this.magnitude = 0;
     this.wake = new DoubleWake(this);
     this.throttle = 1;
+    this.turnSpeed = 0.01;
   }
 
   update() {
     // do not rotate directly, apply a force from the side
     if (keyIsPressed) {
       if (keyIsDown(LEFT_ARROW)) {
-        this.movement.rotate(-0.01);
+        this.movement.rotate(-this.turnSpeed);
       }
       if (keyIsDown(RIGHT_ARROW)) {
-        this.movement.rotate(0.01);
+        this.movement.rotate(this.turnSpeed);
       }
     }
 
@@ -124,32 +125,24 @@ class Wake {
     push();
     strokeWeight(1);
 
-    const alpha = 255;
-    fill(
-      this.color.levels[0],
-      this.color.levels[1],
-      this.color.levels[2],
-      alpha
-    );
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], 255);
     stroke(
       this.color.levels[0],
       this.color.levels[1],
       this.color.levels[2],
-      alpha
+      255
     );
 
     beginShape(QUAD_STRIP);
-
     for (let index = 0; index < this.trail1.particles.length; index++) {
-      // const alpha = map(index, 0, this.trail1.particles.length, 255, 0);
+      const particle1 = this.trail1.particles[index];
+      const particle2 = this.trail2.particles[index];
 
-      let particle = this.trail1.particles[index];
-      vertex(particle.position.x, particle.position.y);
-      // ellipse(particle.position.x, particle.position.y, 5, 5);
+      vertex(particle1.position.x, particle1.position.y);
+      vertex(particle2.position.x, particle2.position.y);
 
-      particle = this.trail2.particles[index];
-      vertex(particle.position.x, particle.position.y);
-      // ellipse(particle.position.x, particle.position.y, 5, 5);
+      // ellipse(particle1.position.x, particle1.position.y, 5, 5);
+      // ellipse(particle2.position.x, particle2.position.y, 5, 5);
     }
     endShape();
 
@@ -167,7 +160,7 @@ class Trail {
     this.angle = angle;
 
     this.waveHeight = waveHeight;
-    this.waveInterval = TWO_PI / 30;
+    this.waveInterval = TWO_PI / 50;
     this.acceleration = acceleration;
     this.friction = 0.98;
     this.t = 0;
