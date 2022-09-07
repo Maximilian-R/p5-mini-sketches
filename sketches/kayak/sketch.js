@@ -42,6 +42,8 @@ class Kayak {
     this.wake = new DoubleWake(this);
     this.throttle = 1;
     this.turnSpeed = 0.01;
+
+    this.birds = new Birds(this);
   }
 
   update() {
@@ -60,6 +62,7 @@ class Kayak {
     this.magnitude = this.movement.mag();
 
     this.wake.update();
+    this.birds.update();
   }
 
   draw() {
@@ -88,6 +91,8 @@ class Kayak {
     // endShape();
 
     pop();
+
+    this.birds.draw();
   }
 }
 
@@ -201,5 +206,89 @@ class Trail {
     });
 
     this.t += this.waveInterval;
+  }
+}
+
+class Birds {
+  constructor(kayak) {
+    this.birds = [];
+    this.birds.push(
+      new Bird(createVector(0, 0), kayak.position, createVector(-50, 10))
+    );
+    this.birds.push(
+      new Bird(createVector(0, 0), kayak.position, createVector(-20, -40))
+    );
+    this.birds.push(
+      new Bird(createVector(0, 0), kayak.position, createVector(20, -20))
+    );
+  }
+
+  update() {
+    this.birds.forEach((bird) => bird.update());
+  }
+
+  draw() {
+    this.birds.forEach((bird) => bird.draw());
+  }
+}
+
+class Bird {
+  constructor(position, target, offset) {
+    this.position = position;
+    this.target = target;
+    this.velocity = createVector(0, 0);
+    this.accelaration = createVector(0, 0);
+    this.maxSpeed = 2.1;
+    this.maxForce = 0.05;
+
+    // only applied visually
+    this.offset = offset;
+
+    this.t = 0;
+  }
+
+  seek() {
+    const force = p5.Vector.sub(this.target, this.position)
+      .setMag(this.maxSpeed)
+      .sub(this.velocity)
+      .limit(this.maxForce);
+
+    this.accelaration.add(force);
+  }
+
+  update() {
+    this.seek();
+
+    this.velocity.add(this.accelaration);
+    this.velocity.limit(this.maxSpeed);
+    this.position.add(this.velocity);
+    this.accelaration.set(0, 0);
+
+    this.t += 0.1;
+  }
+
+  draw() {
+    noStroke();
+    push();
+    translate(this.position.x, this.position.y);
+    translate(this.offset.x, this.offset.y);
+    rotate(this.velocity.heading());
+    scale(0.5);
+
+    strokeWeight(2);
+    stroke("#f5b342");
+    line(30, 0, 34, 0);
+
+    fill(255);
+    stroke(255);
+    strokeWeight(4);
+    strokeJoin(ROUND);
+    triangle(0, -5, 0, 5, 30, 0);
+
+    const wings = map(sin(this.t), 0, 1, 8, 10);
+    strokeWeight(10);
+    line(20, -wings, 20, wings);
+
+    pop();
   }
 }
