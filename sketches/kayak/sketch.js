@@ -256,11 +256,16 @@ class Bird {
     translate(this.position.x, this.position.y);
     translate(this.offset.x, this.offset.y);
     rotate(this.velocity.heading());
-    scale(0.5);
+    scale(1);
 
     strokeWeight(2);
     stroke(COLORS.bird2);
     line(30, 0, 34, 0);
+
+    stroke("#000");
+    strokeWeight(3);
+    point(28, -2);
+    point(28, 2);
 
     fill(COLORS.bird1);
     stroke(COLORS.bird1);
