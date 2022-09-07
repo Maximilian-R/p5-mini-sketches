@@ -14,6 +14,8 @@ function setup() {
   COLORS.theme2 = color("#daeff5");
   COLORS.theme3 = color("#1e6687");
   COLORS.kayak1 = color("#eee");
+  COLORS.bird1 = color("#fff");
+  COLORS.bird2 = color("#f5b342");
 
   kayak = new Kayak(createVector(0, height / 2));
 }
@@ -36,59 +38,41 @@ function draw() {
 class Kayak {
   constructor(position) {
     this.position = position;
-    this.movement = createVector(2, 0);
-    this.direction = 0;
-    this.magnitude = 0;
-    this.wake = new DoubleWake(this);
-    this.throttle = 1;
+    this.velocity = createVector(2, 0);
+    // this.acceleration = createVector(0, 0);
     this.turnSpeed = 0.01;
 
-    this.birds = new Birds(this);
+    this.wake = new DoubleWake(this);
+    this.birds = new Birds(this.position);
   }
 
   update() {
     // do not rotate directly, apply a force from the side
     if (keyIsPressed) {
       if (keyIsDown(LEFT_ARROW)) {
-        this.movement.rotate(-this.turnSpeed);
+        this.velocity.rotate(-this.turnSpeed);
       }
       if (keyIsDown(RIGHT_ARROW)) {
-        this.movement.rotate(this.turnSpeed);
+        this.velocity.rotate(this.turnSpeed);
       }
     }
 
-    this.position.add(this.movement);
-    this.direction = this.movement.heading();
-    this.magnitude = this.movement.mag();
+    this.position.add(this.velocity);
+    // this.acceleration.set(0, 0);
 
     this.wake.update();
     this.birds.update();
   }
 
   draw() {
-    // shadow
-
     this.wake.draw();
 
     push();
+
     translate(this.position.x, this.position.y);
+    rotate(this.velocity.heading());
     fill(COLORS.kayak1);
     ellipse(0, 0, 20, 20);
-
-    rotate(this.direction);
-
-    // translate(-50.354, -18);
-
-    // beginShape();
-    // vertex(18.93, 37.749);
-
-    // bezierVertex(55.156, 24.688, 94.573, 17.762, 142.3, 14.869);
-    // bezierVertex(187.447, 13.525, 309.661, 28.99, 309.437, 41.586);
-    // bezierVertex(309.22, 53.745, 209.837, 69.436, 147.268, 70.595);
-    // bezierVertex(104.544, 71.386, 47.021, 58.906, 19.484, 50.2);
-    // vertex(18.93, 37.749);
-
-    // endShape();
 
     pop();
 
@@ -156,17 +140,16 @@ class Wake {
 }
 
 class Trail {
-  constructor(kayak, angle, waveHeight, acceleration) {
+  constructor(kayak, angle, waveHeight, initialForce) {
     this.kayak = kayak;
     this.maxParticles = 100;
     this.spawnRate = 2;
     this.particles = [];
 
     this.angle = angle;
-
     this.waveHeight = waveHeight;
     this.waveInterval = TWO_PI / 50;
-    this.acceleration = acceleration;
+    this.initialForce = initialForce;
     this.friction = 0.98;
     this.t = 0;
   }
@@ -179,15 +162,15 @@ class Trail {
       this.waveHeight * 0.5,
       this.waveHeight
     );
-    const direction = this.kayak.movement.copy().normalize().rotate(this.angle);
+    const direction = this.kayak.velocity.copy().normalize().rotate(this.angle);
     const offset = p5.Vector.mult(direction, distance);
 
     const position = p5.Vector.add(this.kayak.position, offset);
-    const movement = p5.Vector.mult(direction, this.acceleration);
+    const velocity = p5.Vector.mult(direction, this.initialForce);
 
     this.particles.push({
       position: position,
-      movement: movement,
+      velocity: velocity,
     });
 
     while (this.particles.length > this.maxParticles) {
@@ -196,13 +179,13 @@ class Trail {
   }
 
   update() {
-    if (frameCount % this.spawnRate === 0 && this.magnitude != 0) {
+    if (frameCount % this.spawnRate === 0) {
       this.add();
     }
 
     this.particles.forEach((particle) => {
-      particle.position.add(particle.movement);
-      particle.movement.mult(this.friction);
+      particle.position.add(particle.velocity);
+      particle.velocity.mult(this.friction);
     });
 
     this.t += this.waveInterval;
@@ -210,16 +193,16 @@ class Trail {
 }
 
 class Birds {
-  constructor(kayak) {
+  constructor(target) {
     this.birds = [];
     this.birds.push(
-      new Bird(createVector(0, 0), kayak.position, createVector(-50, 10))
+      new Bird(createVector(0, 0), target, createVector(-50, 10))
     );
     this.birds.push(
-      new Bird(createVector(0, 0), kayak.position, createVector(-20, -40))
+      new Bird(createVector(0, 0), target, createVector(-20, -40))
     );
     this.birds.push(
-      new Bird(createVector(0, 0), kayak.position, createVector(20, -20))
+      new Bird(createVector(0, 0), target, createVector(20, -20))
     );
   }
 
@@ -237,9 +220,9 @@ class Bird {
     this.position = position;
     this.target = target;
     this.velocity = createVector(0, 0);
-    this.accelaration = createVector(0, 0);
+    this.acceleration = createVector(0, 0);
     this.maxSpeed = 2.1;
-    this.maxForce = 0.05;
+    this.maxForce = 0.01;
 
     // only applied visually
     this.offset = offset;
@@ -253,16 +236,16 @@ class Bird {
       .sub(this.velocity)
       .limit(this.maxForce);
 
-    this.accelaration.add(force);
+    this.acceleration.add(force);
   }
 
   update() {
     this.seek();
 
-    this.velocity.add(this.accelaration);
+    this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxSpeed);
     this.position.add(this.velocity);
-    this.accelaration.set(0, 0);
+    this.acceleration.set(0, 0);
 
     this.t += 0.1;
   }
@@ -276,11 +259,11 @@ class Bird {
     scale(0.5);
 
     strokeWeight(2);
-    stroke("#f5b342");
+    stroke(COLORS.bird2);
     line(30, 0, 34, 0);
 
-    fill(255);
-    stroke(255);
+    fill(COLORS.bird1);
+    stroke(COLORS.bird1);
     strokeWeight(4);
     strokeJoin(ROUND);
     triangle(0, -5, 0, 5, 30, 0);
