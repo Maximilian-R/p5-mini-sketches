@@ -1,6 +1,11 @@
 let kayak;
-const SCALE = 2;
+const SCALE = 1;
 const COLORS = {};
+
+let img;
+function preload() {
+  img = loadImage("./kayak.png");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -10,9 +15,9 @@ function setup() {
   COLORS.theme2 = color("#f5929f");
   COLORS.theme3 = color("#755bba");
 
-  COLORS.theme1 = color("#459cc4");
+  COLORS.theme1 = color("#7fd2f5");
   COLORS.theme2 = color("#daeff5");
-  COLORS.theme3 = color("#1e6687");
+  COLORS.theme3 = color("#1c6b8c");
   COLORS.kayak1 = color("#eee");
   COLORS.bird1 = color("#fff");
   COLORS.bird2 = color("#f5b342");
@@ -38,7 +43,7 @@ function draw() {
 class Kayak {
   constructor(position) {
     this.position = position;
-    this.velocity = createVector(2, 0);
+    this.velocity = createVector(3, 0);
     // this.acceleration = createVector(0, 0);
     this.turnSpeed = 0.01;
 
@@ -72,7 +77,12 @@ class Kayak {
     translate(this.position.x, this.position.y);
     rotate(this.velocity.heading());
     fill(COLORS.kayak1);
-    ellipse(0, 0, 20, 20);
+    //ellipse(0, 0, 20, 20);
+
+    scale(0.25);
+    translate(-img.width / 2, -img.height / 2);
+
+    image(img, 0, 0);
 
     pop();
 
@@ -122,7 +132,7 @@ class Wake {
       255
     );
 
-    beginShape(QUAD_STRIP);
+    beginShape(TRIANGLE_STRIP);
     for (let index = 0; index < this.trail1.particles.length; index++) {
       const particle1 = this.trail1.particles[index];
       const particle2 = this.trail2.particles[index];
@@ -133,6 +143,7 @@ class Wake {
       // ellipse(particle1.position.x, particle1.position.y, 5, 5);
       // ellipse(particle2.position.x, particle2.position.y, 5, 5);
     }
+
     endShape();
 
     pop();
@@ -142,8 +153,8 @@ class Wake {
 class Trail {
   constructor(kayak, angle, waveHeight, initialForce) {
     this.kayak = kayak;
-    this.maxParticles = 100;
-    this.spawnRate = 2;
+    this.maxParticles = 50;
+    this.spawnRate = 4;
     this.particles = [];
 
     this.angle = angle;
@@ -196,13 +207,13 @@ class Birds {
   constructor(target) {
     this.birds = [];
     this.birds.push(
-      new Bird(createVector(0, 0), target, createVector(-50, 10))
+      new Bird(createVector(0, 0), target, createVector(-50, 40))
     );
     this.birds.push(
       new Bird(createVector(0, 0), target, createVector(-20, -40))
     );
     this.birds.push(
-      new Bird(createVector(0, 0), target, createVector(20, -20))
+      new Bird(createVector(0, 0), target, createVector(60, -80))
     );
   }
 
