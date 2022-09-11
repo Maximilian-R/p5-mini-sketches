@@ -62,6 +62,7 @@ ul {
   align-items: center;
   box-shadow: 0 0 6px 0 #00000040;
   border-radius: 0.25rem;
+  overflow: hidden;
 
   transition: all 200ms ease-out;
 }
