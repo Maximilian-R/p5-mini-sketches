@@ -1,6 +1,7 @@
 let kayak;
-const SCALE = 1;
+let SCALE = 1;
 const COLORS = {};
+const KAYAK_SPEED = 3;
 
 let img;
 function preload() {
@@ -21,6 +22,8 @@ function setup() {
   COLORS.kayak1 = color("#eee");
   COLORS.bird1 = color("#fff");
   COLORS.bird2 = color("#f5b342");
+
+  SCALE = max(width / 800, height / 800);
 
   kayak = new Kayak(createVector(0, height / 2));
 }
@@ -43,7 +46,7 @@ function draw() {
 class Kayak {
   constructor(position) {
     this.position = position;
-    this.velocity = createVector(3, 0);
+    this.velocity = createVector(KAYAK_SPEED, 0);
     // this.acceleration = createVector(0, 0);
     this.turnSpeed = 0.01;
 
@@ -206,15 +209,9 @@ class Trail {
 class Birds {
   constructor(target) {
     this.birds = [];
-    this.birds.push(
-      new Bird(createVector(0, 0), target, createVector(-50, 40))
-    );
-    this.birds.push(
-      new Bird(createVector(0, 0), target, createVector(-20, -40))
-    );
-    this.birds.push(
-      new Bird(createVector(0, 0), target, createVector(60, -80))
-    );
+    this.birds.push(new Bird(target.copy(), target, createVector(0, 20)));
+    this.birds.push(new Bird(target.copy(), target, createVector(-20, -30)));
+    this.birds.push(new Bird(target.copy(), target, createVector(60, -40)));
   }
 
   update() {
@@ -232,8 +229,8 @@ class Bird {
     this.target = target;
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
-    this.maxSpeed = 2.1;
-    this.maxForce = 0.01;
+    this.maxSpeed = KAYAK_SPEED;
+    this.maxForce = 0.05;
 
     // only applied visually
     this.offset = offset;
@@ -266,8 +263,8 @@ class Bird {
     push();
     translate(this.position.x, this.position.y);
     translate(this.offset.x, this.offset.y);
-    rotate(this.velocity.heading());
-    scale(1);
+    rotate(p5.Vector.sub(this.target, this.position).heading());
+    scale(0.7);
 
     strokeWeight(2);
     stroke(COLORS.bird2);
