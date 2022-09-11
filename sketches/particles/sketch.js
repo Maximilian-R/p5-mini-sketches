@@ -17,20 +17,16 @@ function setup() {
   air = createVector(0, 0, 0);
 }
 
-
 function draw() {
-
-if(mouseIsPressed) {
-  if(mouseX > width * 0.5) {
-    wind.x += 0.1;
-  } else {
-    wind.x -= 0.1;
+  if (mouseIsPressed) {
+    if (mouseX > width * 0.5) {
+      wind.x += 0.1;
+    } else {
+      wind.x -= 0.1;
+    }
   }
-}
 
-
-
-  background(32, 56, 89)
+  background(32, 56, 89);
   particleSystem.update();
 }
 
@@ -72,8 +68,8 @@ class ParticleSystem {
 
   applyGravity(gravity) {
     for (var i = 0; i < this.particles.length; i++) {
-      var g = gravity.copy()
-      g.mult(this.particles[i].mass)
+      var g = gravity.copy();
+      g.mult(this.particles[i].mass);
       this.particles[i].applyForce(g);
     }
   }
@@ -91,20 +87,22 @@ class ParticleSystem {
 
       var dx = pa.pos.x - this.vortex.pos.x;
       var dz = pa.pos.z - this.vortex.pos.z;
-      var vx = -dz*this.vortex.speed; //+ vortex.vel.x;
-      var vz =  dx*this.vortex.speed; //+ vortex.vel.z;
-
+      var vx = -dz * this.vortex.speed; //+ vortex.vel.x;
+      var vz = dx * this.vortex.speed; //+ vortex.vel.z;
 
       var factor = 1 / (1 + (dx * dx + dz * dz) / this.vortex.scale);
 
-      var force = createVector((vx - pa.vel.x) * factor, (vz- pa.vel.z) * factor, 0);
+      var force = createVector(
+        (vx - pa.vel.x) * factor,
+        (vz - pa.vel.z) * factor,
+        0
+      );
       this.particles[i].applyForce(force);
     }
   }
 
   update() {
-
-    if(frameCount % 2 == 0) {
+    if (frameCount % 2 == 0) {
       var pos = this.pos.copy();
       pos.x += random(-200, 200);
       pos.z += random(-200, 200);
@@ -112,7 +110,7 @@ class ParticleSystem {
     }
 
     this.applyAirResistance();
-    this.applyWind(wind)
+    this.applyWind(wind);
     this.applyGravity(gravity);
     this.applyRandom();
     this.applyVortex();
@@ -120,7 +118,7 @@ class ParticleSystem {
     for (var i = this.particles.length - 1; i >= 0; i--) {
       this.particles[i].update();
       this.particles[i].draw();
-      if(this.particles[i].isDead()) {
+      if (this.particles[i].isDead()) {
         this.particles.splice(i, 1);
       }
     }
