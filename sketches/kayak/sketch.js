@@ -12,15 +12,10 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
 
-  COLORS.theme1 = color("#f8b2bc");
-  COLORS.theme2 = color("#f5929f");
-  COLORS.theme3 = color("#755bba");
-
   COLORS.theme1 = color("#7fd2f5");
   COLORS.theme2 = color("#daeff5");
   COLORS.theme3 = color("#1c6b8c");
-  COLORS.kayak1 = color("#eee");
-  COLORS.bird1 = color("#fff");
+  COLORS.bird1 = color("#eee");
   COLORS.bird2 = color("#f5b342");
 
   SCALE = max(width / 800, height / 800);
@@ -79,12 +74,9 @@ class Kayak {
 
     translate(this.position.x, this.position.y);
     rotate(this.velocity.heading());
-    fill(COLORS.kayak1);
-    //ellipse(0, 0, 20, 20);
-
     scale(0.25);
-    translate(-img.width / 2, -img.height / 2);
 
+    translate(-img.width / 2, -img.height / 2);
     image(img, 0, 0);
 
     pop();
