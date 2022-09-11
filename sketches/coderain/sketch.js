@@ -39,7 +39,7 @@ class Stream {
     this.symbols = [];
 
     for (let i = 0; i <= this.length; i++) {
-      this.symbols.push(new Symbol(x, y));
+      this.symbols.push(new StreamSymbol(x, y));
       y -= FONT_SIZE;
     }
   }
@@ -66,7 +66,7 @@ class Stream {
   }
 }
 
-class Symbol {
+class StreamSymbol {
   constructor(x, y) {
     this.x = x;
     this.y = y;
