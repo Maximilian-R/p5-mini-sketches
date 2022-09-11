@@ -46,7 +46,7 @@ class Kayak {
     this.turnSpeed = 0.01;
 
     this.wake = new DoubleWake(this);
-    this.birds = new Birds(this.position);
+    this.birds = new Birds(this);
   }
 
   update() {
@@ -199,14 +199,21 @@ class Trail {
 }
 
 class Birds {
-  constructor(target) {
+  constructor(kayak) {
+    this.kayak = kayak;
+
+    const start = this.kayak.position
+      .copy()
+      .sub(createVector(width / 4 / SCALE, 0));
+
     this.birds = [];
-    this.birds.push(new Bird(target.copy(), target, createVector(0, 20)));
-    this.birds.push(new Bird(target.copy(), target, createVector(-20, -30)));
-    this.birds.push(new Bird(target.copy(), target, createVector(60, -40)));
+    this.birds.push(new Bird(start.copy(), createVector(40, -20)));
+    this.birds.push(new Bird(start.copy(), createVector(-10, -50)));
+    this.birds.push(new Bird(start.copy(), createVector(-20, 30)));
   }
 
   update() {
+    this.birds.forEach((bird) => bird.seek(this.kayak.position.copy()));
     this.birds.forEach((bird) => bird.update());
   }
 
@@ -216,22 +223,22 @@ class Birds {
 }
 
 class Bird {
-  constructor(position, target, offset) {
+  constructor(position, offset) {
     this.position = position;
-    this.target = target;
+    this.kayak = kayak;
+    this.offset = offset;
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
-    this.maxSpeed = KAYAK_SPEED;
-    this.maxForce = 0.05;
-
-    // only applied visually
-    this.offset = offset;
+    this.maxSpeed = KAYAK_SPEED + 2;
+    this.maxForce = 0.03;
 
     this.t = 0;
   }
 
-  seek() {
-    const force = p5.Vector.sub(this.target, this.position)
+  seek(target) {
+    const force = target
+      .add(this.offset)
+      .sub(this.position)
       .setMag(this.maxSpeed)
       .sub(this.velocity)
       .limit(this.maxForce);
@@ -240,8 +247,6 @@ class Bird {
   }
 
   update() {
-    this.seek();
-
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxSpeed);
     this.position.add(this.velocity);
@@ -251,11 +256,9 @@ class Bird {
   }
 
   draw() {
-    noStroke();
     push();
     translate(this.position.x, this.position.y);
-    translate(this.offset.x, this.offset.y);
-    rotate(p5.Vector.sub(this.target, this.position).heading());
+    rotate(this.velocity.heading());
     scale(0.7);
 
     strokeWeight(2);
@@ -274,7 +277,7 @@ class Bird {
     triangle(0, -5, 0, 5, 30, 0);
 
     const wings = map(sin(this.t), 0, 1, 8, 10);
-    strokeWeight(10);
+    strokeWeight(8);
     line(20, -wings, 20, wings);
 
     pop();
