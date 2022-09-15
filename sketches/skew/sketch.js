@@ -58,6 +58,7 @@ function draw() {
 
   translate(mask.x, mask.y);
   strokeWeight(0);
+  noFill();
   drawPolygon(mask.radius, mask.sides);
   drawingContext.clip();
 
