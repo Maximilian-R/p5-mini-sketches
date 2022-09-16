@@ -1,5 +1,3 @@
-const num = 40;
-const degrees = -30;
 const rects = [];
 const risoColors = [];
 const colors = {};
@@ -11,20 +9,49 @@ async function preload() {
   });
 }
 
+const settings = {
+  rects: 40,
+  degrees: -30,
+  pickColors: 2,
+  seed: "",
+  generate: () => generateSketch(),
+};
+
 async function setup() {
-  canvas = createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(window.innerWidth, window.innerHeight);
 
-  //randomSeed(100);
+  const gui = new dat.GUI({ name: "Settings", hideable: true });
 
-  colors.bgColor = color(
-    risoColors[Math.floor(random() * risoColors.length)].hex
+  gui
+    .add(settings, "rects", 1, 100, 1)
+    .name("Rectangles")
+    .onChange(() => generateSketch());
+  gui
+    .add(settings, "degrees", -90, 90, 5)
+    .name("Degrees")
+    .onChange(() => generateSketch());
+  gui
+    .add(settings, "pickColors", 1, 10, 1)
+    .name("Pick colors")
+    .onChange(() => generateSketch());
+  gui
+    .add(settings, "seed")
+    .name("Seed")
+    .onChange(() => generateSketch());
+  gui.add(settings, "generate").name("Generate");
+
+  generateSketch();
+}
+
+function generateSketch() {
+  const seed = Array.from(settings.seed).reduce(
+    (a, c) => a + c.charCodeAt(0),
+    0
   );
 
-  colors.rectColors = [
-    pickRandom(risoColors),
-    pickRandom(risoColors),
-    // pickRandom(risoColors)
-  ];
+  randomSeed(seed || undefined);
+  colors.bgColor = pickRandom(risoColors).hex;
+  colors.rectColors = pickRandoms(risoColors, settings.pickColors);
 
   mask = {
     radius: min(width * 0.4, height * 0.4),
@@ -35,19 +62,24 @@ async function setup() {
     color: pickRandom(colors.rectColors).hex,
   };
 
+  if (rects.length > 0) {
+    rects.splice(0, rects.length);
+  }
+
   let x, y, w, h, fillColor, strokeColor, blend;
-  for (let index = 0; index < num; index++) {
+  for (let index = 0; index < settings.rects; index++) {
     x = random(0, width);
     y = random(0, height);
     w = random(200, 600);
     h = random(40, 200);
-
     fillColor = pickRandom(colors.rectColors).hex;
     strokeColor = pickRandom(colors.rectColors).hex;
     blend = random() > 0.5 ? BLEND : OVERLAY;
 
     rects.push({ x, y, w, h, fillColor, strokeColor, blend });
   }
+
+  loop();
 }
 
 function draw() {
@@ -82,19 +114,19 @@ function draw() {
 
     fill(fillColor);
     noStroke();
-    drawSkewedRect(w, h, degrees);
+    drawSkewedRect(w, h, settings.degrees);
 
     drawingContext.shadowColor = null;
 
     strokeWeight(10);
     stroke(strokeColor);
     noFill();
-    drawSkewedRect(w, h, degrees);
+    drawSkewedRect(w, h, settings.degrees);
 
     blendMode(BLEND);
     stroke("#000");
     strokeWeight(2);
-    drawSkewedRect(w, h, degrees);
+    drawSkewedRect(w, h, settings.degrees);
 
     pop();
   });
@@ -150,4 +182,12 @@ function offsetHSL(hex, h, s, l, a = 1) {
 
 function pickRandom(array) {
   return array[Math.floor(random() * array.length)];
+}
+
+function pickRandoms(array, pick) {
+  const selected = [];
+  for (let index = 0; index < pick; index++) {
+    selected.push(pickRandom(array));
+  }
+  return selected;
 }
