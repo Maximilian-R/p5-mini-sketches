@@ -21,7 +21,7 @@ const settings = {
   },
 };
 
-async function setup() {
+function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
   const gui = new dat.GUI({ name: "Settings", hideable: true });
