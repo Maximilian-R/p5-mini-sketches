@@ -13,7 +13,7 @@ const settings = {
   rects: 40,
   degrees: -30,
   pickColors: 2,
-  seed: "",
+  seed: window.crypto?.randomUUID() ?? "",
   generate: () => generateSketch(),
 };
 
@@ -22,22 +22,10 @@ async function setup() {
 
   const gui = new dat.GUI({ name: "Settings", hideable: true });
 
-  gui
-    .add(settings, "rects", 1, 100, 1)
-    .name("Rectangles")
-    .onChange(() => generateSketch());
-  gui
-    .add(settings, "degrees", -90, 90, 5)
-    .name("Degrees")
-    .onChange(() => generateSketch());
-  gui
-    .add(settings, "pickColors", 1, 10, 1)
-    .name("Pick colors")
-    .onChange(() => generateSketch());
-  gui
-    .add(settings, "seed")
-    .name("Seed")
-    .onChange(() => generateSketch());
+  gui.add(settings, "rects", 1, 100, 1).name("Rectangles");
+  gui.add(settings, "degrees", -90, 90, 5).name("Degrees");
+  gui.add(settings, "pickColors", 1, 10, 1).name("Pick colors");
+  gui.add(settings, "seed").name("Seed");
   gui.add(settings, "generate").name("Generate");
 
   generateSketch();
