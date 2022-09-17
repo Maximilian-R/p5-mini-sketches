@@ -1,6 +1,6 @@
 const points = [];
 const settings = {
-  columns: 78,
+  columns: 24,
   rows: 8,
   frequency: 0.002,
   amplitude: 90,
@@ -8,6 +8,7 @@ const settings = {
   color2: "#fff000",
   midPointX: 0.5,
   midPointY: 0.5,
+  animationSpeed: 1,
 };
 let gridWidth;
 let gridHeight;
@@ -23,20 +24,12 @@ function setup() {
   const gui = new dat.GUI({ name: "Settings", hideable: true });
   const folder1 = gui.addFolder("Grid");
   folder1
-    .add(settings, "columns", 1, 100, 1)
+    .add(settings, "columns", 2, 100, 1)
     .name("Columns")
     .onChange(generateSketch);
   folder1
     .add(settings, "rows", 1, 100, 1)
     .name("Rows")
-    .onChange(generateSketch);
-  folder1
-    .add(settings, "frequency", 0, 0.01, 0.0001)
-    .name("Frequency")
-    .onChange(generateSketch);
-  folder1
-    .add(settings, "amplitude", 1, 200, 1)
-    .name("Amplitude")
     .onChange(generateSketch);
 
   const folder2 = gui.addFolder("Colors");
@@ -45,17 +38,23 @@ function setup() {
 
   const folder3 = gui.addFolder("Curve");
   folder3
-    .add(settings, "midPointX", -10, 10, 0.1)
-    .name("Control Point X")
+    .add(settings, "frequency", 0, 0.01, 0.0001)
+    .name("Frequency")
     .onChange(generateSketch);
   folder3
-    .add(settings, "midPointY", -10, 10, 0.1)
-    .name("Control Point Y")
+    .add(settings, "amplitude", 1, 200, 1)
+    .name("Amplitude")
     .onChange(generateSketch);
+  folder3.add(settings, "midPointX", -10, 10, 0.1).name("Control Point X");
+  folder3.add(settings, "midPointY", -10, 10, 0.1).name("Control Point Y");
+
+  const folder4 = gui.addFolder("Animation");
+  folder4.add(settings, "animationSpeed", -10, 10, 1).name("Speed");
 
   folder1.open();
   folder2.open();
   folder3.open();
+  folder4.open();
 }
 
 function generateSketch() {
@@ -82,8 +81,8 @@ function generateSketch() {
     n =
       (noise(x * settings.frequency, y * settings.frequency) * 2 - 1) *
       settings.amplitude;
-    x += n;
-    y += n;
+    // x += n;
+    // y += n;
 
     lineWidth = map(n, -settings.amplitude, settings.amplitude, 0, 5);
     strokeColor = lerpColor(
@@ -99,10 +98,25 @@ function draw() {
   background("black");
 
   push();
+  noFill();
   translate(position.x, position.y);
   translate(cellWidth / 2, cellHeight / 2);
 
-  noFill();
+  let n;
+
+  points.forEach((point) => {
+    n =
+      (noise(
+        (point.initialX + frameCount * settings.animationSpeed) *
+          settings.frequency,
+        point.initialY * settings.frequency
+      ) *
+        2 -
+        1) *
+      settings.amplitude;
+    point.x = point.initialX + n;
+    point.y = point.initialY + n;
+  });
 
   let last;
 
@@ -145,6 +159,8 @@ class Point {
   constructor(x, y, lineWidth, strokeColor) {
     this.x = x;
     this.y = y;
+    this.initialX = x;
+    this.initialY = y;
     this.lineWidth = lineWidth;
     this.strokeColor = strokeColor;
   }
