@@ -13,8 +13,12 @@ const settings = {
   rects: 40,
   degrees: -30,
   pickColors: 2,
+  apply: () => generateSketch(),
   seed: window.crypto?.randomUUID() ?? "",
-  generate: () => generateSketch(),
+  generate: () => {
+    settings.seed = window.crypto?.randomUUID() ?? "";
+    generateSketch();
+  },
 };
 
 async function setup() {
@@ -22,11 +26,18 @@ async function setup() {
 
   const gui = new dat.GUI({ name: "Settings", hideable: true });
 
-  gui.add(settings, "rects", 1, 100, 1).name("Rectangles");
-  gui.add(settings, "degrees", -90, 90, 5).name("Degrees");
-  gui.add(settings, "pickColors", 1, 10, 1).name("Pick colors");
-  gui.add(settings, "seed").name("Seed");
-  gui.add(settings, "generate").name("Generate");
+  const folder1 = gui.addFolder("Settings");
+  folder1.add(settings, "rects", 1, 100, 1).name("Rectangles");
+  folder1.add(settings, "degrees", -90, 90, 5).name("Degrees");
+  folder1.add(settings, "pickColors", 1, 10, 1).name("Pick colors");
+  folder1.add(settings, "apply").name("Apply");
+
+  const folder2 = gui.addFolder("Seed");
+  folder2.add(settings, "seed").name("Seed").listen();
+  folder2.add(settings, "generate").name("Generate Seed");
+
+  folder1.open();
+  folder2.open();
 
   generateSketch();
 }
