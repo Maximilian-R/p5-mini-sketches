@@ -47,11 +47,8 @@ function draw() {
   tColor += 0.1;
 
   const strokeColor = color(tColor % 360, 100, 65);
-  strokeColor.setAlpha(0.1);
 
   background(0);
-  background(strokeColor);
-
   translate(width * 0.5, height * 0.5);
   scale((min(width, height) * 0.9) / totalRadius);
   drawButton();
