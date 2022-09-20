@@ -3,29 +3,30 @@ let bins = [];
 let lineWidths, circles, slices, slice, minLineWidth, startRadius;
 let tRotate = 0,
   tColor = 0;
+let totalRadius = 0;
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  // strokeCap(SQUARE);
+  colorMode(HSL);
 
   circles = 5;
   slices = 9;
   slice = TWO_PI / slices;
   lineWidths = [];
-  startRadius = 200;
+  startRadius = 100;
   minLineWidth = 20;
-
-  colorMode(HSL);
 
   for (let i = 0; i < circles * slices; i++) {
     const bin = random() < 0.5 ? 0 : floor(random(4, 64));
     bins.push(bin);
   }
 
+  totalRadius += startRadius;
   for (let i = 0; i < circles; i++) {
     const t = i / (circles - 1);
     const lineWidth = pow(t, 2) * 100 + minLineWidth;
     lineWidths.push(lineWidth);
+    totalRadius += lineWidth * 2;
   }
 
   addEventListener("mouseup", () => {
@@ -51,23 +52,25 @@ function draw() {
   background(0);
   background(strokeColor);
 
+  translate(width * 0.5, height * 0.5);
+  scale(min(width, height) / totalRadius);
+  drawButton();
+
   if (!audioContext) return;
   // analyserNode.getFloatFrequencyData(audioData);
   analyserNode.getByteFrequencyData(audioData);
 
-  translate(width * 0.5, height * 0.5);
   noFill();
-  strokeWeight(5);
+  // strokeWeight(5);
+  // strokeColor.setAlpha(map(audioData[0], 0, 255, 0, 1));
+  // stroke(strokeColor);
+  // ellipse(
+  //   0,
+  //   0,
+  //   map(audioData[1], 0, 255, startRadius * 0.5, startRadius * 0.8)
+  // );
 
   let radius = startRadius;
-
-  strokeColor.setAlpha(map(audioData[0], 0, 255, 0, 1));
-  stroke(strokeColor);
-
-  // noStroke();
-  ellipse(0, 0, map(audioData[1], 0, 255, 0, radius * 0.8));
-  noFill();
-
   for (let i = 0; i < circles; i++) {
     push();
     rotate(i % 2 == 0 ? tRotate : -tRotate);
@@ -93,26 +96,36 @@ function draw() {
 
     pop();
   }
-
-  // const average = getAverage(audioData);
-  // for (let index = 0; index < bins.length; index++) {
-  //   const bin = bins[index];
-  //   const radius =
-  //     map(
-  //       audioData[bin],
-  //       0, //analyserNode.minDecibels,
-  //       255, //analyserNode.maxDecibels,
-  //       0,
-  //       1
-  //     ) * 300;
-
-  //   ellipse(0, 0, radius, radius);
-  // }
 }
+
+const drawButton = () => {
+  const isPlaying = audioContext && !audio.paused;
+  push();
+  strokeJoin(ROUND);
+  fill(255, isPlaying ? 0.8 : 1);
+  noStroke();
+  ellipse(0, 0, startRadius * 0.9);
+
+  scale(0.8);
+  stroke("black");
+  fill("black");
+  strokeWeight(10);
+  if (isPlaying) {
+    translate(-20, -25);
+    rect(0, 0, 10, 50);
+    translate(30, 0);
+    rect(0, 0, 10, 50);
+  } else {
+    translate(-20, -25);
+    triangle(0, 0, 50, 25, 0, 50);
+  }
+
+  pop();
+};
 
 const createAudio = () => {
   audio = document.createElement("audio");
-  audio.src = "./song2.mp3";
+  audio.src = "./song1.mp3";
 
   audioContext = new AudioContext();
   sourceNode = audioContext.createMediaElementSource(audio);
