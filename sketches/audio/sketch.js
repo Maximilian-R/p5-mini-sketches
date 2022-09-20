@@ -53,7 +53,7 @@ function draw() {
   background(strokeColor);
 
   translate(width * 0.5, height * 0.5);
-  scale((min(width, height) - 200) / totalRadius);
+  scale((min(width, height) * 0.9) / totalRadius);
   drawButton();
 
   if (!audioContext) return;
