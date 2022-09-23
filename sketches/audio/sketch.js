@@ -29,16 +29,18 @@ function setup() {
     totalRadius += lineWidth * 2;
   }
 
-  addEventListener("touchend", () => {
-    if (!audioContext) createAudio();
+  ['touchend', 'mouseup'].forEach((event) => {
+    addEventListener(event, () => {
+      if (!audioContext) createAudio();
 
-    if (audio.paused) {
-      audio.play();
-      loop();
-    } else {
-      audio.pause();
-      noLoop();
-    }
+      if (audio.paused) {
+        audio.play();
+        loop();
+      } else {
+        audio.pause();
+        noLoop();
+      }
+    });
   });
 }
 
