@@ -29,7 +29,7 @@ function setup() {
     totalRadius += lineWidth * 2;
   }
 
-  addEventListener("mouseup", () => {
+  addEventListener("mouseup, touchend", () => {
     if (!audioContext) createAudio();
 
     if (audio.paused) {
