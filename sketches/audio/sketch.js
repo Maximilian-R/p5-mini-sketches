@@ -4,6 +4,7 @@ let lineWidths, circles, slices, slice, minLineWidth, startRadius;
 let tRotate = 0,
   tColor = 0;
 let totalRadius = 0;
+const fftSize = 128;
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
@@ -17,7 +18,7 @@ function setup() {
   minLineWidth = 20;
 
   for (let i = 0; i < circles * slices; i++) {
-    const bin = random() < 0.5 ? 0 : floor(random(4, 64));
+    const bin = random() < 0.5 ? 0 : floor(random(0, fftSize / 3));
     bins.push(bin);
   }
 
@@ -29,7 +30,7 @@ function setup() {
     totalRadius += lineWidth * 2;
   }
 
-  ['touchend', 'mouseup'].forEach((event) => {
+  ["touchend", "mouseup"].forEach((event) => {
     addEventListener(event, () => {
       if (!audioContext) createAudio();
 
@@ -53,21 +54,13 @@ function draw() {
   background(0);
   translate(width * 0.5, height * 0.5);
   scale((min(width, height) * 0.9) / totalRadius);
-  drawButton();
+  drawButton(strokeColor);
 
   if (!audioContext) return;
   // analyserNode.getFloatFrequencyData(audioData);
   analyserNode.getByteFrequencyData(audioData);
 
   noFill();
-  // strokeWeight(5);
-  // strokeColor.setAlpha(map(audioData[0], 0, 255, 0, 1));
-  // stroke(strokeColor);
-  // ellipse(
-  //   0,
-  //   0,
-  //   map(audioData[1], 0, 255, startRadius * 0.5, startRadius * 0.8)
-  // );
 
   let radius = startRadius;
   for (let i = 0; i < circles; i++) {
@@ -80,7 +73,7 @@ function draw() {
       const bin = bins[i * slices + j];
       if (!bin) continue;
 
-      const lineWidth = lineWidths[i] * map(audioData[bin], 0, 255, 0, 1);
+      const lineWidth = lineWidths[i] * map(audioData[bin], 0, 255, 0.1, 1);
       if (lineWidth < 1) continue;
 
       strokeWeight(lineWidth);
@@ -97,11 +90,11 @@ function draw() {
   }
 }
 
-const drawButton = () => {
+const drawButton = (strokeColor) => {
   const isPlaying = audioContext && !audio.paused;
   push();
   strokeJoin(ROUND);
-  fill(255, isPlaying ? 0.8 : 1);
+  fill(strokeColor);
   noStroke();
   ellipse(0, 0, startRadius * 0.9);
 
@@ -131,7 +124,7 @@ const createAudio = () => {
   sourceNode.connect(audioContext.destination);
 
   analyserNode = audioContext.createAnalyser();
-  analyserNode.fftSize = 512;
+  analyserNode.fftSize = fftSize;
   analyserNode.smoothingTimeConstant = 0.9;
   sourceNode.connect(analyserNode);
 
