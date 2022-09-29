@@ -5,9 +5,9 @@ function windowResized() {
   resizeCanvas(windowWidth, 300);
 }
 
-function setup(){
+function setup() {
   var canvas = createCanvas(windowWidth, 300);
-  canvas.parent('sketch-holder');
+  canvas.parent("sketch-holder");
 
   start();
 }
@@ -17,20 +17,25 @@ function start() {
   for (var i = 0; i < 3; i++) {
     c1 = color(54, 209, 255).levels;
     c2 = color(c1[0] * 1.1, c1[1] * 1.1, c1[2] * 1.1).levels;
-    fish = new Fish(windowWidth * random(0, 1), windowHeight * random(0, 1), c1, c2);
+    fish = new Fish(
+      windowWidth * random(0, 1),
+      windowHeight * random(0, 1),
+      c1,
+      c2
+    );
     fishes.push(fish);
   }
 }
 
-function draw(){
+function draw() {
   background(0, 0, 50);
 
-  fishes.forEach(function(f) {
+  fishes.forEach(function (f) {
     f.update(frameCount * 0.1);
     f.render();
   });
 
-  animations.forEach(function(a) {
+  animations.forEach(function (a) {
     a.update(frameCount * 0.1);
     a.render();
   });
@@ -40,10 +45,17 @@ function draw(){
       animations.splice(0, 1);
     }
   }
+}
 
+function touchEnded() {
+  createDoppler();
 }
 
 function mouseClicked() {
+  createDoppler();
+}
+
+function createDoppler() {
   if (mouseY > 0 && mouseY < height) {
     d = new DopplerAnimation(mouseX, mouseY);
     animations.push(d);
@@ -67,8 +79,7 @@ function Fish(x, y, c1, c2) {
   this.MAX_SPEED = 10;
 }
 
-Fish.prototype.update = function(t) {
-
+Fish.prototype.update = function (t) {
   if (animations.length > 0) {
     d = animations[animations.length - 1];
     vx = (d.x - this.x) * 0.06;
@@ -76,16 +87,16 @@ Fish.prototype.update = function(t) {
     this.x += vx;
     this.y += vy;
   } else {
-  //velocity
-  lerpX = lerp(-this.MAX_SPEED, this.MAX_SPEED, noise(this.ny, this.nx));
-  lerpY = lerp(-this.MAX_SPEED, this.MAX_SPEED, noise(this.nx, this.ny));
-  this.x += lerpX;
-  this.y += lerpY;
-  this.x = constrain(this.x, 0, width);
-  this.y = constrain(this.y, 0, height);
-  nLerp = lerp(0, 0.01,  noise(this.counter));
-  this.nx += nLerp;
-  this.ny += nLerp;
+    //velocity
+    lerpX = lerp(-this.MAX_SPEED, this.MAX_SPEED, noise(this.ny, this.nx));
+    lerpY = lerp(-this.MAX_SPEED, this.MAX_SPEED, noise(this.nx, this.ny));
+    this.x += lerpX;
+    this.y += lerpY;
+    this.x = constrain(this.x, 0, width);
+    this.y = constrain(this.y, 0, height);
+    nLerp = lerp(0, 0.01, noise(this.counter));
+    this.nx += nLerp;
+    this.ny += nLerp;
   }
 
   //bubble creation
@@ -95,23 +106,22 @@ Fish.prototype.update = function(t) {
   this.bubbles.push(b);
 
   //update bubbles
-  this.bubbles.forEach(function(b, index) {
-    b.update(t);
+  this.bubbles.forEach(
+    function (b, index) {
+      b.update(t);
 
-    if (b.r <= 0) {
-      this.bubbles.splice(index, 1);
-    }
-  }.bind(this));
+      if (b.r <= 0) {
+        this.bubbles.splice(index, 1);
+      }
+    }.bind(this)
+  );
+};
 
-}
-
-Fish.prototype.render = function() {
-
-  this.bubbles.forEach(function(b) {
+Fish.prototype.render = function () {
+  this.bubbles.forEach(function (b) {
     b.render();
   });
-
-}
+};
 
 function Bubble(x, y, r, index, c) {
   this.x = x;
@@ -121,19 +131,19 @@ function Bubble(x, y, r, index, c) {
   this.index = index;
 }
 
-Bubble.prototype.update = function(t) {
+Bubble.prototype.update = function (t) {
   this.r -= 0.2;
-  this.x += (sin(t + this.index) + map(noise(t, this.index), 0, 1, -2, 2));
-  this.y += (cos(t + this.index) + map(noise(t, this.index), 0, 1, -2, 2));
-}
+  this.x += sin(t + this.index) + map(noise(t, this.index), 0, 1, -2, 2);
+  this.y += cos(t + this.index) + map(noise(t, this.index), 0, 1, -2, 2);
+};
 
-Bubble.prototype.render = function() {
+Bubble.prototype.render = function () {
   noStroke();
   fill(this.c);
   ellipse(this.x, this.y, this.r + 2);
   fill(this.c);
   ellipse(this.x, this.y, this.r);
-}
+};
 
 function DopplerAnimation(x, y) {
   this.x = x;
@@ -144,36 +154,37 @@ function DopplerAnimation(x, y) {
   this.amount = 3;
 }
 
-DopplerAnimation.prototype.update = function(t) {
-
-  if(this.amount > 0 && this.spawnDelay-- <= 0) {
+DopplerAnimation.prototype.update = function (t) {
+  if (this.amount > 0 && this.spawnDelay-- <= 0) {
     this.amount--;
     this.addDoppler();
     this.spawnDelay = 20;
   }
 
-  this.dopplers.forEach(function(d, index) {
-    d.update(t);
-    if(d.alpha <= 0) {
-      this.dopplers.splice(index, 1);
-    }
-  }.bind(this));
+  this.dopplers.forEach(
+    function (d, index) {
+      d.update(t);
+      if (d.alpha <= 0) {
+        this.dopplers.splice(index, 1);
+      }
+    }.bind(this)
+  );
 
-  if (this.dopplers.length == 0 ) {
+  if (this.dopplers.length == 0) {
     this.active = false;
   }
-}
+};
 
-DopplerAnimation.prototype.render = function() {
-  this.dopplers.forEach(function(d, index) {
+DopplerAnimation.prototype.render = function () {
+  this.dopplers.forEach(function (d, index) {
     d.render();
   });
-}
+};
 
-DopplerAnimation.prototype.addDoppler = function() {
+DopplerAnimation.prototype.addDoppler = function () {
   d = new Doppler(this.x, this.y);
   this.dopplers.push(d);
-}
+};
 
 function Doppler(x, y) {
   this.x = x;
@@ -182,14 +193,14 @@ function Doppler(x, y) {
   this.alpha = 255;
 }
 
-Doppler.prototype.update = function(t) {
+Doppler.prototype.update = function (t) {
   this.r += 2;
   this.alpha -= 3;
-}
+};
 
-Doppler.prototype.render = function() {
+Doppler.prototype.render = function () {
   noFill();
   stroke(54, 209, 255, this.alpha);
   strokeWeight(2);
   ellipse(this.x, this.y, this.r);
-}
+};
