@@ -117,3 +117,21 @@ footer {
   text-align: center;
   margin: 4rem;
 }
+
+nav {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 2rem 0 2rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #07225a;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+nav a.current {
+  border: 2px solid #07225a;
+}
