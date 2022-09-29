@@ -13,31 +13,56 @@ const settings = {
   rects: 40,
   degrees: -30,
   pickColors: 2,
-  apply: () => generateSketch(),
   seed: window.crypto?.randomUUID() ?? "",
-  generate: () => {
-    settings.seed = window.crypto?.randomUUID() ?? "";
-    generateSketch();
-  },
 };
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
-  const gui = new dat.GUI({ name: "Settings", hideable: true });
+  const gui = new Tweakpane.Pane();
 
-  const folder1 = gui.addFolder("Settings");
-  folder1.add(settings, "rects", 1, 100, 1).name("Rectangles");
-  folder1.add(settings, "degrees", -90, 90, 5).name("Degrees");
-  folder1.add(settings, "pickColors", 1, 10, 1).name("Pick colors");
-  folder1.add(settings, "apply").name("Apply");
+  const folder1 = gui.addFolder({
+    title: "Settings",
+  });
+  folder1.addInput(settings, "rects", {
+    min: 1,
+    max: 100,
+    step: 1,
+    label: "Rectangles",
+  });
+  folder1.addInput(settings, "degrees", {
+    min: -90,
+    max: 90,
+    step: 5,
+    label: "Degrees",
+  });
+  folder1.addInput(settings, "pickColors", {
+    min: 1,
+    max: 10,
+    step: 1,
+    label: "Pick colors",
+  });
+  folder1
+    .addButton({
+      title: "Apply",
+    })
+    .on("click", () => generateSketch());
 
-  const folder2 = gui.addFolder("Seed");
-  folder2.add(settings, "seed").name("Seed").listen();
-  folder2.add(settings, "generate").name("Generate Seed");
-
-  folder1.open();
-  folder2.open();
+  const folder2 = gui.addFolder({
+    title: "Seed",
+  });
+  folder2.addInput(settings, "seed", {
+    label: "Seed",
+  });
+  folder2
+    .addButton({
+      title: "Generate Seed",
+    })
+    .on("click", () => {
+      settings.seed = window.crypto?.randomUUID() ?? "";
+      generateSketch();
+      gui.refresh();
+    });
 
   generateSketch();
 }
