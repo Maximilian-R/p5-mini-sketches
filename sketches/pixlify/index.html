@@ -3,6 +3,7 @@
     <meta charset="UTF-8" />
 
     <script src="../../libraries/p5.min.js"></script>
+    <script src="../../libraries/tweakpane-3.1.0.min.js"></script>
     <script src="sketch.js"></script>
 
     <style>
@@ -14,4 +15,12 @@
   </head>
 
   <body></body>
+  <script>
+    if (typeof window.showOpenFilePicker !== "function") {
+      const p = document.createElement("p");
+      p.textContent =
+        "This browser has missing compatibility to the File System Access API which is required for this sketch.";
+      document.body.appendChild(p);
+    }
+  </script>
 </html>
