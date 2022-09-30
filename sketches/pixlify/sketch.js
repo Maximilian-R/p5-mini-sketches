@@ -82,7 +82,10 @@ function paintImage() {
   noStroke();
   const density = pixelDensity();
 
-  const dots = gp.pixels.length / 4 / settings.pixelSize;
+  const dots = min(
+    gp.pixels.length / 4 / settings.pixelSize,
+    (1920 * 1080) / settings.pixelSize
+  );
   for (let i = 0; i < dots; i++) {
     const x = int(random(gp.width));
     const y = int(random(gp.height));
