@@ -51,71 +51,57 @@ ul {
   gap: 1.5rem;
 }
 
-.sketch-preview h3 {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 3rem;
-  padding: 0.5rem 0.5rem;
-}
-
-.sketch-preview a {
+li > a {
   position: relative;
   text-decoration: none;
   color: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: block;
   box-shadow: 0 0 6px 0 #00000040;
   border-radius: 0.25rem;
   overflow: hidden;
-
-  transition: all 200ms ease-out;
 }
 
-.sketch-preview div {
-  position: relative;
-}
-
-.sketch-preview div {
-  width: 200px;
-  height: 200px;
-}
-
-.sketch-preview img {
-  width: 200px;
-  height: 200px;
-}
-
-.sketch-preview p {
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  font-size: 0.8rem;
+li > a > h3 {
   margin: 0;
-  top: 0;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  transition: opacity 200ms ease-out;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  height: 3rem;
+  padding: 0.5rem;
+  background-color: white;
+  position: relative;
+  z-index: 2;
+}
+
+li > a > div {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+li > a > div > img {
+  width: 100%;
+  height: 100%;
+}
+
+li > a > div > p {
+  position: absolute;
+  top: 0;
+
   box-sizing: border-box;
-}
-
-.sketch-preview a:hover {
-  transform: translate(0px, -10px);
-}
-
-.sketch-preview a:hover p {
-  opacity: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  opacity: 0;
 }
 
 footer {
@@ -146,26 +132,50 @@ nav a.current {
 
 nav {
   opacity: 0;
-  animation: 0.5s ease-out 0s 1 slideInFromBelow forwards;
+  animation: 0.5s ease-out 0s 1 slideInFromTop forwards;
 }
 
 header h1 {
   opacity: 0;
-  animation: 0.5s ease-out 0.25s 1 slideInFromBelow forwards;
+  animation: 0.5s ease-out 0.25s 1 slideInFromTop forwards;
 }
 
 header p {
   opacity: 0;
-  animation: 0.5s ease-out 0.5s 1 slideInFromBelow forwards;
+  animation: 0.5s ease-out 0.5s 1 slideInFromTop forwards;
 }
 
-@keyframes slideInFromBelow {
+li > a {
+  transform: translateY(0);
+  transition: transform 200ms ease-in-out;
+}
+
+li > a:hover,
+li > a:focus {
+  transform: translateY(-0.5rem);
+}
+
+li > a:hover p,
+li > a:focus p {
+  animation: 0.25s ease-in-out 0s 1 fadeIn forwards;
+}
+
+@keyframes slideInFromTop {
   0% {
     transform: translatey(-50%);
     opacity: 0;
   }
   100% {
     transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
     opacity: 1;
   }
 }
