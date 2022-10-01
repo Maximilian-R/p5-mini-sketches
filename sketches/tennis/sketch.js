@@ -1,63 +1,77 @@
-var glassesIMG;
-var tennisballIMG;
-var stareAt;
+let glassesImage;
+let tennisballImage;
+let ball;
+const glasses = [];
 
 function preload() {
-  glassesIMG = loadImage("eyeglasses.png");
-  tennisballIMG = loadImage("tennisball.png");
+  glassesImage = loadImage("eyeglasses.png");
+  tennisballImage = loadImage("tennisball.png");
 }
 
-function setup(){
+function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
 
   noCursor();
   createGlasses();
-  stareAt = createVector(width / 2, height / 2);
+
+  ball = new TennisBall(createVector(width / 2, height / 2), tennisballImage);
 }
 
 function createGlasses() {
-  g = [];
-  var size = 200;
-  var m = size/2; //margin
-  var loop = 0;
+  const size = 200;
+  const margin = size / 2;
+  let loop = 0;
 
-  for (var ph = size/4; ph < height; ph += size/2) {
-    for (var pw = size/2 + m - size; pw < width + size; pw += size + m) {
-      var offset = loop % 2 == 0 ? 0 : m * 1.5;
-      g.push(new glas(pw + offset, ph));
+  for (let h = size / 4; h < height; h += size / 2) {
+    for (
+      let w = size / 2 + margin - size;
+      w < width + size;
+      w += size + margin
+    ) {
+      const offset = loop % 2 == 0 ? 0 : margin * 1.5;
+      glasses.push(new Glasses(w + offset, h));
     }
     loop++;
   }
 }
 
-function draw(){
-  //background(255, 211, 238);
+function draw() {
   background(203, 242, 220);
-  //background(247, 215, 202);
-  //background(42, 167, 162);
-  g.forEach(function(glas) {
-    glas.draw();
+
+  glasses.forEach((glass) => {
+    glass.draw();
   });
 
-
-  stareAt = createVector(mouseX, mouseY);
-
-  image(tennisballIMG, stareAt.x, stareAt.y, 60, 60);
-
+  ball.draw();
 }
 
-function glas(x, y) {
-  this.position = createVector(x, y);
-  this.size = 200;
-  this.eyeColor = color( random(50, 255), random(50, 255), random(50, 255) );
-  this.eye1 = new eyeball(x - this.size/4, y, this.eyeColor);
-  this.eye2 = new eyeball(x + this.size/4, y, this.eyeColor);
+class TennisBall {
+  constructor(position, img) {
+    this.position = position;
+    this.radius = 60;
+    this.img = img;
+  }
 
-  this.draw = function() {
+  draw() {
+    this.position = createVector(mouseX, mouseY);
+    image(this.img, this.position.x, this.position.y, this.radius, this.radius);
+  }
+}
+
+class Glasses {
+  constructor(x, y) {
+    this.position = createVector(x, y);
+    this.size = 200;
+    this.eyeColor = color(random(50, 255), random(50, 255), random(50, 255));
+    this.eye1 = new Eye(x - this.size / 4, y, this.eyeColor);
+    this.eye2 = new Eye(x + this.size / 4, y, this.eyeColor);
+  }
+
+  draw() {
     push();
     translate(this.position.x, this.position.y);
-    image(glassesIMG, 0, 0, this.size, this.size);
+    image(glassesImage, 0, 0, this.size, this.size);
     pop();
 
     this.eye1.draw();
@@ -65,18 +79,19 @@ function glas(x, y) {
   }
 }
 
-function eyeball(x, y, c) {
-  this.position = createVector(x, y);
-  this.size = 40;
-  this.coloreyeSize = this.size/2;
-  this.pupilSize = this.coloreyeSize * 0.6;
-  this.angle = 0;
-  this.color = c;
+class Eye {
+  constructor(x, y, c) {
+    this.position = createVector(x, y);
+    this.size = 40;
+    this.coloreyeSize = this.size / 2;
+    this.pupilSize = this.coloreyeSize * 0.6;
+    this.angle = 0;
+    this.color = c;
+  }
 
-  this.draw = function() {
-    var p1 = this.position;
-
-    this.angle = atan2(stareAt.y - p1.y, stareAt.x - p1.x);
+  draw() {
+    const p1 = this.position;
+    this.angle = atan2(ball.position.y - p1.y, ball.position.x - p1.x);
 
     push();
     noStroke();
@@ -85,15 +100,15 @@ function eyeball(x, y, c) {
     translate(p1.x, p1.y);
     ellipse(0, 0, this.size);
 
-    var r = this.size/2 - this.coloreyeSize / 2;
-    var d = dist(p1.x, p1.y, stareAt.x, stareAt.y);
-    d = constrain(d * 0.05, 0, r);
+    const r = this.size / 2 - this.coloreyeSize / 2;
+    const d = dist(p1.x, p1.y, ball.position.x, ball.position.y);
+    const x = constrain(d * 0.05, 0, r);
 
     fill(this.color);
     rotate(this.angle);
-    ellipse(d, 0, this.coloreyeSize);
+    ellipse(x, 0, this.coloreyeSize);
     fill(0);
-    ellipse(d, 0, this.pupilSize);
+    ellipse(x, 0, this.pupilSize);
 
     pop();
   }
