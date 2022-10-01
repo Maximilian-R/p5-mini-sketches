@@ -19,7 +19,7 @@ function setup() {
 }
 
 function createGlasses() {
-  const size = 200;
+  const size = max(width / 6, height / 6);
   const margin = size / 2;
   let loop = 0;
 
@@ -30,7 +30,7 @@ function createGlasses() {
       w += size + margin
     ) {
       const offset = loop % 2 == 0 ? 0 : margin * 1.5;
-      glasses.push(new Glasses(w + offset, h));
+      glasses.push(new Glasses(w + offset, h, size));
     }
     loop++;
   }
@@ -60,12 +60,12 @@ class TennisBall {
 }
 
 class Glasses {
-  constructor(x, y) {
+  constructor(x, y, size) {
     this.position = createVector(x, y);
-    this.size = 200;
+    this.size = size;
     this.eyeColor = color(random(50, 255), random(50, 255), random(50, 255));
-    this.eye1 = new Eye(x - this.size / 4, y, this.eyeColor);
-    this.eye2 = new Eye(x + this.size / 4, y, this.eyeColor);
+    this.eye1 = new Eye(x - this.size / 4, y, this.eyeColor, this.size * 0.2);
+    this.eye2 = new Eye(x + this.size / 4, y, this.eyeColor, this.size * 0.2);
   }
 
   draw() {
@@ -80,9 +80,9 @@ class Glasses {
 }
 
 class Eye {
-  constructor(x, y, c) {
+  constructor(x, y, c, size) {
     this.position = createVector(x, y);
-    this.size = 40;
+    this.size = size;
     this.coloreyeSize = this.size / 2;
     this.pupilSize = this.coloreyeSize * 0.6;
     this.angle = 0;
