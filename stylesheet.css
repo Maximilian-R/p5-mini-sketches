@@ -152,6 +152,21 @@ header p {
   animation: 1s ease-out 0s 1 fadeIn;
 }
 
+nav {
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translatey(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 @keyframes slideIn {
   0% {
     transform: translateX(-50%);
