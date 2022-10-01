@@ -144,45 +144,28 @@ nav a.current {
 
 /* Animations */
 
+nav {
+  opacity: 0;
+  animation: 0.5s ease-out 0s 1 slideInFromBelow forwards;
+}
+
 header h1 {
-  animation: 0.5s ease-out 0s 1 slideIn;
+  opacity: 0;
+  animation: 0.5s ease-out 0.25s 1 slideInFromBelow forwards;
 }
 
 header p {
-  animation: 1s ease-out 0s 1 fadeIn;
+  opacity: 0;
+  animation: 0.5s ease-out 0.5s 1 slideInFromBelow forwards;
 }
 
-nav {
-  animation: 0.5s ease-out 0s 1 slideInFromTop;
-}
-
-@keyframes slideInFromTop {
+@keyframes slideInFromBelow {
   0% {
     transform: translatey(-50%);
     opacity: 0;
   }
   100% {
     transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  0% {
-    transform: translateX(-50%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
     opacity: 1;
   }
 }
