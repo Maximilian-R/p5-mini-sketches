@@ -8,6 +8,11 @@ body {
   overflow-x: hidden;
 }
 
+#sketch-container {
+  height: 300px;
+  background-color: #000032;
+}
+
 header {
   display: flex;
   flex-direction: column;
@@ -75,13 +80,13 @@ ul {
 }
 
 .sketch-preview div {
-  max-width: 200px;
-  max-height: 200px;
+  width: 200px;
+  height: 200px;
 }
 
 .sketch-preview img {
-  max-width: 200px;
-  max-height: 200px;
+  width: 200px;
+  height: 200px;
 }
 
 .sketch-preview p {

@@ -7,7 +7,7 @@ function windowResized() {
 
 function setup() {
   var canvas = createCanvas(windowWidth, 300);
-  canvas.parent("sketch-holder");
+  canvas.parent("sketch-container");
 
   start();
 }
