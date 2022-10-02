@@ -108,6 +108,36 @@ footer {
   font-size: 1.2rem;
 }
 
+footer a {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: #07225a;
+}
+
+footer a:focus-visible {
+  outline: none;
+}
+
+footer a::after {
+  content: "";
+  background: rgba(60, 230, 255, 0.8);
+  position: absolute;
+  left: 0.5rem;
+  bottom: -0.25rem;
+  width: calc(100% - 0.5rem);
+  height: calc(100% - 0.5rem);
+  z-index: -1;
+  transition: 0.35s cubic-bezier(0.25, 0.1, 0, 2.05);
+}
+footer a:hover::after,
+footer a:focus-visible::after {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
 nav {
   display: flex;
   justify-content: center;
