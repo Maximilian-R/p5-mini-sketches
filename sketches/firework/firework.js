@@ -1,72 +1,92 @@
-function FireWork() {
+class FireWork {
+  constructor() {
+    this.colors = [
+      color(settings.color1),
+      color(settings.color2),
+      color(settings.color3),
+    ];
+    this.trailColor = color(settings.trailColor);
 
-  this.colors = [color(data.color1), color(data.color2), color(data.color3)];
-  this.trailColor = color(data.trailColor);
+    this.exploded = false;
+    this.particles = [];
 
-  this.exploded = false;
-  this.particles = [];
+    this.explosionParticlesAmount = random(
+      settings.minParticles,
+      settings.maxParticles
+    );
 
-  this.explosionParticles = random(data.minParticles, data.maxParticles);
+    this.particle = new Particle(
+      random(width),
+      height,
+      this.trailColor,
+      1,
+      false,
+      settings.trailSize
+    );
+    this.particle.vel = createVector(
+      random(-settings.trailVelX, settings.trailVelX),
+      -settings.trailVelY
+    );
+    this.particle.gravity = createVector(0, 0.2);
+  }
 
-  this.fireWork = new Particle(random(width), height, this.trailColor, 1, false, data.trailSize);
-  this.fireWork.vel = createVector(random(-data.trailVelX, data.trailVelX), -data.trailVelY);
-  this.fireWork.gravity = createVector(0, 0.2);
+  explode() {
+    for (let i = 0; i < this.explosionParticlesAmount; i++) {
+      const color = this.colors[i % this.colors.length];
+      const particle = new Particle(
+        this.particle.pos.x,
+        this.particle.pos.y,
+        color,
+        settings.particleFriction,
+        true,
+        settings.particleSize
+      );
+      this.particles.push(particle);
 
-  this.done = function() {
-    if (this.exploded && this.particles.length == 0) {
-      return true;
-    } else {
-      return false;
+      particle.vel = p5.Vector.random2D();
+      particle.vel.mult(
+        random(settings.particleVelMin, settings.particleVelMax)
+      );
+      //particle.vel = createVector(random(-pVelXmin, pVelXmax), random(-pVelYmin, pVelYmax));
     }
   }
 
-  this.explode = function() {
-
-    for (var i = 0; i < this.explosionParticles; i++) {
-
-      // Create new particle and add to particles.
-      var color = this.colors[i % this.colors.length];
-      var p = new Particle(this.fireWork.pos.x, this.fireWork.pos.y, color, data.particleFriction, true, data.particleSize);
-      this.particles.push(p);
-
-      p.vel = p5.Vector.random2D();
-      p.vel.mult(random(data.particleVelMin, data.particleVelMax));
-
-
-      //p.vel = createVector(random(-pVelXmin, pVelXmax), random(-pVelYmin, pVelYmax));
-      }
-  }
-
-  this.update = function() {
+  update() {
     if (!this.exploded) {
-      this.fireWork.update();
+      this.particle.update();
 
-      if (this.fireWork.vel.y >= 0) {
+      if (this.particle.vel.y >= 0) {
         this.exploded = true;
         this.explode();
       }
       return;
     }
 
-    for (var i = this.particles.length -1; i >= 0; i--) {
+    for (let i = this.particles.length - 1; i >= 0; i--) {
       this.particles[i].update();
 
-      if(this.particles[i].done()) {
+      if (this.particles[i].isDone()) {
         this.particles.splice(i, 1);
       }
-
     }
   }
 
-  this.show = function() {
+  draw() {
     if (!this.exploded) {
-      this.fireWork.show();
+      this.particle.draw();
       return;
     }
 
-    for (var i = 0; i < this.particles.length; i++) {
-      this.particles[i].show();
-    }
+    this.particles.forEach((particle) => {
+      particle.draw();
+    });
   }
 
+  isDone() {
+    if (this.exploded && this.particles.length == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
