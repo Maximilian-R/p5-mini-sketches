@@ -1,10 +1,12 @@
 const particles = [];
+let pane;
 
 let gravity;
 let wind;
 
 const settings = {
   wind: { x: 0, y: 0 },
+  animateWind: false,
   gravity: { x: 0, y: 0.1 },
   mouseForce: 10,
   mouseForceField: 100,
@@ -39,6 +41,13 @@ function setup() {
 function draw() {
   clear();
 
+  if (settings.animateWind) {
+    const value = frameCount / 500;
+    settings.wind.x = map(noise(value), 0, 1, -5, 5);
+    settings.wind.y = map(noise(2000000 + value), 0, 1, -1, 1);
+    pane.refresh();
+  }
+
   const mouse = createVector(mouseX, mouseY);
 
   particles.forEach((particle) => {
@@ -58,7 +67,7 @@ function draw() {
 }
 
 function setupGUI() {
-  const pane = new Tweakpane.Pane();
+  pane = new Tweakpane.Pane();
 
   pane
     .addInput(settings, "wind", {
@@ -69,6 +78,7 @@ function setupGUI() {
       wind.x = event.value.x;
       wind.y = event.value.y;
     });
+  pane.addInput(settings, "animateWind", { label: "Animate Wind" });
 
   pane
     .addInput(settings, "gravity", {
