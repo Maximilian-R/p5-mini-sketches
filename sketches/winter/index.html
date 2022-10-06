@@ -15,4 +15,13 @@
   </head>
 
   <body></body>
+  <script>
+    document.body.addEventListener(
+      "touchmove",
+      (event) => event.preventDefault(),
+      {
+        passive: false,
+      }
+    );
+  </script>
 </html>

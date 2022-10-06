@@ -4,8 +4,10 @@ let gravity;
 let wind;
 
 const settings = {
-  windX: 0,
-  windY: 0,
+  wind: { x: 0, y: 0 },
+  gravity: { x: 0, y: 0.1 },
+  mouseForce: 10,
+  mouseForceField: 100,
 };
 
 function windowResized() {
@@ -28,8 +30,8 @@ function setup() {
     particles.push(particle);
   }
 
-  gravity = createVector(0.0, 0.4);
-  wind = createVector(0, 0);
+  gravity = createVector(settings.gravity.x, settings.gravity.y);
+  wind = createVector(settings.wind.x, settings.wind.y);
 
   setupGUI();
 }
@@ -37,7 +39,20 @@ function setup() {
 function draw() {
   clear();
 
+  const mouse = createVector(mouseX, mouseY);
+
   particles.forEach((particle) => {
+    particle.applyForce(p5.Vector.mult(gravity, particle.mass));
+    particle.applyForce(wind);
+
+    const distance = particle.pos.dist(mouse);
+    if (distance < settings.mouseForceField) {
+      const avoid = p5.Vector.sub(mouse, particle.pos).setMag(
+        map(distance, 0, settings.mouseForceField, -settings.mouseForce, 0)
+      );
+      particle.applyForce(avoid);
+    }
+
     particle.update();
   });
 }
@@ -46,48 +61,94 @@ function setupGUI() {
   const pane = new Tweakpane.Pane();
 
   pane
-    .addInput(settings, "windX", { label: "wind x", min: -5, max: 5 })
+    .addInput(settings, "wind", {
+      x: { min: -5, max: 5 },
+      y: { min: -5, max: 5 },
+    })
     .on("change", (event) => {
-      wind.x = event.value;
+      wind.x = event.value.x;
+      wind.y = event.value.y;
     });
+
   pane
-    .addInput(settings, "windY", { label: "wind y", min: -5, max: 5 })
+    .addInput(settings, "gravity", {
+      x: { min: -5, max: 5 },
+      y: { min: -5, max: 5 },
+    })
     .on("change", (event) => {
-      wind.y = event.value;
+      gravity.x = event.value.x;
+      gravity.y = event.value.y;
     });
+
+  // pane.addInput(settings, "mouseForce", {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1,
+  // });
+
+  const mouseFolder = pane.addFolder({ title: "Mouse" });
+  mouseFolder.addInput(settings, "mouseForceField", {
+    label: "force field",
+    min: 0,
+    max: 200,
+    step: 1,
+  });
 }
 
 class Particle {
   constructor(x, y) {
     this.pos = createVector(x, y);
     this.vel = createVector(0, 0);
-    this.force = createVector(random(-0.04, 0.04), 0);
+    this.acc = createVector(0, 0);
+    this.noise = createVector(0, 0);
 
-    this.size = random(1, 6);
+    this.mass = random(1, 6);
+    this.radius = sqrt(this.mass) * 2;
+  }
+
+  applyForce(force) {
+    const f = p5.Vector.div(force, this.mass);
+    this.acc.add(f);
+  }
+
+  drag() {
+    const drag = this.vel.copy();
+    drag.normalize();
+    drag.mult(-1);
+
+    const c = 0.1;
+    let speedSq = this.vel.magSq();
+    drag.setMag(c * speedSq);
+
+    this.applyForce(drag);
+  }
+
+  disturbance() {
+    this.noise.add(random(-0.05, 0.05));
+    this.noise.limit(0.1);
+    this.applyForce(this.noise);
   }
 
   update() {
-    const noise = random(-0.04, 0.04);
-    this.force.add(noise);
-    this.force.limit(1);
+    this.disturbance();
+    this.drag();
 
-    this.vel = p5.Vector.mult(gravity, this.size);
-    this.vel.add(this.force);
-    this.vel.add(wind);
+    this.vel.add(this.acc);
     this.pos.add(this.vel);
+    this.acc.mult(0);
 
     this.bounding();
-    this.render();
+    this.draw();
   }
 
-  render() {
+  draw() {
     stroke(255);
-    strokeWeight(this.size);
+    strokeWeight(this.radius);
     point(this.pos.x, this.pos.y);
   }
 
   bounding() {
-    const margin = this.size;
+    const margin = this.radius;
 
     if (this.pos.x >= width + margin) {
       this.pos.x = 0 - margin;
