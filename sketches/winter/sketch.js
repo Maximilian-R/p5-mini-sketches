@@ -1,6 +1,6 @@
 const particles = [];
 let pane;
-
+let img;
 let gravity;
 let wind;
 
@@ -11,6 +11,10 @@ const settings = {
   mouseForce: 10,
   mouseForceField: 100,
 };
+
+function preload() {
+  img = loadImage("./particle.png");
+}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -152,9 +156,10 @@ class Particle {
   }
 
   draw() {
-    stroke(255);
-    strokeWeight(this.radius);
-    point(this.pos.x, this.pos.y);
+    // stroke(255);
+    // strokeWeight(this.radius);
+    // point(this.pos.x, this.pos.y);
+    image(img, this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
   }
 
   bounding() {
