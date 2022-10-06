@@ -78,7 +78,7 @@ function setupGUI() {
       wind.x = event.value.x;
       wind.y = event.value.y;
     });
-  pane.addInput(settings, "animateWind", { label: "Animate Wind" });
+  pane.addInput(settings, "animateWind", { label: "animate wind" });
 
   pane
     .addInput(settings, "gravity", {
