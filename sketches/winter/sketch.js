@@ -69,7 +69,7 @@ class Particle {
   update() {
     const noise = random(-0.04, 0.04);
     this.force.add(noise);
-    this.force.limit(2);
+    this.force.limit(1);
 
     this.vel = p5.Vector.mult(gravity, this.size);
     this.vel.add(this.force);
