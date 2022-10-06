@@ -8,8 +8,8 @@ const settings = {
   wind: { x: 0, y: 0 },
   animateWind: false,
   gravity: { x: 0, y: 0.1 },
+  mouseRange: 100,
   mouseForce: 10,
-  mouseForceField: 100,
 };
 
 function preload() {
@@ -22,6 +22,7 @@ function windowResized() {
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
+  imageMode(CENTER);
 
   const canvasElement = document.getElementById("defaultCanvas0");
   canvasElement.style.background =
@@ -54,14 +55,19 @@ function draw() {
 
   const mouse = createVector(mouseX, mouseY);
 
+  const cursor = map(settings.mouseRange, 0, 200, 10, 50);
+  tint(255, 208, 97);
+  image(img, mouse.x, mouse.y, cursor, cursor);
+  noTint();
+
   particles.forEach((particle) => {
     particle.applyForce(p5.Vector.mult(gravity, particle.mass));
     particle.applyForce(wind);
 
     const distance = particle.pos.dist(mouse);
-    if (distance < settings.mouseForceField) {
+    if (distance < settings.mouseRange) {
       const avoid = p5.Vector.sub(mouse, particle.pos).setMag(
-        map(distance, 0, settings.mouseForceField, -settings.mouseForce, 0)
+        map(distance, 0, settings.mouseRange, -settings.mouseForce, 0)
       );
       particle.applyForce(avoid);
     }
@@ -94,19 +100,19 @@ function setupGUI() {
       gravity.y = event.value.y;
     });
 
-  // pane.addInput(settings, "mouseForce", {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1,
-  // });
-
   const mouseFolder = pane.addFolder({ title: "Mouse" });
-  mouseFolder.addInput(settings, "mouseForceField", {
-    label: "force field",
+  mouseFolder.addInput(settings, "mouseRange", {
+    label: "range",
     min: 0,
     max: 200,
     step: 1,
   });
+  // mouseFolder.addInput(settings, "mouseForce", {
+  //   label: "force",
+  //   min: 0,
+  //   max: 50,
+  //   step: 1,
+  // });
 }
 
 class Particle {
@@ -156,9 +162,6 @@ class Particle {
   }
 
   draw() {
-    // stroke(255);
-    // strokeWeight(this.radius);
-    // point(this.pos.x, this.pos.y);
     image(img, this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
   }
 
