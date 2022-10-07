@@ -4,21 +4,59 @@ var enemy;
 var useFontSize = 200;
 var fontBox;
 var labels = [
-  "Algorithm","Array","Boolean","Block","Bracket","Binary","Class","10110",
-  "Complie","Concat","Catch","Datatype","Debug","Declare","Double","Element",
-  "Error","Escape","Event","Foreach","Float","Function","HTML","Integer",
-  "Java","Label","Method","Null","Parse","Private","Public","Program","Random",
-  "Return","Server","Shift","Source","Stack","Switch","Swift","String","Super",
-  "System","Thread","Value",
+  "Algorithm",
+  "Array",
+  "Boolean",
+  "Block",
+  "Bracket",
+  "Binary",
+  "Class",
+  "10110",
+  "Complie",
+  "Concat",
+  "Catch",
+  "Datatype",
+  "Debug",
+  "Declare",
+  "Double",
+  "Element",
+  "Error",
+  "Escape",
+  "Event",
+  "Foreach",
+  "Float",
+  "Function",
+  "HTML",
+  "Integer",
+  "Java",
+  "Label",
+  "Method",
+  "Null",
+  "Parse",
+  "Private",
+  "Public",
+  "Program",
+  "Random",
+  "Return",
+  "Server",
+  "Shift",
+  "Source",
+  "Stack",
+  "Switch",
+  "Swift",
+  "String",
+  "Super",
+  "System",
+  "Thread",
+  "Value",
 ];
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
 function preload() {
-  font = loadFont("fonts/Raleway/Raleway-Regular.ttf");
+  font = loadFont("./Raleway-Regular.ttf");
 }
 
 function setup() {
@@ -34,7 +72,6 @@ function setup() {
 }
 
 function draw() {
-
   background(0, 100 * 0.5);
 
   enemy.update();
@@ -44,16 +81,16 @@ function draw() {
     changeWord(labels[floor(random(labels.length))]);
   }
 
-  vehicles.forEach(function(v) {
-      v.behavior();
-      v.update();
-      v.render();
+  vehicles.forEach(function (v) {
+    v.behavior();
+    v.update();
+    v.render();
   });
 }
 
 function changeWord(s) {
-  points = font.textToPoints(s, width * .5, height * .5, useFontSize);
-  b = font.textBounds(s, width * .5, height * .5, useFontSize);
+  points = font.textToPoints(s, width * 0.5, height * 0.5, useFontSize);
+  b = font.textBounds(s, width * 0.5, height * 0.5, useFontSize);
   fontBox = b;
 
   removeV = 0;
@@ -67,16 +104,18 @@ function changeWord(s) {
     vehicles.splice(rand, 1);
   }
 
-  points.forEach(function(p, index) {
-    if(index >= vehicles.length) {
-      v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
-      v.pos.x = width / 2;
-      v.pos.y = height / 2;
-      vehicles.push(v);
-    }
-      vehicles[index].target.x = p.x - b.w * .5;
-      vehicles[index].target.y = p.y + b.h * .5;
-  }.bind(this));
+  points.forEach(
+    function (p, index) {
+      if (index >= vehicles.length) {
+        v = new Vehicle(p.x - b.w * 0.5, p.y + b.h * 0.5);
+        v.pos.x = width / 2;
+        v.pos.y = height / 2;
+        vehicles.push(v);
+      }
+      vehicles[index].target.x = p.x - b.w * 0.5;
+      vehicles[index].target.y = p.y + b.h * 0.5;
+    }.bind(this)
+  );
 }
 
 function Enemy(x, y) {
@@ -89,16 +128,16 @@ function Enemy(x, y) {
   this.timePassed = 0;
 }
 
-Enemy.prototype.render = function() {
+Enemy.prototype.render = function () {
   noFill();
   for (var i = this.r; i > 0; i -= 4) {
     s = map(i, 0, this.r, 0, 100);
     fill(50, s, 100);
     ellipse(this.x, this.y, i);
   }
-}
+};
 
-Enemy.prototype.update = function() {
+Enemy.prototype.update = function () {
   this.x = mouseX;
   this.y = mouseY;
   // this.timePassed++;
@@ -120,7 +159,7 @@ Enemy.prototype.update = function() {
   //   this.index = newIndex;
   //   changeWord(labels[this.index]);
   // }
-}
+};
 
 function Vehicle(x, y) {
   //this.pos = createVector(random(width), random(height));
@@ -134,7 +173,7 @@ function Vehicle(x, y) {
   this.maxForce = 1;
 }
 
-Vehicle.prototype.behavior = function() {
+Vehicle.prototype.behavior = function () {
   target = createVector(enemy.x, enemy.y);
 
   arrive = this.arrive(this.target);
@@ -145,24 +184,24 @@ Vehicle.prototype.behavior = function() {
 
   this.applyForce(arrive);
   this.applyForce(flee);
-}
+};
 
-Vehicle.prototype.applyForce = function(f) {
+Vehicle.prototype.applyForce = function (f) {
   this.acc.add(f);
-}
+};
 
-Vehicle.prototype.arrive = function(target) {
+Vehicle.prototype.arrive = function (target) {
   desired = p5.Vector.sub(target, this.pos);
   d = desired.mag();
   speed = this.maxSpeed;
-  if(d <= 100) {
+  if (d <= 100) {
     speed = map(d, 0, 100, 0, this.maxSpeed * 5);
   }
   desired.setMag(speed);
   steer = p5.Vector.sub(desired, this.vel);
   steer.limit(this.maxForce);
   return steer;
-}
+};
 
 /* Vehicle.prototype.seek = function(target) {
   desired = p5.Vector.sub(target, this.pos);
@@ -172,10 +211,10 @@ Vehicle.prototype.arrive = function(target) {
   return steer;
 } */
 
-Vehicle.prototype.flee = function(target) {
+Vehicle.prototype.flee = function (target) {
   desired = p5.Vector.sub(target, this.pos);
   d = desired.mag();
-  if(d < 150) {
+  if (d < 150) {
     desired.setMag(this.maxSpeed);
     desired.mult(-1);
     steer = p5.Vector.sub(desired, this.vel);
@@ -184,16 +223,15 @@ Vehicle.prototype.flee = function(target) {
   } else {
     return createVector(0, 0);
   }
+};
 
-}
-
-Vehicle.prototype.update = function() {
+Vehicle.prototype.update = function () {
   this.pos.add(this.vel);
   this.vel.add(this.acc);
   this.acc.mult(0);
-}
+};
 
-Vehicle.prototype.render = function() {
+Vehicle.prototype.render = function () {
   noStroke();
 
   /*desired = p5.Vector.sub(this.target, this.pos);
@@ -213,17 +251,16 @@ Vehicle.prototype.render = function() {
   // lighter value within mouse radius
   mp = createVector(mouseX, mouseY);
   m = this.pos.dist(mp);
-  if(m <= 80) {
+  if (m <= 80) {
     m = 40;
   } else {
     m = 0;
   }
 
   // apply colors, lower saturation towards the center to create neon effect
-  for (var i = this.r; i > 0; i-=4) {
+  for (var i = this.r; i > 0; i -= 4) {
     s = map(i, 0, this.r, 0, 100);
     fill(92 - c, s - d - m, 100);
     ellipse(this.pos.x, this.pos.y, i);
   }
-
-}
+};

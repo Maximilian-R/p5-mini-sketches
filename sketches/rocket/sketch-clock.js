@@ -4,13 +4,12 @@ var useFontSize = 200;
 var fontBox;
 var time;
 
-
 function windowResized() {
   resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
 function preload() {
-  font = loadFont("fonts/Raleway/Raleway-Regular.ttf");
+  font = loadFont("./Raleway-Regular.ttf");
 }
 
 function setup() {
@@ -19,13 +18,13 @@ function setup() {
   textFont(font);
 
   colorMode(HSB, 100);
-  time = nf(hour(), 2, 0) +  ":"  + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
+  time = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
   changeWord(time);
 }
 
 function changeWord(s, instant) {
-  points = font.textToPoints(s, width * .5, height * .5, useFontSize);
-  b = font.textBounds("00:00:00", width * .5, height * .5, useFontSize);
+  points = font.textToPoints(s, width * 0.5, height * 0.5, useFontSize);
+  b = font.textBounds("00:00:00", width * 0.5, height * 0.5, useFontSize);
   fontBox = b;
 
   removeV = 0;
@@ -35,28 +34,27 @@ function changeWord(s, instant) {
 
   vehicles.splice(vehicles.length - removeV, removeV);
 
-
-  points.forEach(function(p, index) {
-    if(index >= vehicles.length) {
-      if (vehicles.length == 0) {
-          v = new Vehicle(p.x - b.w * .5, p.y + b.h * .5);
+  points.forEach(
+    function (p, index) {
+      if (index >= vehicles.length) {
+        if (vehicles.length == 0) {
+          v = new Vehicle(p.x - b.w * 0.5, p.y + b.h * 0.5);
           vehicles.push(v);
-      } else {
-        last = vehicles[vehicles.length - 1];
-        v = new Vehicle(last.pos.x, last.pos.y);
-        vehicles.push(v);
+        } else {
+          last = vehicles[vehicles.length - 1];
+          v = new Vehicle(last.pos.x, last.pos.y);
+          vehicles.push(v);
+        }
       }
-
-    }
-    var vec = vehicles[index];
-    vec.target.x = p.x - b.w * .5;
-    vec.target.y = p.y + b.h * .5;
-
-  }.bind(this));
+      var vec = vehicles[index];
+      vec.target.x = p.x - b.w * 0.5;
+      vec.target.y = p.y + b.h * 0.5;
+    }.bind(this)
+  );
 }
 
 function draw() {
-  now = nf(hour(), 2, 0) +  ":"  + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
+  now = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0) + ":" + nf(second(), 2, 0);
   if (time != now) {
     time = now;
     changeWord(time, false);
@@ -70,12 +68,11 @@ function draw() {
   //     ellipse(v.pos.x, v.pos.y, v.r * 7);
   // });
 
-  vehicles.forEach(function(v) {
-      v.behavior();
-      v.update();
-      v.render();
+  vehicles.forEach(function (v) {
+    v.behavior();
+    v.update();
+    v.render();
   });
-
 }
 
 function Vehicle(x, y) {
@@ -90,7 +87,7 @@ function Vehicle(x, y) {
   this.maxForce = 0.8;
 }
 
-Vehicle.prototype.behavior = function() {
+Vehicle.prototype.behavior = function () {
   target = createVector(0, 0);
 
   arrive = this.arrive(this.target);
@@ -101,24 +98,24 @@ Vehicle.prototype.behavior = function() {
 
   this.applyForce(arrive);
   //this.applyForce(flee);
-}
+};
 
-Vehicle.prototype.applyForce = function(f) {
+Vehicle.prototype.applyForce = function (f) {
   this.acc.add(f);
-}
+};
 
-Vehicle.prototype.arrive = function(target) {
+Vehicle.prototype.arrive = function (target) {
   desired = p5.Vector.sub(target, this.pos);
   d = desired.mag();
   speed = this.maxSpeed;
-  if(d <= 600) {
+  if (d <= 600) {
     speed = map(d, 0, 100, 0, this.maxSpeed * 5);
   }
   desired.setMag(speed);
   steer = p5.Vector.sub(desired, this.vel);
   steer.limit(this.maxForce);
   return steer;
-}
+};
 
 /* Vehicle.prototype.seek = function(target) {
   desired = p5.Vector.sub(target, this.pos);
@@ -128,10 +125,10 @@ Vehicle.prototype.arrive = function(target) {
   return steer;
 } */
 
-Vehicle.prototype.flee = function(target) {
+Vehicle.prototype.flee = function (target) {
   desired = p5.Vector.sub(target, this.pos);
   d = desired.mag();
-  if(d < 150) {
+  if (d < 150) {
     desired.setMag(this.maxSpeed);
     desired.mult(-1);
     steer = p5.Vector.sub(desired, this.vel);
@@ -140,16 +137,15 @@ Vehicle.prototype.flee = function(target) {
   } else {
     return createVector(0, 0);
   }
+};
 
-}
-
-Vehicle.prototype.update = function() {
+Vehicle.prototype.update = function () {
   this.pos.add(this.vel);
   this.vel.add(this.acc);
   this.acc.mult(0);
-}
+};
 
-Vehicle.prototype.render = function() {
+Vehicle.prototype.render = function () {
   noStroke();
 
   /*desired = p5.Vector.sub(this.target, this.pos);
@@ -169,16 +165,16 @@ Vehicle.prototype.render = function() {
   // lighter value within mouse radius
   mp = createVector(mouseX, mouseY);
   m = this.pos.dist(mp);
-  if(m <= 80) {
+  if (m <= 80) {
     m = 40;
   } else {
     m = 0;
   }
 
   // apply colors, lower saturation towards the center to create neon effect
-  for (var i = this.r; i > 0; i-=4) {
+  for (var i = this.r; i > 0; i -= 4) {
     s = map(i, 0, this.r, 0, 100);
     fill(92 - c, s - d - m, 100);
     ellipse(this.pos.x, this.pos.y, i);
   }
-}
+};
