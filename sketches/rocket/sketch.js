@@ -1,9 +1,8 @@
-var font;
-var vehicles = [];
-var enemy;
-var useFontSize = 200;
-var fontBox;
-var labels = [
+let font;
+let vehicles = [];
+let enemy;
+const fontSize = 200;
+const wordList = [
   "Algorithm",
   "Array",
   "Boolean",
@@ -65,143 +64,150 @@ function setup() {
   textFont(font);
   colorMode(HSB, 100);
   noCursor();
+  noStroke();
 
   enemy = new Enemy(0, 0);
-  word = labels[round(random(labels.length))];
-  changeWord(word);
+  changeWord();
 }
 
 function draw() {
-  background(0, 100 * 0.5);
+  background(0, 50);
 
   enemy.update();
-  enemy.render();
 
   if (frameCount % 300 == 0) {
-    changeWord(labels[floor(random(labels.length))]);
+    changeWord();
   }
 
-  vehicles.forEach(function (v) {
-    v.behavior();
-    v.update();
-    v.render();
+  vehicles.forEach((vehicle) => {
+    vehicle.behavior();
+    vehicle.update();
+    vehicle.draw();
+  });
+
+  enemy.draw();
+}
+
+function changeWord() {
+  const word = wordList[floor(random(wordList.length))];
+  const points = font.textToPoints(word, width * 0.5, height * 0.5, fontSize);
+  const bounds = font.textBounds(word, width * 0.5, height * 0.5, fontSize);
+
+  //Spread out removal of vehicles when there is an overflow
+  const removeVehicles = vehicles.length - points.length;
+  for (var i = 0; i <= removeVehicles; i++) {
+    const removeIndex = floor(random(vehicles.length));
+    vehicles.splice(removeIndex, 1);
+  }
+
+  points.forEach((point, index) => {
+    // Spawn a new vehicle if needed
+    if (index >= vehicles.length) {
+      const vehicle = new Vehicle(
+        point.x - bounds.w * 0.5,
+        point.y + bounds.h * 0.5
+      );
+      vehicle.pos.x = width / 2;
+      vehicle.pos.y = height / 2;
+      vehicles.push(vehicle);
+    }
+
+    vehicles[index].target.x = point.x - bounds.w * 0.5;
+    vehicles[index].target.y = point.y + bounds.h * 0.5;
   });
 }
 
-function changeWord(s) {
-  points = font.textToPoints(s, width * 0.5, height * 0.5, useFontSize);
-  b = font.textBounds(s, width * 0.5, height * 0.5, useFontSize);
-  fontBox = b;
-
-  removeV = 0;
-  if (points.length < vehicles.length) {
-    removeV = vehicles.length - points.length;
+class Enemy {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.r = 16;
   }
 
-  //Spread out from where vehicles are removed
-  for (var i = 0; i <= removeV; i++) {
-    rand = round(random(vehicles.length));
-    vehicles.splice(rand, 1);
+  draw() {
+    for (let i = this.r; i > 0; i -= 4) {
+      const saturation = map(i, 0, this.r, 0, 100);
+      fill(50, saturation, 100);
+      ellipse(this.pos.x, this.pos.y, i);
+    }
   }
 
-  points.forEach(
-    function (p, index) {
-      if (index >= vehicles.length) {
-        v = new Vehicle(p.x - b.w * 0.5, p.y + b.h * 0.5);
-        v.pos.x = width / 2;
-        v.pos.y = height / 2;
-        vehicles.push(v);
-      }
-      vehicles[index].target.x = p.x - b.w * 0.5;
-      vehicles[index].target.y = p.y + b.h * 0.5;
-    }.bind(this)
-  );
+  update() {
+    this.pos.x = mouseX;
+    this.pos.y = mouseY;
+  }
 }
 
-function Enemy(x, y) {
-  this.x = x;
-  this.y = y;
-  this.speed = 8;
-  this.r = 16;
-  this.passed = false;
-  this.index = 0;
-  this.timePassed = 0;
-}
+class Vehicle {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector();
+    this.acc = createVector();
+    this.target = createVector(x, y);
 
-Enemy.prototype.render = function () {
-  noFill();
-  for (var i = this.r; i > 0; i -= 4) {
-    s = map(i, 0, this.r, 0, 100);
-    fill(50, s, 100);
-    ellipse(this.x, this.y, i);
+    this.r = 7;
+    this.maxSpeed = 8;
+    this.maxForce = 1;
   }
-};
 
-Enemy.prototype.update = function () {
-  this.x = mouseX;
-  this.y = mouseY;
-  // this.timePassed++;
-  // this.x += this.speed;
-  //
-  // if (this.x >= width && this.timePassed >= 60 * 4)  {
-  //   this.x = 0;
-  //   this.timePassed = 0;
-  //   this.passed = false;
-  // }
-  //
-  // if(this.x > width * 0.6 && !this.passed) {
-  //   this.passed = true;
-  //   newIndex = 0;
-  //   do {
-  //     newIndex = floor(random(labels.length));
-  //   } while(newIndex == this.index);
-  //
-  //   this.index = newIndex;
-  //   changeWord(labels[this.index]);
-  // }
-};
+  behavior() {
+    const arrive = this.arrive(this.target);
+    const flee = this.flee(enemy.pos);
 
-function Vehicle(x, y) {
-  //this.pos = createVector(random(width), random(height));
-  this.pos = createVector(x, y);
-  this.vel = createVector();
-  this.acc = createVector();
-  this.target = createVector(x, y);
+    // arrive.mult(1);
+    flee.mult(2);
 
-  this.r = 7;
-  this.maxSpeed = 8;
-  this.maxForce = 1;
-}
-
-Vehicle.prototype.behavior = function () {
-  target = createVector(enemy.x, enemy.y);
-
-  arrive = this.arrive(this.target);
-  flee = this.flee(target);
-
-  arrive.mult(1);
-  flee.mult(2);
-
-  this.applyForce(arrive);
-  this.applyForce(flee);
-};
-
-Vehicle.prototype.applyForce = function (f) {
-  this.acc.add(f);
-};
-
-Vehicle.prototype.arrive = function (target) {
-  desired = p5.Vector.sub(target, this.pos);
-  d = desired.mag();
-  speed = this.maxSpeed;
-  if (d <= 100) {
-    speed = map(d, 0, 100, 0, this.maxSpeed * 5);
+    this.applyForce(arrive);
+    this.applyForce(flee);
   }
-  desired.setMag(speed);
-  steer = p5.Vector.sub(desired, this.vel);
-  steer.limit(this.maxForce);
-  return steer;
-};
+
+  applyForce(force) {
+    this.acc.add(force);
+  }
+
+  arrive(target) {
+    const desired = p5.Vector.sub(target, this.pos);
+    const d = desired.mag();
+    let speed = this.maxSpeed;
+    if (d <= 100) {
+      speed = map(d, 0, 100, 0, this.maxSpeed * 5);
+    }
+    desired.setMag(speed);
+    const steer = p5.Vector.sub(desired, this.vel).limit(this.maxForce);
+    return steer;
+  }
+
+  flee(target) {
+    const desired = p5.Vector.sub(target, this.pos);
+    const d = desired.mag();
+    if (d < 150) {
+      desired.setMag(this.maxSpeed).mult(-1);
+      const steer = p5.Vector.sub(desired, this.vel).limit(this.maxForce);
+      return steer;
+    } else {
+      return createVector(0, 0);
+    }
+  }
+
+  update() {
+    this.pos.add(this.vel);
+    this.vel.add(this.acc);
+    this.acc.mult(0);
+  }
+
+  draw() {
+    // Calculate color values from center and out
+    let d = this.pos.dist(createVector(this.pos.x, height / 2));
+    d = map(d, 0, 80, 0, 50);
+    const c = map(d, 0, 80, 0, 100);
+
+    // Apply colors, lower saturation towards the center to create neon effect
+    for (let i = this.r; i > 0; i -= 4) {
+      const saturation = map(i, 0, this.r, 0, 100);
+      fill(92 - c, saturation - d, 100);
+      ellipse(this.pos.x, this.pos.y, i);
+    }
+  }
+}
 
 /* Vehicle.prototype.seek = function(target) {
   desired = p5.Vector.sub(target, this.pos);
@@ -210,57 +216,3 @@ Vehicle.prototype.arrive = function (target) {
   steer.limit(this.maxForce);
   return steer;
 } */
-
-Vehicle.prototype.flee = function (target) {
-  desired = p5.Vector.sub(target, this.pos);
-  d = desired.mag();
-  if (d < 150) {
-    desired.setMag(this.maxSpeed);
-    desired.mult(-1);
-    steer = p5.Vector.sub(desired, this.vel);
-    steer.limit(this.maxForce);
-    return steer;
-  } else {
-    return createVector(0, 0);
-  }
-};
-
-Vehicle.prototype.update = function () {
-  this.pos.add(this.vel);
-  this.vel.add(this.acc);
-  this.acc.mult(0);
-};
-
-Vehicle.prototype.render = function () {
-  noStroke();
-
-  /*desired = p5.Vector.sub(this.target, this.pos);
-  d = desired.mag();
-  d = map(d, 0, 150, 0, 255);
-
-  stroke(255, 255 - d * .5, 255 - d);
-  if(random(0, 1) >= .5) {
-    stroke(255, 255 - d, 255 - d);
-  } */
-
-  // calc color values from center and out
-  d = this.pos.dist(createVector(this.pos.x, height / 2));
-  d = map(d, 0, 80, 0, 50);
-  c = map(d, 0, 80, 0, 100);
-
-  // lighter value within mouse radius
-  mp = createVector(mouseX, mouseY);
-  m = this.pos.dist(mp);
-  if (m <= 80) {
-    m = 40;
-  } else {
-    m = 0;
-  }
-
-  // apply colors, lower saturation towards the center to create neon effect
-  for (var i = this.r; i > 0; i -= 4) {
-    s = map(i, 0, this.r, 0, 100);
-    fill(92 - c, s - d - m, 100);
-    ellipse(this.pos.x, this.pos.y, i);
-  }
-};
