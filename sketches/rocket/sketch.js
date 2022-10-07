@@ -1,53 +1,19 @@
 let font;
+let img;
 let vehicles = [];
 let enemy;
 const fontSize = 200;
 const wordList = [
-  "Algorithm",
   "Array",
-  "Boolean",
-  "Block",
-  "Bracket",
-  "Binary",
+  "Bool",
   "Class",
-  "10110",
-  "Complie",
-  "Concat",
-  "Catch",
-  "Datatype",
-  "Debug",
-  "Declare",
-  "Double",
-  "Element",
-  "Error",
-  "Escape",
-  "Event",
-  "Foreach",
-  "Float",
-  "Function",
-  "HTML",
-  "Integer",
-  "Java",
-  "Label",
-  "Method",
-  "Null",
-  "Parse",
-  "Private",
-  "Public",
-  "Program",
-  "Random",
-  "Return",
-  "Server",
-  "Shift",
-  "Source",
-  "Stack",
-  "Switch",
-  "Swift",
+  "Int",
   "String",
-  "Super",
-  "System",
-  "Thread",
-  "Value",
+  "Double",
+  "Float",
+  "Null",
+  "Object",
+  "Class",
 ];
 
 function windowResized() {
@@ -56,6 +22,7 @@ function windowResized() {
 
 function preload() {
   font = loadFont("./Raleway-Regular.ttf");
+  img = loadImage("./particle.png");
 }
 
 function setup() {
@@ -71,7 +38,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 50);
+  background(0);
 
   enemy.update();
 
@@ -120,15 +87,13 @@ function changeWord() {
 class Enemy {
   constructor(x, y) {
     this.pos = createVector(x, y);
-    this.r = 16;
+    this.r = 20;
   }
 
   draw() {
-    for (let i = this.r; i > 0; i -= 4) {
-      const saturation = map(i, 0, this.r, 0, 100);
-      fill(50, saturation, 100);
-      ellipse(this.pos.x, this.pos.y, i);
-    }
+    tint(50, 255, 255);
+    image(img, this.pos.x, this.pos.y, this.r, this.r);
+    noTint();
   }
 
   update() {
@@ -144,7 +109,7 @@ class Vehicle {
     this.acc = createVector();
     this.target = createVector(x, y);
 
-    this.r = 7;
+    this.r = 6;
     this.maxSpeed = 8;
     this.maxForce = 1;
   }
@@ -204,7 +169,7 @@ class Vehicle {
     for (let i = this.r; i > 0; i -= 4) {
       const saturation = map(i, 0, this.r, 0, 100);
       fill(92 - c, saturation - d, 100);
-      ellipse(this.pos.x, this.pos.y, i);
+      ellipse(this.pos.x, this.pos.y, i * 1.5);
     }
   }
 }
