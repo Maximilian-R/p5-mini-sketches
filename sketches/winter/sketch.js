@@ -32,7 +32,7 @@ function setup() {
   canvasElement.style.background =
     "radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%";
 
-  for (let i = 0; i <= 200; i++) {
+  for (let i = 0; i <= 500; i++) {
     const particle = new Particle(random(0, width), random(0, height));
     particles.push(particle);
   }
