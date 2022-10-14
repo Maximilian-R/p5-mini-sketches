@@ -1,7 +1,6 @@
 const rects = [];
 const risoColors = [];
 const colors = {};
-let mask = {};
 
 async function preload() {
   loadJSON("./riso-colors.json", (data) => {
@@ -14,16 +13,30 @@ const settings = {
   degrees: -30,
   pickColors: 2,
   seed: window.crypto?.randomUUID() ?? "",
+  mask: {},
+  animate: false,
 };
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
+  settings.mask = {
+    radius: min(width * 0.4, height * 0.4),
+    strokeWeight: 20,
+    sides: 3,
+    angle: 0,
+    x: width * 0.5,
+    y: height * 0.58,
+    color: "",
+  };
+
   const gui = new Tweakpane.Pane();
 
-  const folder1 = gui.addFolder({
-    title: "Settings",
-  });
+  const folder1 = gui
+    .addFolder({
+      title: "Rectangles",
+    })
+    .on("change", () => generateSketch());
   folder1.addInput(settings, "rects", {
     min: 1,
     max: 100,
@@ -34,7 +47,7 @@ function setup() {
     min: -90,
     max: 90,
     step: 5,
-    label: "Degrees",
+    label: "Angle",
   });
   folder1.addInput(settings, "pickColors", {
     min: 1,
@@ -42,19 +55,42 @@ function setup() {
     step: 1,
     label: "Pick colors",
   });
-  folder1
-    .addButton({
-      title: "Apply",
+  const folder2 = gui
+    .addFolder({
+      title: "Mask",
     })
-    .on("click", () => generateSketch());
+    .on("change", () => generateSketch());
+  folder2.addInput(settings.mask, "radius", {
+    label: "Radius",
+    step: 1,
+    min: 100,
+    max: 1000,
+  });
+  folder2.addInput(settings.mask, "sides", {
+    label: "Sides",
+    step: 1,
+    min: 3,
+    max: 50,
+  });
+  folder2.addInput(settings.mask, "angle", {
+    label: "Angle",
+    min: 0,
+    max: TWO_PI,
+  });
+  folder2.addInput(settings.mask, "strokeWeight", {
+    label: "StrokeWeight",
+    step: 1,
+    min: 0,
+    max: 50,
+  });
 
-  const folder2 = gui.addFolder({
+  const folder3 = gui.addFolder({
     title: "Seed",
   });
-  folder2.addInput(settings, "seed", {
+  folder3.addInput(settings, "seed", {
     label: "Seed",
   });
-  folder2
+  folder3
     .addButton({
       title: "Generate Seed",
     })
@@ -77,20 +113,13 @@ function generateSketch() {
   colors.bgColor = pickRandom(risoColors).hex;
   colors.rectColors = pickRandoms(risoColors, settings.pickColors);
 
-  mask = {
-    radius: min(width * 0.4, height * 0.4),
-    strokeWeight: 20,
-    sides: 3,
-    x: width * 0.5,
-    y: height * 0.58,
-    color: pickRandom(colors.rectColors).hex,
-  };
+  settings.mask.color = pickRandom(colors.rectColors).hex;
 
   if (rects.length > 0) {
     rects.splice(0, rects.length);
   }
 
-  let x, y, w, h, fillColor, strokeColor, blend;
+  let x, y, w, h, speed, fillColor, strokeColor, blend;
   for (let index = 0; index < settings.rects; index++) {
     x = random(0, width);
     y = random(0, height);
@@ -99,8 +128,9 @@ function generateSketch() {
     fillColor = pickRandom(colors.rectColors).hex;
     strokeColor = pickRandom(colors.rectColors).hex;
     blend = random() > 0.5 ? BLEND : OVERLAY;
+    speed = random();
 
-    rects.push({ x, y, w, h, fillColor, strokeColor, blend });
+    rects.push({ x, y, w, h, speed, fillColor, strokeColor, blend });
   }
 
   loop();
@@ -112,19 +142,25 @@ function draw() {
 
   push();
 
-  translate(mask.x, mask.y);
+  translate(settings.mask.x, settings.mask.y);
   strokeWeight(0);
   noFill();
-  drawPolygon(mask.radius, mask.sides);
+  push();
+  rotate(settings.mask.angle);
+  drawPolygon(settings.mask.radius, settings.mask.sides);
+  pop();
   drawingContext.clip();
 
   rects.forEach((rect) => {
+    rect.x -= rect.speed;
+    rect.y += rect.speed * 0.5;
+
     const { x, y, w, h, fillColor, strokeColor, blend } = rect;
     push();
 
-    translate(-mask.x, -mask.y);
+    translate(-settings.mask.x, -settings.mask.y);
     translate(x, y);
-    blendMode(blend);
+    // blendMode(blend);
 
     drawingContext.shadowColor = offsetHSL(
       fillColor,
@@ -147,7 +183,7 @@ function draw() {
     noFill();
     drawSkewedRect(w, h, settings.degrees);
 
-    blendMode(BLEND);
+    // blendMode(BLEND);
     stroke("#000");
     strokeWeight(2);
     drawSkewedRect(w, h, settings.degrees);
@@ -158,12 +194,16 @@ function draw() {
   pop();
 
   push();
-  translate(mask.x, mask.y);
+  translate(settings.mask.x, settings.mask.y);
   blendMode(BURN);
   noFill();
-  strokeWeight(mask.strokeWeight);
-  stroke(mask.color);
-  drawPolygon(mask.radius - mask.strokeWeight, mask.sides);
+  strokeWeight(settings.mask.strokeWeight);
+  stroke(settings.mask.color);
+  rotate(settings.mask.angle);
+  drawPolygon(
+    settings.mask.radius - settings.mask.strokeWeight,
+    settings.mask.sides
+  );
   pop();
 }
 
