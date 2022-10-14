@@ -10,7 +10,7 @@ async function preload() {
 
 const settings = {
   rects: 40,
-  degrees: -30,
+  degrees: 150,
   pickColors: 2,
   seed: window.crypto?.randomUUID() ?? "",
   mask: {},
@@ -24,7 +24,7 @@ function setup() {
     radius: min(width * 0.4, height * 0.4),
     strokeWeight: 20,
     sides: 3,
-    angle: 0,
+    degrees: 0,
     x: width * 0.5,
     y: height * 0.58,
     color: "",
@@ -44,16 +44,19 @@ function setup() {
     label: "Rectangles",
   });
   folder1.addInput(settings, "degrees", {
-    min: -90,
-    max: 90,
+    min: 0,
+    max: 180,
     step: 5,
-    label: "Angle",
+    label: "Degrees",
   });
   folder1.addInput(settings, "pickColors", {
     min: 1,
     max: 10,
     step: 1,
     label: "Pick colors",
+  });
+  folder1.addInput(settings, "animate", {
+    label: "Animate",
   });
   const folder2 = gui
     .addFolder({
@@ -72,10 +75,10 @@ function setup() {
     min: 3,
     max: 50,
   });
-  folder2.addInput(settings.mask, "angle", {
-    label: "Angle",
+  folder2.addInput(settings.mask, "degrees", {
+    label: "Degrees",
     min: 0,
-    max: TWO_PI,
+    max: 360,
   });
   folder2.addInput(settings.mask, "strokeWeight", {
     label: "StrokeWeight",
@@ -128,7 +131,7 @@ function generateSketch() {
     fillColor = pickRandom(colors.rectColors).hex;
     strokeColor = pickRandom(colors.rectColors).hex;
     blend = random() > 0.5 ? BLEND : OVERLAY;
-    speed = random();
+    speed = random(0.5, 1);
 
     rects.push({ x, y, w, h, speed, fillColor, strokeColor, blend });
   }
@@ -137,7 +140,10 @@ function generateSketch() {
 }
 
 function draw() {
-  noLoop();
+  if (!settings.animate) {
+    noLoop();
+  }
+
   background(colors.bgColor);
 
   push();
@@ -146,21 +152,20 @@ function draw() {
   strokeWeight(0);
   noFill();
   push();
-  rotate(settings.mask.angle);
+  const maskAngle = radians(settings.mask.degrees);
+  rotate(maskAngle);
   drawPolygon(settings.mask.radius, settings.mask.sides);
   pop();
   drawingContext.clip();
 
   rects.forEach((rect) => {
-    rect.x -= rect.speed;
-    rect.y += rect.speed * 0.5;
-
+    moveRect(rect);
     const { x, y, w, h, fillColor, strokeColor, blend } = rect;
     push();
 
     translate(-settings.mask.x, -settings.mask.y);
     translate(x, y);
-    // blendMode(blend);
+    blendMode(blend);
 
     drawingContext.shadowColor = offsetHSL(
       fillColor,
@@ -183,7 +188,7 @@ function draw() {
     noFill();
     drawSkewedRect(w, h, settings.degrees);
 
-    // blendMode(BLEND);
+    blendMode(BLEND);
     stroke("#000");
     strokeWeight(2);
     drawSkewedRect(w, h, settings.degrees);
@@ -199,12 +204,30 @@ function draw() {
   noFill();
   strokeWeight(settings.mask.strokeWeight);
   stroke(settings.mask.color);
-  rotate(settings.mask.angle);
+  rotate(maskAngle);
   drawPolygon(
     settings.mask.radius - settings.mask.strokeWeight,
     settings.mask.sides
   );
   pop();
+}
+
+function moveRect(rect) {
+  const { x, y, w, h, speed } = rect;
+  const angle = radians(settings.degrees);
+  const nextPosition = createVector(speed).setHeading(angle);
+  rect.x += nextPosition.x;
+  rect.y += nextPosition.y;
+  if (x + w / 2 < 0) {
+    rect.x = width + w / 2;
+  } else if (x - w / 2 > width) {
+    rect.x = -w / 2;
+  }
+  if (y + h / 2 < 0) {
+    rect.y = height + h / 2;
+  } else if (y - h / 2 > height) {
+    rect.y = -h / 2;
+  }
 }
 
 function drawSkewedRect(w = 300, h = 100, degrees = -45) {
