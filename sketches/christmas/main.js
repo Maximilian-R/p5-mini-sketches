@@ -509,7 +509,7 @@ function updateMouse(event) {
   }, 250);
 
   mouseX = event.clientX - offsetX;
-  mouseY = event.clientY - offsetY;
+  mouseY = event.clientY - offsetY + window.scrollY;
 }
 function updateCanvasSize() {
   const rect = canvas.getBoundingClientRect();
