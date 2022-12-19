@@ -543,12 +543,13 @@ function setup() {
 
 function drawText(ctx) {
   ctx.save();
-  ctx.font = "700 clamp(2rem, 12vw, 10rem) Rouge Script";
+  const fontSize = width * 0.12;
+  ctx.font = "700 " + fontSize + "px Rouge Script";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   ctx.shadowColor = "rgba(0, 0, 0, .6)";
-  ctx.shadowBlur = 2 * dpr;
+  ctx.shadowBlur = 8 * dpr;
   ctx.shadowOffsetX = 10 * sizeScale * dpr;
   ctx.shadowOffsetY = 10 * sizeScale * dpr;
 
