@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <style>
+      body {
+        background: radial-gradient(
+          ellipse at center,
+          #1a4f40 0%,
+          #000000 100%
+        );
+      }
+    </style>
+    <script>
+      let font;
+      let arrays = [];
+      let animation = 0;
+
+      let from;
+      let to;
+
+      function preload() {
+        font = loadFont("./RougeScript-Regular.ttf");
+      }
+
+      function setup() {
+        createCanvas(1000, 800);
+
+        from = color("#fff");
+        to = color("#e6142d");
+
+
+        addCollection(0.3);
+      }
+
+      function addCollection(factor) {
+        points = font.textToPoints("Animated Text", 0, 100, 200, {
+          sampleFactor: factor,
+          simplifyThreshold: 0,
+        });
+        arrays.push(points);
+      }
+
+      function draw() {
+        animation += 10;
+
+        strokeWeight(2);
+
+        arrays.forEach((points) => {
+            translate(0, 160);
+          drawPoints(points);
+        });
+
+        noFill();
+        stroke("#fff");
+      }
+
+      function drawPoints(points) {
+        beginShape();
+        let prev;
+
+        for (
+          let index = 0;
+          index < Math.min(animation, points.length);
+          index++
+        ) {
+          const point = points[index];
+          if (
+            prev &&
+            Math.sqrt(
+              Math.pow(prev.x - point.x, 2) + Math.pow(prev.y - point.y, 2)
+            ) > 10
+          ) {
+            endShape();
+            beginShape();
+          }
+          prev = point;
+          vertex(point.x, point.y);
+        }
+        endShape();
+      }
+
+      function drawPoints1(points) {
+        for (
+          let index = 0;
+          index < Math.min(animation, points.length);
+          index++
+        ) {
+            const pointt = points[index];
+            const c = lerpColor(from, to, noise(index / 1000));
+            stroke(c);
+            point(pointt.x, pointt.y);
+        }
+      }
+    </script>
+  </body>
+</html>
