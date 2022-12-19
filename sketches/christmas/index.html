@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="./styles.css" rel="stylesheet" />
+    <script src="./main.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rouge+Script&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="merry-christmas">
+      <div></div>
+      <svg
+        id="snow-1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 320"
+      >
+        <path
+          fill="#eee"
+          fill-opacity="1"
+          d="M0,32L48,64C96,96,192,160,288,181.3C384,203,480,181,576,181.3C672,181,768,203,864,208C960,213,1056,203,1152,176C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+        ></path>
+      </svg>
+      <svg
+        id="snow-2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 320"
+      >
+        <path
+          fill="#bbb"
+          fill-opacity="1"
+          d="M0,256L48,224C96,192,192,128,288,117.3C384,107,480,149,576,176C672,203,768,213,864,186.7C960,160,1056,96,1152,69.3C1248,43,1344,53,1392,58.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+        ></path>
+      </svg>
+      <canvas></canvas>
+    </div>
+
+    <div style="display: none">
+      <img
+        id="particle-snow"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAQAAAC0jZKKAAACPElEQVR4AbXXcW/TMBAF8EtCypa1LCDB9/98ILG1dKNNCOZZT8h6N4562eZTzH8/ni6dfWns4kqtvbMOT2tmv+0XasG/F1aTLFxd5lDcCS8o0tyX58K9bVA9WZe40LNNqLkevrJr1HvrC1vgQoM820/UqQZubQBKWDKjDJjP+wg41/J/eAOQsGb2rWDlvKzMTyEMaJvBIHNpBdswOfhoZ4VL2h3Irc+srSiJPYv9B1Mr3IHcCS2ZJTFf2+RZ1NEWD5PF7mmQ/nfs85I9klb4KrNCa2YkZitcXmVZpwL3zFtwpYH6l3cWtqDMPP+Fb+zWPthW6BvUIJmZuOTN7APqKOjB9vZAuAM6ArvFE9CSeI5Y1B7PPfAFMPKMKMWVZmbCzKusoveoKcODjQDzgx3c6GnUFnADOAFGV5V16B7PI2BkBRjgmf4IWBbYu8I6lPuhSa2w4xP8k7CF/l5Q7HuiZW9ST+wpjgKLvP9ed6gAJXztWcG/2CaAJ/tKlJSnm7RTTHHATQAnwAFKWCn/H3y2eH2L2ZfDIf06rXD8m768l//cAvzN/kBe709a8cPFQ4jXFA8hHpvVh1D9scmrqfbYrD/oO0s5caYrDvraqwlwW3811V6mvXUrLtOq6x+NYCt0vIqv/2hgcUPWqoFFRixlB9tEIxZHWKHJLmuGQraifijUMTbIq63QzDLGrh+8wVYO3rI6nzdohc+81H3cDHiijxvNfAJ9Wv855hJL5nnlB2Tw8ojzC7UelrXqk/cPn233eGpGsfAAAAAASUVORK5CYII="
+      />
+
+      <img
+        id="particle-star"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAUTSURBVFhH7ZgLU+JIFIVJAqKACiq+Z3TK//+TtnZEXV+UiCKPJCTznd50KsPuzAg0U2vVnqquTjqh++vbp29HSyuSlxXn8rPatT4UsIVdCfT/wJkEqr4/BHAR9mMAn56e+irZvVOtBHgymQQqXNtIO5NrYGODzc3NQCW7dyp16lLe2dlZZR15nhdsbGzELy8vcfbMiZxHOAxDH1UajUZlOp0633gugC2U8SvAwfb2dhVLVOv1ejlrN8+yspSWBS7CqgQHBwcVQGvYoVYulyuFZypLQy/j4SKoSnB0dFRutVr1k5OTPYDXx+PxEFuEg8GAxzmohU7N3ZxaFPg7WHJuuVqtqqwB22LjHSvKgA6jKJroBzs7OyU2oIVeWIsA2wjlUSUprLXb7fW9vb36p0+f2pTPeLgRx/EI6AkTkbc93iu9vb0tFFmrRYDzyAp2DRG9WrPZbGCHJtE9pZwDvMXhMQE0ND/y/RKXKdBpBm3B55rAvMC5FWQDRVawgG4S3RZ22Ce6Zzz7giW2kySJ8HAk2CAIUpRgkYTJJNjjt3g4t4I8q421v7/fEOzh4WH7+Pj4COhzMsU5eXgLwFjQAKfYQ7Cx2p6fn6fD4XChKP8K2Po1jyzF+FYbDMA63m1xb2CBP+X6jPqkVqs1gJV00iUC5vSLRqNRRLSnpLwEf1to9S8Vx/tXFYHtizmYLTpuAagQ0bWLi4t1DoYGy95k+WWBE9lAkRUs0f2MRQ6YUB0o2IKggrB6wL3PpRmHZh87+UwowP/B7u5u0O/3NZ7lsEWydQ6sBgtqYLNUVWGp1/DqOsA1orhJx03qNs+PlA3QF3mW984VWcHi3yaAGzqiJfqpcl+V5yXVOroJgA6ZMpFnLuVga2vL16SYiJelwNmSCu6XIgpKSZ5qIIwYxFeUNIBETZOXd67Lv18zbeZdLu27plZ/8Od9Z98eP1XREkWl2sVsjKTX602JhL66JvhwQj3SCUZqUj3SwcBgEWWqNKBIwVLh3ZDN9fD4+Ni5vb3t3NzcfO10On9eXV11KH9dX193ae/T36Db7Y75fUh7xJhT2hIYVKzHbfkHsH1gX1atDqZskPjp6Smmc6WqUKB0PoFR12ozGcB6lhQ8FCwQfwAn2A719eXl5T3wT3d3dwOaRvQZMvlIY2isbMxZ4Fw/ivCs7A9VvOzboETkS0RS66zlN4OIF8ua7wigLgVLffvwoGA/9gB85XpMMdmjUL4D+5HeC2xlPapvAw9YY1YgTZ6VLfCkIizgN6L7lWhesvRdAPsAD8gEYyaniM4FajUvsGSgGVCbJWXpZd2EY1fLGWlDKQuwzAOA5dlrbNQTLM4Zvb6+hkzALr1dtXdrEWDJRFnWEDQgGjzWoUB0PaUxruVRefgO2DcmaGDv7++tFeaGlRYFzqUPGX0b6LjFGjrBFOEK7UNglQ16QI55NcbLxU3124FtzlQKLCkFAqvj19eJiIfHwHaVDYhwxGrMgup6bi0DXIyOgdC3gY5bHWxMIAS2jysU3VnPFn87l9510v1ERQATQX1OctjAS8g5DGhzBistCyxZWFPrAAB0jIfHbLIirK2XkgtgK8Gk5OEEUHlWGaMYWSdaOkvMyONg8PnqCkh1KVkiok1RdibXwJL5GlNuxsbWEs7k0hJWKVnC/EWh66w4k82lLqVV07+oJEX4P/3PQEkRXUl0pVUAS0Vop1rFppPyYzurnWnVwM61KmArxxEulb4B0+0hLgRIMbEAAAAASUVORK5CYII="
+      />
+    </div>
+  </body>
+</html>
