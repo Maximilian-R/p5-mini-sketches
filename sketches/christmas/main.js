@@ -543,7 +543,7 @@ function setup() {
 
 function drawText(ctx) {
   ctx.save();
-  const fontSize = width * 0.14;
+  const fontSize = width * 0.16;
   ctx.font = "500 " + fontSize + "px Rouge Script";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
