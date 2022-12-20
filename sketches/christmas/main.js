@@ -1,4 +1,3 @@
-// @ts-nocheck
 function random(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -188,6 +187,13 @@ class Vector {
     return this;
   }
 
+  setHeading(a) {
+    let m = this.magSq();
+    this.x = m * Math.cos(a);
+    this.y = m * Math.sin(a);
+    return this;
+  }
+
   setMag(len) {
     this.normalize().mult(len);
     return this;
@@ -195,7 +201,6 @@ class Vector {
 
   magSq() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
-    return this;
   }
 
   dist(target) {
