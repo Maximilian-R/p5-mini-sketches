@@ -543,8 +543,8 @@ function setup() {
 
 function drawText(ctx) {
   ctx.save();
-  const fontSize = width * 0.12;
-  ctx.font = "700 " + fontSize + "px Rouge Script";
+  const fontSize = width * 0.14;
+  ctx.font = "500 " + fontSize + "px Rouge Script";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
@@ -553,7 +553,6 @@ function drawText(ctx) {
   ctx.shadowOffsetX = 10 * sizeScale * dpr;
   ctx.shadowOffsetY = 10 * sizeScale * dpr;
 
-  ctx.filter = "none";
   ctx.fillStyle = "#e6142d";
   ctx.fillText("Merry Christmas", width / 2, height / 2);
   ctx.restore();

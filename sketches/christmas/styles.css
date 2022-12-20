@@ -27,6 +27,9 @@ body {
   align-items: center;
   flex-direction: column;
   touch-action: none;
+
+  /** ios fix **/
+  transform: translateZ(0);
 }
 
 .merry-christmas > div {
@@ -50,6 +53,7 @@ body {
   filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
   bottom: max(-6vw, -50px);
   z-index: 4;
+  width: 100%;
 }
 
 #snow-2 {
@@ -57,4 +61,5 @@ body {
   filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
   bottom: -2vw;
   z-index: 1;
+  width: 100%;
 }
