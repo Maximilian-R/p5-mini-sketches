@@ -34,7 +34,7 @@ body {
 
 .merry-christmas > div {
   position: absolute;
-  background: radial-gradient(ellipse at center, #0c4d83 0%, #000000 60%);
+  background: radial-gradient(ellipse at center, #0c8373 0%, #000000 60%);
   width: 100%;
   aspect-ratio: 1/1;
 }
