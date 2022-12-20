@@ -260,14 +260,13 @@ class Cursor {
 }
 class SnowEmitter {
   constructor() {
-    this.maxParticles = 1000;
+    this.maxParticles = 500;
     this.children = [];
     this.gravity = new Vector(0, 0.01);
     this.wind = new Vector(0, 0);
   }
 
   setup() {
-    this.maxParticles = 1000;
     for (let i = 0; i < this.maxParticles; i++) {
       const particle = new SnowParticle(random(0, width), random(0, height));
       this.children.push(particle);
