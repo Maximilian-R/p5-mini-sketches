@@ -479,19 +479,21 @@ class StarParticle {
     ctx.globalAlpha = this.alpha;
     const d = this.radius * 2 * this.scale;
 
-    const buffer = document.createElement("canvas");
-    buffer.width = images[1].width;
-    buffer.height = images[1].height;
-    const btx = buffer.getContext("2d");
+    // const buffer = document.createElement("canvas");
+    // buffer.width = images[1].width;
+    // buffer.height = images[1].height;
+    // const btx = buffer.getContext("2d");
 
-    btx.fillStyle = this.color;
-    btx.fillRect(0, 0, buffer.width, buffer.height);
-    btx.globalCompositeOperation = "destination-atop";
-    btx.drawImage(images[1], 0, 0);
+    // btx.fillStyle = this.color;
+    // btx.fillRect(0, 0, buffer.width, buffer.height);
+    // btx.globalCompositeOperation = "destination-atop";
+    // btx.drawImage(images[1], 0, 0);
+
+    // buffer.toDataURL("png");
 
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.rotate);
-    ctx.drawImage(buffer, -d / 2, -d / 2, d, d);
+    ctx.drawImage(images[1], -d / 2, -d / 2, d, d);
     ctx.restore();
   }
 }
