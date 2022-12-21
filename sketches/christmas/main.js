@@ -411,6 +411,9 @@ class StarEmitter {
   update() {
     if (this.spawn) {
       this.add();
+      this.add();
+      this.add();
+      this.add();
     }
 
     this.children.forEach((child) => {
@@ -457,7 +460,7 @@ class StarParticle {
   }
 
   get radius() {
-    return 22 * sizeScale * 3; // 44 = image width
+    return 22 * sizeScale * 2; // 44 = image width
   }
 
   applyForce(force) {
