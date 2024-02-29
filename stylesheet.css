@@ -11,9 +11,13 @@ body {
 #sketch-container {
   height: 300px;
   background-color: #000032;
+  position: relative;
 }
 
 header {
+  position: absolute;
+  inset: 0;
+  color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -141,7 +145,7 @@ footer a:focus-visible::after {
 nav {
   display: flex;
   justify-content: center;
-  padding: 2rem 2rem 0 2rem;
+  padding: 2rem;
   gap: 0.5rem;
 }
 
